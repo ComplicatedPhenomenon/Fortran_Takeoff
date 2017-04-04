@@ -1,8 +1,8 @@
 ### Fortran_practise
 
-This repository will conclude the basic contents Fortran. Just a tutorial for a beginner, the effort you have taken is far from being a master. :s mir k:
+This repository will conclude the basic contents Fortran. Just a tutorial for a beginner, the effort you have taken is far from being a master. :smirk:
 
-> To get good at anything you have to practice every day, and eventually it'll be easier and fun. (:neutral_face:)
+> To get good at anything you have to practice every day, and eventually it'll be easier and fun. :neutral_face:
 
 Even if I heard about it long ago, I haven't done it. 
 
