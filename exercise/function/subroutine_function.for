@@ -1,5 +1,6 @@
       program ch1205
       implicit none
+
       integer :: i
       real :: small = 1.0 
       real :: big =1.0
@@ -14,9 +15,12 @@
         small = small/10.0
         big = big *10.0
       end do 
+      
       end program ch1205
-      real function ave_value (func,first_value,last_value,n)
 
+      !======================================================
+
+      real function ave_value (func,first_value,last_value,n)
       implicit none
 
       real, external :: func

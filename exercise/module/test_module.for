@@ -7,7 +7,8 @@ c      pi=3.141592653d0
 c      end module shared_data
 
       program volume_of_ball
-      use shared_data
+
+      use 'SharedData.mod'
       implicit none
 
       real :: v
