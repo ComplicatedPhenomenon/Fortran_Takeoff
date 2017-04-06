@@ -1,4 +1,4 @@
-**GNU FORTRAN compier** is part of the **GNU Compiler Collection**, it has replaced the **g77** compiler. It includes full support for the Fortran 95 language and is compatible with most language extensions supported by g77 , large part of Fortran 2003 and Fortran 2008 have also been implemented.
+**GNU FORTRAN compiler** is part of the **GNU Compiler Collection**, it has replaced the **g77** compiler. It includes full support for the Fortran 95 language and is compatible with most language extensions supported by g77 , large part of Fortran 2003 and Fortran 2008 have also been implemented.
 
 Source code (programming language high-level language) to object code (assembly language or machine code low-level language)
 
@@ -12,19 +12,19 @@ For example :
 
 *Description*:
 
-    BIT_SIZE(I) returns the number of bits (integer precision plus sign bit) represented by type *I*.
+BIT_SIZE(I) returns the number of bits (integer precision plus sign bit) represented by type *I*.
 
 *Standard*:
 
-    Fortran 95 and later
+Fortran 95 and later
 
 *Class*:
 
-    Iquiry funcion
+Inquiry function
  
 *Syntax*:
 
-    result = BIT_SIZE(I)
+result = BIT_SIZE(I)
 
 *Example*:
 ```f95
