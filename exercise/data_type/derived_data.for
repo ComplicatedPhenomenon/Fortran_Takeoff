@@ -10,11 +10,11 @@
       real :: height
       end type person
 
-      type(person) :: wm
       type(person) :: anyone
-      wm = person('Miao',' ','Wang','Female',25,157)
-      write (*,*) 'Free format :', wm
       
+      print *,'Input first name, middle name, last name, sex, age, heigh
+     >t by order.' 
       read (*,*) anyone
+      
       write (*,*) anyone
       end program test_derived_data
