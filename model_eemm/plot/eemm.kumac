@@ -1,0 +1,48 @@
+*###scan2 ############
+v/read  ecm,secm           'eemm.out'
+**********************
+
+set asiz 0.5
+set ylab 0.9
+set xlab 1.3
+set xmgr 3.
+set xmgl 3.5
+set ymgu 2.5
+set ymgl 2.5
+set ywin 0.8
+set vsiz 0.2
+set tsiz 0.4
+set ksiz 0.3
+set csiz 0.35
+set gfon -31; set tfon -31; set cfon -71; set vfon -71;set lfon -71
+igset txal 23
+igset txfp -70
+set fwid 7
+set hwid 5
+set lwid 5
+
+***************************************************
+for/file 66 eemm.ps
+
+meta 66 -111
+ 
+zone 1 1
+
+opt liny
+opt linx 
+opt tic
+opt nbox
+
+************************************************
+set ndvx 
+set ndvy
+  
+null  0  0.9  0.0  3.E-4   ' '
+ 
+Igset LWID 12  * line wideth
+set dmod 1
+set PLCI 2             
+graph 501   ecm secm 'c'
+
+***************************************************
+close 66                                               

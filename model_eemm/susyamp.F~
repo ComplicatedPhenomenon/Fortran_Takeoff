@@ -1,0 +1,2062 @@
+c
+c  squared matrix element for qq->kk  (double precision)
+c
+C     p1:  initial qark1                          *
+C     p2:  initial qark2                          *
+C     p3:  initial kai1                           *
+C     p4:  initial kai2                           *
+C     sqme0_q: squared matrix element            *
+c----------------------------------------------------
+        function  amps(ni,nf,pi,pf)
+        implicit double precision (a-h,o-z)
+        integer nf,ni
+        real*8 pi(ni,4),pf(nf,4)
+
+        real*8 fdelta
+        real*8 DOT
+        complex*16 CCDOT
+
+      REAL*8 p1(4), p2(4), p3(4), p4(4)
+      REAL*8 p12(4),p22(4)
+
+      integer lam1,lam2,lam3,lam4,ls1,ls2,ls3,ls4
+      integer i, j, k
+      real*8 mz, electron2, sinw2, cosw2
+
+      complex*16 vp1(4),up2(4),vp1bar(4),up2bar(4),
+     &        up4(4),vp3(4),vp3bar(4),up4bar(4), curr1(4),curr2(4),
+     &        curr3(4),curr4(4),
+     &        curr31(4),curr41(4),curr42(4),   ! subcurrent for curr3,4
+     &        plup2(4),plvp3(4),prvp3(4)    !chiral spiner for up2,vp3
+
+      complex*16 M,term1_1,term1_2
+
+      COMPLEX*16 Zplus(2,2),Zminus(2,2)    
+      COMMON /V/Zplus
+      COMMON /U/Zminus
+c-------------------------------------------
+c      write(*,*)"nf,ni=",nf,ni
+c      write(*,*) 'pi1=', pi(1,1),pi(1,2),pi(1,3),pi(1,4) 
+c      write(*,*) 'pi2=', pi(2,1),pi(2,2),pi(2,3),pi(2,4)
+c      write(*,*) 'pf1=', pf(1,1),pf(1,2),pf(1,3),pf(1,4) 
+c      write(*,*) 'pf2=', pf(2,1),pf(2,2),pf(2,3),pf(2,4)
+c      stop
+
+      DO k=1,4
+          p1(k)=pi(1,k)
+          p2(k)=pi(2,k)
+          p3(k)=pf(1,k)
+          p4(k)=pf(2,k)
+      	  p12(k)=p1(k)+p2(k)   !   root of s
+      	  p22(k)=p3(k)+p4(k)
+      ENDDO
+      if (DOT(p12,p12).eq.DOT(p22,p22)) then
+c=================initial condition===========================================
+      tmp=0.0
+      mz=91.1876
+      electron2=4.*3.1415926/137.036  ! e^2
+      sinw2=0.2312
+      cosw2=1.0-sinw2
+c=========================================================================
+      i=2
+      j=2
+c-------all the spin and index of charge--------------
+      DO 1 ls1=1,2 
+      DO 1 ls2=1,2
+      DO 1 ls3=1,2
+      DO 1 ls4=1,2
+
+      if(ls1.eq.1) lam1= 1
+      if(ls1.eq.2) lam1= -1
+
+      if(ls2.eq.1) lam2= 1
+      if(ls2.eq.2) lam2= -1
+
+      if(ls3.eq.1) lam3= 1
+      if(ls3.eq.2) lam3= -1
+
+      if(ls4.eq.1) lam4= 1
+      if(ls4.eq.2) lam4= -1
+
+c---------------polarization vecter ----------------
+      call  v_spinor(p1, lam1, vp1)      ! vp1
+      call  u_spinor(p2, lam2, up2)      ! up2
+      call  v_spinor(p3, lam3, vp3)      ! up3
+      call  u_spinor(p4, lam4, up4)      ! vp4
+
+      call  CALUVB(vp1,vp1bar)        ! v(p1)_bar
+      call  CALUVB(up2,up2bar)        ! u(p2)_bar
+      call  CALUVB(vp3,vp3bar)        ! v(p3)_bar
+      call  CALUVB(up4,up4bar)        ! u(p4)_bar
+c================term1   ================================================
+
+c-----------current 1,2  -------------------------
+      call current(vp1, 1.0d0, 0.0d0, up2, curr1)
+      call current(up4, 1.0d0, 0.0d0, vp3, curr2)
+
+c----------------term1_1------------------------
+      term1_1=-1.0*CCDOT(curr1,curr2)*fdelta(i,j)/DOT(p12,p12)
+c=================term2================================================
+
+c-----------------curr3------------------------
+      call PLuv(up2,plup2)
+      call current(vp1bar, 1.0d0, 0.0d0, plup2, curr31)
+      DO k=1,4         !  
+      	  curr3(k)=curr31(k)-2.0d0*sinw2*curr1(k)
+      ENDDO
+c---------------------------------------------
+c      write (*,*) Zminus(1,1),Zminus(1,2),Zminus(2,1),Zminus(2,2)
+c      pause
+c----------------curr4------------------------
+      call PLuv(vp3,plvp3)
+      call PRuv(vp3,prvp3)
+      call current(up4bar, 1.0d0, 0.0d0, plvp3, curr41)
+      call current(up4bar, 1.0d0, 0.0d0, prvp3, curr42)
+c      write (*,*) Zminus(1,1),Zminus(1,2),Zminus(2,1),Zminus(2,2)
+c      pause
+      DO k=1,4         !  
+      	  curr4(k)=Conjg(Zplus(1,i))*Zplus(1,j)*curr41(k)
+     &          +Zminus(1,i)*Conjg(Zminus(1,j))*curr42(k)
+     &          +fdelta(i,j)*(cosw2-sinw2)*curr2(k)
+      ENDDO
+c----------------term1_2-------------------------
+
+      term1_2=-1.0*CCDOT(curr3,curr4)/(4.*sinw2*cosw2
+     &       *(DOT(p12,p12)-mz**2.))
+
+c-------------------apmlitude----------------------
+      M=electron2*(term1_1+term1_2)
+
+c===============return sqme0_q====================
+      tmp=tmp+M* Conjg(M) 
+
+ 1    continue 
+c================================================
+      amps=tmp/4.0d0/(2.0d0*DOT(p12,p12))
+      else
+         amps=0.0
+      endif
+      RETURN
+      END
+C========================delta function=======================================
+      function fdelta(i, j)
+      implicit none
+      integer i, j
+      real*8 fdelta
+      if (i.eq.j) then
+        fdelta=1.0
+        return 
+      else
+        fdelta=0.0
+        return
+      endif
+      end
+c**********************************************************************************
+      function  coz0l(i,j)
+      implicit none
+      integer i,j
+      real*8 coz0l
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      coz0l=zn(4,i)*zn(4,j)-zn(3,i)*zn(3,j)
+      return
+      end
+c***********************************
+      function  coz0r(i,j)
+      implicit none
+      integer i,j
+      real*8 coz0r
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      coz0r=-(zn(4,i)*zn(4,j)-zn(3,i)*zn(3,j))
+      return
+      end
+c***********************************
+      function  cozcl(i,j)
+      implicit none
+      integer i,j
+      real*8 cozcl,ffdelta,sin2w,e
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      common/const/sin2w,e
+      cozcl=zplus(1,i)*zplus(1,j)+ffdelta(i,j)*(1-2*sin2w)
+      return
+      end
+c***********************************
+      function  cozcr(i,j)
+      implicit none
+      integer i,j 
+      real*8 cozcr,ffdelta,sin2w,e
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      common/const/sin2w,e
+      cozcr=zminus(1,i)*zminus(1,j)+ffdelta(i,j)*(1-2*sin2w)
+      return
+      end
+c***********************************
+      function cogmcl(i,j)
+      implicit none
+      integer i,j
+      real*8 cogmcl,ffdelta
+      cogmcl=ffdelta(i,j)
+      return
+      end
+c***********************************
+      function cogmcr(i,j)
+      implicit none
+      integer i,j
+      real*8 cogmcr,ffdelta
+      cogmcr=ffdelta(i,j)
+      return
+      end
+c***********************************
+      function cow0cl(i,j)
+      implicit none
+      integer i,j
+      real*8 cow0cl
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      cow0cl=zn(2,j)*zplus(1,i)-(zn(4,j)*zplus(2,i)/dsqrt(2.0d0))
+      return
+      end
+c***********************************
+      function cow0cr(i,j)
+      implicit none
+      integer i,j
+      real*8 cow0cr
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      cow0cr=zn(2,j)*zminus(1,i)+(zn(3,j)*zminus(2,i)/dsqrt(2.0d0))
+      return
+      end
+c***********************************
+      function coh0l(i,j)
+      implicit none
+      integer i,j
+      real*8 coh0l,sin2w,cos2w,e
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      common/const/sin2w,e
+      cos2w=1.0d0-sin2w
+      coh0l=zn(3,j)*(zn(1,i)*dsqrt(sin2w)-zn(2,i)*dsqrt(cos2w))
+     &     +zn(3,i)*(zn(1,j)*dsqrt(sin2w)-zn(2,j)*dsqrt(cos2w))
+      return
+      end
+c***********************************
+      function coh0r(i,j)
+      implicit none
+      integer i,j
+      real*8 coh0r,sin2w,cos2w,e
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      common/const/sin2w,e
+      cos2w=1.0d0-sin2w
+      coh0r=zn(3,j)*(zn(1,i)*dsqrt(sin2w)-zn(2,i)*dsqrt(cos2w))
+     &     +zn(3,i)*(zn(1,j)*dsqrt(sin2w)-zn(2,j)*dsqrt(cos2w))
+      return
+      end
+c***********************************
+      function cohcl(i,j)
+      implicit none
+      integer i,j
+      real*8 cohcl
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      cohcl=zminus(2,i)*zplus(1,j)
+      return
+      end
+c***********************************
+      function cohcr(i,j)
+      implicit none
+      integer i,j
+      real*8 cohcr
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      cohcr=zminus(2,j)*zplus(1,i)
+      return
+      end
+c***********************************
+      function cog0l(i,j)
+      implicit none
+      integer i,j
+      real*8 cog0l,sin2w,cos2w,e
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      common/const/sin2w,e
+      cos2w=1.0d0-sin2w
+      cog0l=zn(4,j)*(zn(1,i)*dsqrt(sin2w)-zn(2,i)*dsqrt(cos2w))
+     &     -zn(4,i)*(zn(1,j)*dsqrt(sin2w)-zn(2,j)*dsqrt(cos2w))
+      return
+      end
+c***********************************
+      function cog0r(i,j)
+      implicit none
+      integer i,j
+      real*8 cog0r,sin2w,cos2w,e
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      common/const/sin2w,e
+      cos2w=1.0d0-sin2w
+      cog0r=-zn(4,j)*(zn(1,i)*dsqrt(sin2w)-zn(2,i)*dsqrt(cos2w))
+     &     +zn(4,i)*(zn(1,j)*dsqrt(sin2w)-zn(2,j)*dsqrt(cos2w))
+      return
+      end
+c***********************************
+      function cogcl(i,j)
+      implicit none
+      integer i,j
+      real*8 cogcl
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      cogcl=zminus(1,i)*zplus(2,j)
+      return
+      end
+c***********************************
+      function cogcr(i,j)
+      implicit none
+      integer i,j
+      real*8 cogcr
+      real*8 zplus(2,2),zminus(2,2),zn(4,4)
+      common/matrix/zplus,zminus,zn
+      cogcr=zminus(1,j)*zplus(2,i)
+      return
+      end
+c***************************************************************
+      function gmunu(i,j)
+      implicit none
+      integer i,j
+      real*8 gmunu
+      if (i.ne.j) then
+        gmunu=0.0d0
+        return
+      endif
+      if (i.eq.4) then
+         gmunu=1.0d0
+      else
+         gmunu=-1.0d0
+      endif
+      return
+      end
+c***************************************************************
+      subroutine f13loop(k,mi2,mj2,f1lo,f3lo)
+      implicit none
+      real*8 k(4),mi2,mj2,ks
+      complex*16 f1lo(4,4),f3lo(4,4)
+      COMPLEX*16 A0,B0,B1,B2(2)
+      integer mu,nu
+      real*8 dot,gmunu
+      ks=dot(k,k)
+      call ffa0(mj2,a0)
+      call ffb0(ks,mi2,mj2,b0,b1,b2)
+      do mu=1,4
+         do nu=1,4
+       f1lo(mu,nu)=2.0d0*(k(mu)*k(nu)*b2(1)+gmunu(mu,nu)*b2(2))
+     &          + 2.0d0*k(mu)*k(nu)*b1-gmunu(mu,nu)*(a0+mi2*b0)
+     &          - gmunu(mu,nu)*ks*b1
+       f3lo(mu,nu)=dsqrt(mi2)*dsqrt(mj2)*gmunu(mu,nu)*b0
+         enddo
+      enddo
+      return
+      end
+c******************************************************************
+      subroutine f13loopz(ks,mi2,mj2,f1lo,f3lo)
+      implicit none
+      real*8 mi2,mj2,ks
+      complex*16 f1lo,f3lo
+      COMPLEX*16 A0,B0,B1,B2(2)
+      integer mu,nu
+      real*8 dot,gmunu
+      call ffa0(mj2,a0)
+      call ffb0(ks,mi2,mj2,b0,b1,b2)
+       f1lo=2.0d0*(b2(2))
+     &          -(a0+mi2*b0)
+     &          -b1
+       f3lo=dsqrt(mi2)*dsqrt(mj2)*b0
+      return
+      end
+c******************************************************************
+      subroutine f13loopw(ks,mi2,mj2,f1lo,f3lo)
+      implicit none
+      real*8 mi2,mj2,ks
+      complex*16 f1lo,f3lo
+      COMPLEX*16 A0,B0,B1,B2(2)
+      integer mu,nu
+      real*8 dot,gmunu
+      call ffa0(mj2,a0)
+      call ffb0(ks,mi2,mj2,b0,b1,b2)
+
+       f1lo=2.0d0*(b2(2))
+     &          -(a0+mi2*b0)
+     &          - ks*b1
+       f3lo=dsqrt(mi2)*dsqrt(mj2)*b0
+
+      return
+      end
+c******************************************************************
+      subroutine f13loopgmzt(mi2,mj2,f1lo,f3lo)
+      implicit none
+      real*8 mi2,mj2,ks
+      complex*16 f1lo,f3lo
+      COMPLEX*16 A0,B0,B1,B2(2)
+      integer mu,nu
+      real*8 dot,gmunu
+      ks=1.0d-8
+      call ffa0(mj2,a0)
+      call ffb0(ks,mi2,mj2,b0,b1,b2)
+       f1lo=2.0d0*(b2(2))
+     &          -(a0+mi2*b0)
+       f3lo=dsqrt(mi2)*dsqrt(mj2)*b0
+      return
+      end
+c******************************************************************
+      subroutine f13loopgmzl(mi2,mj2,f1lo,f3lo)
+      implicit none
+      real*8 mi2,mj2,ks
+      complex*16 f1lo,f3lo,f1lot,f3lot
+      COMPLEX*16 A0,B0,B1,B2(2)
+      integer mu,nu
+      real*8 dot,gmunu
+      ks=1.0d-8
+      call ffb0p(ks,mi2,mj2,b0,b1,b2)
+      call f13loopgmzt(mi2,mj2,f1lot,f3lot)
+       f1lo=2.0d0*(b2(1))
+     &       + 2.0d0*b1+f1lot
+       f3lo=0.0d0+f3lot
+      return
+      end
+c******************************************************************
+      function f1z0z(i,j)
+      implicit none
+      integer i,j
+      real*8 f1z0z
+      real*8 coz0l,coz0r
+      f1z0z=(coz0l(j,i)*coz0l(i,j)+coz0r(j,i)*coz0r(i,j))/2.0d0
+      return
+      end
+c***************************************
+      function f3z0z(i,j)
+      implicit none
+      integer i,j
+      real*8 f3z0z
+      real*8 coz0l,coz0r
+      f3z0z=(coz0r(j,i)*coz0l(i,j)+coz0l(j,i)*coz0r(i,j))/2.0d0
+      return
+      end
+c***************************************
+      function f1zcz(i,j)
+      implicit none
+      integer i,j
+      real*8 f1zcz
+      real*8 cozcl,cozcr
+      f1zcz=(cozcl(j,i)*cozcl(i,j)+cozcr(j,i)*cozcr(i,j))/2.0d0
+      return
+      end
+c***************************************
+      function f3zcz(i,j)
+      implicit none
+      integer i,j
+      real*8 f3zcz
+      real*8 cozcl,cozcr
+      f3zcz=(cozcr(j,i)*cozcl(i,j)+cozcl(j,i)*cozcr(i,j))/2.0d0
+      return
+      end
+c***************************************
+      function f1gmcz(i,j)
+      implicit none
+      integer i,j
+      real*8 f1gmcz
+      real*8 cogmcl,cogmcr
+      f1gmcz=(cogmcl(j,i)*cogmcl(i,j)+cogmcr(j,i)*cogmcr(i,j))/2.0d0
+      return
+      end
+c***************************************
+      function f3gmcz(i,j)
+      implicit none
+      integer i,j
+      real*8 f3gmcz
+      real*8 cogmcl,cogmcr
+      f3gmcz=(cogmcr(j,i)*cogmcl(i,j)+cogmcl(j,i)*cogmcr(i,j))/2.0d0
+      return
+      end
+c***************************************
+      function f1w0cw(i,j)
+      implicit none
+      integer i,j
+      real*8 f1w0cw
+      real*8 cow0cl,cow0cr
+      f1w0cw=(cow0cl(i,j)*cow0cl(i,j)+cow0cr(i,j)*cow0cr(i,j))/2.0d0
+      return
+      end
+c***************************************
+      function f3w0cw(i,j)
+      implicit none
+      integer i,j
+      real*8 f3w0cw
+      real*8 cow0cl,cow0cr
+      f3w0cw=(cow0cr(i,j)*cow0cl(i,j)+cow0cl(i,j)*cow0cr(i,j))/2.0d0
+      return
+      end
+c***************************************
+      function f1gmcgm(i,j)
+      implicit none
+      integer i,j
+      real*8 f1gmcgm
+      real*8 cogmcl,cogmcr
+      f1gmcgm=(cogmcl(j,i)*cogmcl(i,j)+cogmcr(j,i)*cogmcr(i,j))/2.0d0
+      return
+      end
+c***************************************
+      function f3gmcgm(i,j)
+      implicit none
+      integer i,j
+      real*8 f3gmcgm
+      real*8 cogmcl,cogmcr
+      f3gmcgm=(cogmcr(j,i)*cogmcl(i,j)+cogmcl(j,i)*cogmcr(i,j))/2.0d0
+      return
+      end
+c***************************************
+
+      function ccz0glr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccz0glr
+      real*8 coz0l,coz0r,cog0l,cog0r
+      ccz0glr=coz0l(j,i)*cog0r(i,j)
+      return
+      end
+c******************************
+      function ccz0grl(i,j)
+      implicit none
+      integer i,j
+      real*8 ccz0grl
+      real*8 coz0l,coz0r,cog0l,cog0r
+      ccz0grl=coz0r(j,i)*cog0l(i,j)
+      return
+      end
+c******************************
+      function ccz0gll(i,j)
+      implicit none
+      integer i,j
+      real*8 ccz0gll
+      real*8 coz0l,coz0r,cog0l,cog0r
+      ccz0gll=coz0l(j,i)*cog0l(i,j)
+      return
+      end
+c******************************
+      function ccz0grr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccz0grr
+      real*8 coz0l,coz0r,cog0l,cog0r
+      ccz0grr=coz0r(j,i)*cog0r(i,j)
+      return
+      end
+c******************************
+      function cczcglr(i,j)
+      implicit none
+      integer i,j
+      real*8 cczcglr
+      real*8 cozcl,cozcr,cogcl,cogcr
+      cczcglr=cozcl(j,i)*cogcr(i,j)
+      return
+      end
+c******************************
+      function cczcgrl(i,j)
+      implicit none
+      integer i,j
+      real*8 cczcgrl
+      real*8 cozcl,cozcr,cogcl,cogcr
+      cczcgrl=cozcr(j,i)*cogcl(i,j)
+      return
+      end
+c******************************
+      function cczcgll(i,j)
+      implicit none
+      integer i,j
+      real*8 cczcgll
+      real*8 cozcl,cozcr,cogcl,cogcr
+      cczcgll=cozcl(j,i)*cogcl(i,j)
+      return
+      end
+c******************************
+      function cczcgrr(i,j)
+      implicit none
+      integer i,j
+      real*8 cczcgrr
+      real*8 cozcl,cozcr,cogcl,cogcr
+      cczcgrr=cozcr(j,i)*cogcr(i,j)
+      return
+      end
+c******************************
+      function ccgmcglr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgmcglr
+      real*8 cogmcl,cogmcr,cogcl,cogcr
+      ccgmcglr=cogmcl(j,i)*cogcr(i,j)
+      return
+      end
+c******************************
+      function ccgmcgrl(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgmcgrl
+      real*8 cogmcl,cogmcr,cogcl,cogcr
+      ccgmcgrl=cogmcr(j,i)*cogcl(i,j)
+      return
+      end
+c******************************
+      function ccgmcgll(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgmcgll
+      real*8 cogmcl,cogmcr,cogcl,cogcr
+      ccgmcgll=cogmcl(j,i)*cogcl(i,j)
+      return
+      end
+c******************************
+      function ccgmcgrr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgmcgrr
+      real*8 cogmcl,cogmcr,cogcl,cogcr
+      ccgmcgrr=cogmcr(j,i)*cogcr(i,j)
+      return
+      end
+c******************************
+      function ccgmchlr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgmchlr
+      real*8 cogmcl,cogmcr,cohcl,cohcr
+      ccgmchlr=cogmcl(j,i)*cohcr(i,j)
+      return
+      end
+c******************************
+      function ccgmchrl(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgmchrl
+      real*8 cogmcl,cogmcr,cohcl,cohcr
+      ccgmchrl=cogmcr(j,i)*cohcl(i,j)
+      return
+      end
+c******************************
+      function ccgmchll(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgmchll
+      real*8 cogmcl,cogmcr,cohcl,cohcr
+      ccgmchll=cogmcl(j,i)*cohcl(i,j)
+      return
+      end
+c******************************
+      function ccgmchrr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgmchrr
+      real*8 cogmcl,cogmcr,cohcl,cohcr
+      ccgmchrr=cogmcr(j,i)*cohcr(i,j)
+      return
+      end
+c******************************
+      function ccz0hlr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccz0hlr
+      real*8 coz0l,coz0r,coh0l,coh0r
+      ccz0hlr=coz0l(j,i)*coh0r(i,j)
+      return
+      end
+c******************************
+      function ccz0hrl(i,j)
+      implicit none
+      integer i,j
+      real*8 ccz0hrl
+      real*8 coz0l,coz0r,coh0l,coh0r
+      ccz0hrl=coz0r(j,i)*coh0l(i,j)
+      return
+      end
+c******************************
+      function ccz0hll(i,j)
+      implicit none
+      integer i,j
+      real*8 ccz0hll
+      real*8 coz0l,coz0r,coh0l,coh0r
+      ccz0hll=coz0l(j,i)*coh0l(i,j)
+      return
+      end
+c******************************
+      function ccz0hrr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccz0hrr
+      real*8 coz0l,coz0r,coh0l,coh0r
+      ccz0hrr=coz0r(j,i)*coh0r(i,j)
+      return
+      end
+c******************************
+      function cczchlr(i,j)
+      implicit none
+      integer i,j
+      real*8 cczchlr
+      real*8 coz0l,coz0r,cohcl,cohcr
+      cczchlr=coz0l(j,i)*cohcr(i,j)
+      return
+      end
+c******************************
+      function cczchrl(i,j)
+      implicit none
+      integer i,j
+      real*8 cczchrl
+      real*8 coz0l,coz0r,cohcl,cohcr
+      cczchrl=coz0r(j,i)*cohcl(i,j)
+      return
+      end
+c******************************
+      function cczchll(i,j)
+      implicit none
+      integer i,j
+      real*8 cczchll
+      real*8 coz0l,coz0r,cohcl,cohcr
+      cczchll=coz0l(j,i)*cohcl(i,j)
+      return
+      end
+c******************************
+      function cczchrr(i,j)
+      implicit none
+      integer i,j
+      real*8 cczchrr
+      real*8 coz0l,coz0r,cohcl,cohcr
+      cczchrr=coz0r(j,i)*cohcr(i,j)
+      return
+      end
+c******************************
+      function ccgcglr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgcglr
+      real*8 cogcl,cogcr,cog0l,cog0r
+      ccgcglr=cogcl(j,i)*cogcr(i,j)
+      return
+      end
+c******************************
+      function ccgcgrl(i,j)
+      implicit none
+      integer i,j
+      real*8 ccgcgrl
+      real*8 cogcl,cogcr,cog0l,cog0r
+      ccgcgrl=cogcr(j,i)*cogcl(i,j)
+      return
+      end
+c******************************
+      function ccg0glr(i,j)
+      implicit none
+      integer i,j
+      real*8 ccg0glr
+      real*8 cogcl,cogcr,cog0l,cog0r
+      ccg0glr=cog0l(j,i)*cog0r(i,j)
+      return
+      end
+c******************************
+      function ccg0grl(i,j)
+      implicit none
+      integer i,j
+      real*8 ccg0grl
+      real*8 cogcl,cogcr,cog0l,cog0r
+      ccg0grl=cog0r(j,i)*cog0l(i,j)
+      return
+      end
+c******************************
+      function cchchlr(i,j)
+      implicit none
+      integer i,j
+      real*8 cchchlr
+      real*8 cohcl,cohcr,coh0l,coh0r
+      cchchlr=cohcl(j,i)*cohcr(i,j)
+      return
+      end
+c******************************
+      function cchchrl(i,j)
+      implicit none
+      integer i,j
+      real*8 cchchrl
+      real*8 cohcl,cohcr,coh0l,coh0r
+      cchchrl=cohcr(j,i)*cohcl(i,j)
+      return
+      end
+c******************************
+      function cch0hlr(i,j)
+      implicit none
+      integer i,j
+      real*8 cch0hlr
+      real*8 cohcl,cohcr,coh0l,coh0r
+      cch0hlr=coh0l(j,i)*coh0r(i,j)
+      return
+      end
+c******************************
+      function cch0hrl(i,j)
+      implicit none
+      integer i,j
+      real*8 cch0hrl
+      real*8 cohcl,cohcr,coh0l,coh0r
+      cch0hrl=coh0r(j,i)*coh0l(i,j)
+      return
+      end
+c******************************
+      subroutine vertexabcd0(AS,AA,BS,BA,CS,CA,DS,DA)
+      IMPLICIT NONE
+      REAL*8 AS(4,4,4),AA(4,4,4),BS(4,4,4),BA(4,4,4),
+     &       CS(4,4,4),CA(4,4,4),DS(4,4,4),DA(4,4,4)
+      INTEGER i,j,k
+      REAL*8 COZ0L,COZ0R,COH0L,COH0R
+      DO i=1,4
+          DO j=1,4
+              DO k=1,4
+      AS(i,j,k)=(COZ0L(i,j)*COH0R(j,k)*COZ0R(k,i)
+     &       +COZ0R(j,k)*COH0L(j,k)*COZ0L(k,i))/2.0d0
+      AA(i,j,k)=-(COZ0L(i,j)*COH0R(j,k)*COZ0R(k,i)
+     &       -COZ0R(i,j)*COH0L(j,k)*COZ0L(k,i))/2.0d0
+      BS(i,j,k)=(COZ0L(i,j)*COH0L(j,k)*COZ0L(k,i)
+     &       +COZ0R(i,j)*COH0R(j,k)*COZ0R(k,i))/2.0d0
+      BA(i,j,k)=(COZ0L(i,j)*COH0L(j,k)*COZ0L(k,i)
+     &       -COZ0R(i,j)*COH0R(j,k)*COZ0R(k,i))/2.0d0
+      CS(i,j,k)=(COZ0L(i,j)*COH0R(j,k)*COZ0L(k,i)
+     &       +COZ0R(i,j)*COH0L(j,k)*COZ0R(k,i))/2.0d0
+      CA(i,j,k)=-(COZ0L(i,j)*COH0R(j,k)*COZ0L(k,i)
+     &       -COZ0R(i,j)*COH0L(j,k)*COZ0R(k,i))/2.0d0
+      DS(i,j,k)=(COZ0L(i,j)*COH0L(j,k)*COZ0R(k,i)
+     &       +COZ0R(i,j)*COH0R(j,k)*COZ0L(k,i))/2.0d0
+      DA(i,j,k)=(COZ0L(i,j)*COH0L(j,k)*COZ0R(k,i)
+     &       -COZ0R(i,j)*COH0R(j,k)*COZ0L(k,i))/2.0d0
+              ENDDO
+           ENDDO
+      ENDDO
+      RETURN
+      END
+c********************************************************
+      subroutine vertexabcdC(AS,AA,BS,BA,CS,CA,DS,DA)
+      IMPLICIT NONE
+      REAL*8 AS(2,2,2),AA(2,2,2),BS(2,2,2),BA(2,2,2),
+     &       CS(2,2,2),CA(2,2,2),DS(2,2,2),DA(2,2,2)
+      INTEGER i,j,k
+      REAL*8 COZCL,COZCR,COHCL,COHCR
+      DO i=1,2
+          DO j=1,2
+              DO k=1,2
+      AS(i,j,k)=(COZCL(i,j)*COHCR(j,k)*COZCR(k,i)
+     &       +COZCR(j,k)*COHCL(j,k)*COZCL(k,i))/2.0d0
+      AA(i,j,k)=-(COZCL(i,j)*COHCR(j,k)*COZCR(k,i)
+     &       -COZCR(i,j)*COHCL(j,k)*COZCL(k,i))/2.0d0
+      BS(i,j,k)=(COZCL(i,j)*COHCL(j,k)*COZCL(k,i)
+     &       +COZCR(i,j)*COHCR(j,k)*COZCR(k,i))/2.0d0
+      BA(i,j,k)=(COZCL(i,j)*COHCL(j,k)*COZCL(k,i)
+     &       -COZCR(i,j)*COHCR(j,k)*COZCR(k,i))/2.0d0
+      CS(i,j,k)=(COZCL(i,j)*COHCR(j,k)*COZCL(k,i)
+     &       +COZCR(i,j)*COHCL(j,k)*COZCR(k,i))/2.0d0
+      CA(i,j,k)=-(COZCL(i,j)*COHCR(j,k)*COZCL(k,i)
+     &       -COZCR(i,j)*COHCL(j,k)*COZCR(k,i))/2.0d0
+      DS(i,j,k)=(COZCL(i,j)*COHCL(j,k)*COZCR(k,i)
+     &       +COZCR(i,j)*COHCR(j,k)*COZCL(k,i))/2.0d0
+      DA(i,j,k)=(COZCL(i,j)*COHCL(j,k)*COZCR(k,i)
+     &       -COZCR(i,j)*COHCR(j,k)*COZCL(k,i))/2.0d0
+              ENDDO
+           ENDDO
+      ENDDO
+      RETURN
+      END
+c********************************************************
+c***************this subroutine give gama gmunu*k^2 term in loop function   *****
+      subroutine f13loopgm(mi2,mj2,f1lo,f3lo)
+      implicit none
+      real*8 mi2,mj2,ks
+      complex*16 f1lo,f3lo
+      COMPLEX*16 A0,B0,B1,B2(2)
+      integer mu,nu
+      real*8 dot
+      ks=0.0d0
+      call ffb0p(ks,mi2,mj2,b0,b1,b2)
+       f1lo=2.0d0*(b2(2))-(mi2*b0)-ks*b1
+       f3lo=dsqrt(mi2)*dsqrt(mj2)*b0
+      return
+      end
+c******************************************************************
+c************   pizz longitute term   ***********************
+      function pizl(ks)
+      implicit none
+      complex*16 pizl,zzl(4,4),ctmp(4),ctmp1(4),ccdot
+      real*8 ks
+      real*8 k(4),tmp,theta,phy
+      integer m,n
+
+c********* gernerate k^2=ks  ************
+      tmp=1.0d2*rand()
+      theta=3.1415926*rand()
+      phy=2.0d0*3.1415926*rand()
+
+      k(4)=dsqrt((tmp**2.0d0)+ks)
+      k(3)=tmp*cos(theta)
+      k(2)=tmp*sin(theta)*sin(phy)
+      k(1)=tmp*sin(theta)*cos(phy)
+
+      call zzloop(k,zzl)
+      do m=1,4
+        ctmp(m)=zzl(m,4)*k(4)-zzl(m,3)*k(3)
+     &         -zzl(m,2)*k(2)-zzl(m,1)*k(1)
+      enddo
+      do m=1,4
+        ctmp1(m)=cmplx(k(m))
+      enddo
+      pizl=(0.0d0,-1.0d0)*ccdot(ctmp,ctmp1)/ks
+      return
+      end
+
+c***************  pizz transvers term   **************
+      complex*16 function pizt(ks)
+c**********
+c     z-z loop self energy transvers term
+c**********
+      implicit none
+      complex*16 tmp
+      complex*16 f1lo,f3lo,xz0,xzc
+      integer m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 f1z0z,f3z0z,f1zcz,f3zcz,sin2w,cw,sw,e
+      real*8 dot
+      common/const/sin2w,e
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xz0=(0.0d0,-1.0d0)*e/sw/cw/2.0d0
+      xzc=(0.0d0,1.0d0)*e/sw/cw/2.0d0
+       tmp=(0.0d0,0.0d0)
+       do m=1,4
+       do n=m,4
+          call f13loopz(ks,mntr(m),mntr(n),f1lo,f3lo)
+          if (m.eq.n)then
+       tmp=tmp+(f1z0z(m,n)*f1lo+f3z0z(m,n)*f3lo)*(0.0d0,1.0d0)*xz0*xz0
+     &     /4.0d0/(3.1415926**2.0d0)/2.0d0
+          else
+       tmp=tmp+(f1z0z(m,n)*f1lo+f3z0z(m,n)*f3lo)*(0.0d0,1.0d0)*xz0*xz0
+     &     /4.0d0/(3.1415926**2.0d0)
+          endif
+       enddo
+       enddo
+c       print*,ks,mntr(3),mntr(4),f1lo,f3lo
+       do m=1,2
+       do n=m,2
+          call f13loopz(ks,mcha(m),mcha(n),f1lo,f3lo)
+       tmp=tmp+(f1zcz(m,n)*f1lo+f3zcz(m,n)*f3lo)*(0.0d0,1.0d0)*xzc*xzc
+     &     /4.0d0/(3.1415926**2.0d0)
+       enddo
+       enddo
+
+      pizt = tmp
+      return
+      end
+c***********************************
+      function piwl(ks)
+      implicit none
+      complex*16 piwl,wl(4,4),ctmp(4),ctmp1(4),ccdot
+      real*8 ks
+      real*8 k(4),tmp,theta,phy
+      integer m,n
+
+c********* gernerate k^2=ks  ************
+      tmp=1.0d2*rand()
+      theta=3.1415926*rand()
+      phy=2.0d0*3.1415926*rand()
+
+      k(4)=dsqrt((tmp**2.0d0)+ks)
+      k(3)=tmp*cos(theta)
+      k(2)=tmp*sin(theta)*sin(phy)
+      k(1)=tmp*sin(theta)*cos(phy)
+
+      call wwloop(k,wl)
+      do m=1,4
+        ctmp(m)=wl(m,4)*k(4)-wl(m,3)*k(3)
+     &         -wl(m,2)*k(2)-wl(m,1)*k(1)
+      enddo
+      do m=1,4
+        ctmp1(m)=cmplx(k(m))
+      enddo
+      piwl=(0.0d0,-1.0d0)*ccdot(ctmp,ctmp1)/ks
+      end
+c=============================================================
+      function piwt(ks)
+c**********
+c     w-w loop self energy
+c**********
+      implicit none
+      complex*16 piwt,tmp
+      complex*16 f1lo,f3lo,xw0c
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 f1w0cw,f3w0cw,sin2w,cw,sw,e
+      real*8 dot
+      common/const/sin2w,e
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xw0c=(0.0d0,1.0d0)*e/sw
+
+       tmp=(0.0d0,0.0d0)
+       do m=1,4
+           do n=1,2
+          call f13loopw(ks,mntr(m),mcha(n),f1lo,f3lo)
+       tmp=tmp+(f1w0cw(m,n)*f1lo+f3w0cw(m,n)*f3lo)
+     &    *(0.0d0,1.0d0)*xw0c*xw0c/4.0d0/(3.1415926**2.0d0)
+           enddo
+       enddo
+      piwt=tmp
+      return
+      end
+c************************************************************************
+      return
+      end
+c=============================================================
+
+
+      function pigmp()
+
+      implicit none
+      complex*16 pigmp,ctmp
+      complex*16 f1lo,f3lo,xgmc
+      integer m,n
+      real*8 mcha(2),mntr(4),ks,tmp
+      common/mmass/mcha,mntr
+      real*8 f1gmcgm,f3gmcgm,sin2w,cw,sw,e
+      real*8 dot,theta,phy
+      common/const/sin2w,e
+
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xgmc=(0.0d0,-1.0d0)*e
+
+       ctmp=(0.0d0,0.0d0)
+       do m=1,2
+          do n=m,2
+          call f13loopgm(mcha(m),mcha(n),f1lo,f3lo)
+       ctmp=ctmp+(f1gmcgm(m,n)*f1lo+f3gmcgm(m,n)*f3lo)*(0.0d0,1.0d0)
+     &     *xgmc*xgmc/4.0d0/(3.1415926**2.0d0)
+          enddo
+       enddo
+       pigmp=ctmp
+      return
+      end
+c************************************************************************
+      function ffre(com)
+      implicit none
+      complex*16 com
+      real*8 ffre
+      ffre=(com+conjg(com))/2.0d0
+      return
+      end
+c******************************************
+      function deltaz1z()
+      implicit none
+      real*8 deltaz1z,mz,mw,sin2w,e
+      common/constmass/mz,mw
+      common/const/sin2w,e
+      complex*16 tmp,pigmp,gmzlot,piwt,pizt
+      real*8 gm,w,z,thetaw,ffre
+
+      gm=0.0d0
+      w=mw**2.0d0
+      z=mz**2.0d0
+      thetaw=asin(dsqrt(sin2w))
+      tmp=-pigmp()-(3.0d0*(1.0d0-sin2w)-2.0d0*sin2w)*gmzlot()
+     &   /sin(thetaw)/cos(thetaw)/z
+     &   +(1.0d0-2.0d0*sin2w)*(pizt(z)/z-piwt(w)/w)
+     &    /sin2w
+      deltaz1z=ffre(tmp)
+c      print*,pigmp(),gmzlot(),pizt(z),piwt(w)
+      return
+      end
+c************************************************
+      function deltaz2z()
+      implicit none
+      real*8 deltaz2z,mz,mw,sin2w,e
+      common/constmass/mz,mw
+      common/const/sin2w,e
+      complex*16 tmp,pigmp,gmzlot,piwt,pizt
+      real*8 gm,w,z,thetaw,ffre
+
+      gm=0.0d0
+      w=mw**2.0d0
+      z=mz**2.0d0
+      thetaw=asin(dsqrt(sin2w))
+      tmp=-pigmp()-2.0d0*(1.0d0-2.0d0*sin2w)*gmzlot()
+     &    /sin(thetaw)/cos(thetaw)/z
+     &    +(1.0d0-2.0d0*sin2w)*(pizt(z)/z-piwt(w)/w)
+     &   /sin2w
+      deltaz2z=ffre(tmp)
+      return
+      end
+c************************************************
+      function deltaz1gm()
+      implicit none
+      real*8 deltaz1gm,mz,mw,sin2w,e
+      common/constmass/mz,mw
+      common/const/sin2w,e
+      complex*16 tmp,pigmp,gmzlot,piwt,pizt
+      real*8 gm,w,z,thetaw,ffre
+
+      gm=0.0d0
+      w=mw**2.0d0
+      z=mz**2.0d0
+      thetaw=asin(dsqrt(sin2w))
+      tmp=-pigmp()-sin(thetaw)*gmzlot()/cos(thetaw)/z
+      deltaz1gm=ffre(tmp)
+      return
+      end
+c************************************************
+      function deltaz2gm()
+      implicit none
+      real*8 deltaz2gm,mz,mw,sin2w,e
+      common/constmass/mz,mw
+      common/const/sin2w,e
+      complex*16 tmp,pigmp,pigmzt,piwt,pizt
+      real*8 gm,w,z,thetaw,ffre
+
+      gm=0.0d0
+      w=mw**2.0d0
+      z=mz**2.0d0
+      thetaw=asin(dsqrt(sin2w))
+      tmp=-pigmp()
+      deltaz2gm=ffre(tmp)
+      return
+      end
+c************************************************
+      subroutine rezz(k,rzz)
+      implicit none
+      real*8 k(4)
+      complex*16 rzz(4,4),pizt,pizl
+      real*8 deltaz2z,dot,ks
+      real*8 sin2w,e,mz,mw,gmunu,deltamz
+      common /const/sin2w,e
+      integer m,n
+      common/constmass/mz,mw
+      ks=dot(k,k)
+
+      do m=1,4
+         do n=1,4
+      rzz(m,n)=(0.0d0,1.0d0)*(gmunu(m,n)-k(m)*k(n)/ks)*(pizt(ks)
+     &      -deltamz()+deltaz2z()*(ks-mz**2.0d0))
+     &      +(0.0d0,1.0d0)*(k(m)*k(n)/ks)*pizl(ks)
+         enddo
+      enddo
+
+      return
+      end
+c************************************************
+      subroutine regmz(k,rgmz)
+      implicit none
+      real*8 k(4)
+      complex*16 rgmz(4,4),pigmzt,pigmzl
+      real*8 deltaz2z,dot,ks,sw,cw,deltaz1z,deltaz1gm,deltaz2gm
+      real*8 sin2w,e,mz,mw,gmunu
+      common /const/sin2w,e
+      integer m,n
+      common/constmass/mz,mw
+      ks=dot(k,k)
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      do m=1,4
+         do n=1,4
+      rgmz(m,n)=(0.0d0,1.0d0)*(gmunu(m,n)-k(m)*k(n)/ks)*(pigmzt(ks)
+     &      +mz**2.0d0*(deltaz1gm-deltaz2gm)*cw/sw-ks*cw*sw*
+     &      (deltaz2z-deltaz2gm)/(1.0d0-2.0d0*sin2w))
+     &      +(0.0d0,1.0d0)*(k(m)*k(n)/ks)*pigmzl(ks)
+         enddo
+      enddo
+
+      return
+      end
+c************************************************
+      subroutine regmg(k,rgmg)
+      implicit none
+      real*8 k(4)
+      complex*16 rgmg(4),gmglo(4)
+      real*8 congmg(4)
+      integer m
+
+      call gmgloop(k,gmglo)
+      call congmgloop(k,congmg)
+      do m=1,4
+         rgmg(m)=gmglo(m)+congmg(m)
+      enddo
+      return
+      end
+c************************************************
+      subroutine rezg(k,rzg)
+      implicit none
+      real*8 k(4)
+      complex*16 rzg(4),zglo(4)
+      real*8 mz,mw,conzg(4)
+      integer m
+      common/constmass/mz,mw
+
+      call zgloop(k,zglo)
+      call conzgloop(k,conzg)
+      do m=1,4
+         rzg(m)=zglo(m)+conzg(m)
+      enddo
+      return
+      end
+c************************************************
+      function sigemahh(ks)
+c**********
+c     h-h loop self energy--k^2 term
+c**********
+      implicit none
+      complex*16 sigemahh,tmp
+      complex*16 xh0,xhc
+      COMPLEX*16 B0,B1,B2(2),a0
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 sin2w,cw,sw,e,
+     &   cch0hlr,cch0hrl,
+     &   cchchlr,cchchrl
+      real*8 dot
+      common/const/sin2w,e
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xh0=(0.0d0,1.0d0)*e/sw/cw/2.0d0
+      xhc=(0.0d0,-1.0d0)*e/sw/dsqrt(2.0d0)
+       tmp=(0.0d0,0.0d0)
+       do m=1,4
+       do n=m,4
+          call ffa0(mntr(n),a0)
+          call FFB0(ks,mntr(m),mntr(n),B0,B1,B2)
+          if (m.eq.n)then
+       tmp=tmp+(2.0d0*cch0hlr(m,n)*(b1)
+     &  +2.0d0*cch0hrl(m,n)*(b1))*(0.0d0,-1.0d0)
+     &  *xh0*xh0/16.0d0/(3.1415926**2.0d0)/2.0d0
+          else
+       tmp=tmp+(2.0d0*cch0hlr(m,n)*(b1)
+     &  +2.0d0*cch0hrl(m,n)*(b1))*(0.0d0,-1.0d0)
+     &  *xh0*xh0/16.0d0/(3.1415926**2.0d0)
+          endif
+       enddo
+       enddo
+       do m=1,2
+       do n=m,2
+          call ffa0(mcha(n),a0)
+          call FFB0(ks,mcha(m),mcha(n),B0,B1,B2)
+       tmp=tmp+(2.0d0*cchchlr(m,n)*(b1)
+     &    +2.0d0*cchchrl(m,n)*(b1))*(0.0d0,-1.0d0)
+     &  *xhc*xhc/16.0d0/(3.1415926**2.0d0)
+       enddo
+       enddo
+       sigemahh=tmp
+
+      return
+      end
+c************************************************************************
+      function deltazh()
+      implicit none
+      real*8 deltazh
+      complex*16 sigemahh
+      real*8 mh,ffre,hhh
+      common/mhh/mh
+      hhh=mh**2.0d0
+      deltazh=ffre(sigemahh(hhh))
+      return
+      end
+c************************************************************************
+      function deltavv()
+      implicit none
+      real*8 deltavv
+      complex*16 pizt
+      real*8 ffre,deltaz1z,deltaz2z,
+     &      mz,mw,zz,deltazh
+      common/constmass/mz,mw
+      zz=mz**2.0d0
+      deltavv=(2.0d0*deltaz1z()-3.0d0*deltaz2z()+deltazh()
+     &  -ffre(pizt(zz))/zz)/2.0d0
+      return
+      end
+c************************************************************************
+      subroutine conzgloop(p,conzg)
+      implicit none
+      real*8 p(4),conzg(4)
+      real*8 sin2w,e,mz,mw
+      real*8 deltaz1z,deltaz2z,deltaz1gm,deltaz2gm,deltazh,deltavv
+      common/const/sin2w,e
+      common/constmass/mz,mw
+      integer i
+      do i=1,4
+         conzg(i)=-mz*p(i)*((deltazh-deltavv)-(deltaz1z-deltaz2z))
+      enddo
+      return
+      end
+c************************************************************************
+      subroutine congmgloop(p,congmg)
+      implicit none
+      real*8 p(4),congmg(4)
+      real*8 sin2w,e,mz,mw,sw,cw
+      real*8 deltaz1z,deltaz2z,deltaz1gm,deltaz2gm,deltazh,deltavv
+      common/const/sin2w,e
+      common/constmass/mz,mw
+      integer i
+
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+
+      do i=1,4
+       congmg(i)=-mz*p(i)*((deltaz1z-deltaz2z)-(deltaz1gm-deltaz2gm))
+     &         *sw*cw/(sin2w*2.0d0-1.0d0)
+      enddo
+      return
+      end
+c************************************************************************
+      function deltamz()
+      implicit none
+      real*8 deltamz
+      real*8 ffre,deltaz1gm,deltaz2gm,deltaz1z,deltaz2z,
+     &      mz,mw,sin2w,e,ww,deltazh,deltavv
+      common/const/sin2w,e
+      common/constmass/mz,mw
+      ww=mw**2.0d0
+      deltamz=mz**2.0d0*(2.0d0*deltaz1z()
+     &      -3.0d0*deltaz2z()+deltazh()-2.0d0*deltavv())
+c      print*,deltaz1z(),deltaz2z(),deltazh(),deltavv()
+      return
+      end
+c************************************************************************
+      function pigmzl(ks)
+      implicit none
+      complex*16 pigmzl,gmzl(4,4),ctmp(4),ctmp1(4),ccdot
+      real*8 ks
+      real*8 k(4),tmp,theta,phy
+      integer m,n
+
+c********* gernerate k^2=ks  ************
+      tmp=1.0d2*rand()
+      theta=3.1415926*rand()
+      phy=2.0d0*3.1415926*rand()
+
+      k(4)=dsqrt((tmp**2.0d0)+ks)
+      k(3)=tmp*cos(theta)
+      k(2)=tmp*sin(theta)*sin(phy)
+      k(1)=tmp*sin(theta)*cos(phy)
+
+      call gmzloop(k,gmzl)
+      do m=1,4
+        ctmp(m)=gmzl(m,4)*k(4)-gmzl(m,3)*k(3)
+     &         -gmzl(m,2)*k(2)-gmzl(m,1)*k(1)
+      enddo
+      do m=1,4
+        ctmp1(m)=cmplx(k(m))
+      enddo
+      pigmzl=(0.0d0,-1.0d0)*ccdot(ctmp,ctmp1)/ks
+      end
+c=============================================================
+      function pigmzt(ks)
+      implicit none
+      complex*16 pigmzt,gmzl(4,4),ctmp,gmz(4,4),gmzt(4,4),pigmzl,ccdot
+      real*8 ks,gmunu
+      real*8 k(4),tmp,theta,phy
+      integer m,n
+
+c********* gernerate k^2=ks  ************
+      tmp=1.0d2*rand()
+      theta=3.1415926*rand()
+      phy=2.0d0*3.1415926*rand()
+
+      k(4)=dsqrt((tmp**2.0d0)+ks)
+      k(3)=tmp*cos(theta)
+      k(2)=tmp*sin(theta)*sin(phy)
+      k(1)=tmp*sin(theta)*cos(phy)
+
+      call gmzloop(k,gmz)
+      do m=1,4
+         do n=1,4
+      gmzl(m,n)=(0.0d0,1.0d0)*k(m)*k(n)*pigmzl(ks)/ks
+      gmzt(m,n)=gmz(m,n)-gmzl(m,n)
+         enddo
+      enddo
+      ctmp=(0.0d0,0.0d0)
+      do m=1,4
+         do n=1,4      
+      ctmp=ctmp+(0.0d0,-1.0d0)*gmunu(m,n)*gmzt(m,n)/3.0d0
+         enddo
+      enddo
+      pigmzt=ctmp
+      return
+      end
+c=============================================================
+      subroutine zzloop(k,zzlo)
+c**********
+c     z-z loop self energy
+c**********
+      implicit none
+      complex*16 zzlo(4,4),tmp
+      complex*16 f1lo(4,4),f3lo(4,4),xz0,xzc
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 f1z0z,f3z0z,f1zcz,f3zcz,sin2w,cw,sw,e
+      real*8 dot
+      common/const/sin2w,e
+      ks = dot(k,k)
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xz0=(0.0d0,-1.0d0)*e/sw/cw/2.0d0
+      xzc=(0.0d0,1.0d0)*e/sw/cw/2.0d0
+      do i=1,4
+         do j=1,4
+       tmp=(0.0d0,0.0d0)
+       do m=1,4
+       do n=m,4
+          call f13loop(k,mntr(m),mntr(n),f1lo,f3lo)
+          if (m.eq.n)then
+       tmp=tmp+(f1z0z(m,n)*f1lo(i,j)+f3z0z(m,n)*f3lo(i,j))*(0.0d0,1.0d0)*xz0*xz0
+     &     /4.0d0/(3.1415926**2.0d0)/2.0d0
+          else
+       tmp=tmp+(f1z0z(m,n)*f1lo(i,j)+f3z0z(m,n)*f3lo(i,j))*(0.0d0,1.0d0)*xz0*xz0
+     &     /4.0d0/(3.1415926**2.0d0)
+          endif
+       enddo
+       enddo
+       do m=1,2
+       do n=m,2
+          call f13loop(k,mcha(m),mcha(n),f1lo,f3lo)
+       tmp=tmp+(f1zcz(m,n)*f1lo(i,j)+f3zcz(m,n)*f3lo(i,j))*(0.0d0,1.0d0)*xzc*xzc
+     &     /4.0d0/(3.1415926**2.0d0)
+       enddo
+       enddo
+       zzlo(i,j)=tmp
+         enddo
+      enddo
+      return
+      end
+c************************************************************************
+      subroutine gmzloop(k,gmzlo)
+c**********
+c     gama-z loop self energy
+c**********
+      implicit none
+      complex*16 gmzlo(4,4),tmp
+      complex*16 f1lo(4,4),f3lo(4,4),xgmc,xzc
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 f1gmcz,f3gmcz,sin2w,cw,sw,e
+      real*8 dot
+      common/const/sin2w,e
+      ks = dot(k,k)
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xgmc=(0.0d0,-1.0d0)*e
+      xzc=(0.0d0,1.0d0)*e/sw/cw/2.0d0
+      do i=1,4
+         do j=1,4
+       tmp=(0.0d0,0.0d0)
+       do m=1,2
+       do n=m,2
+         call f13loop(k,mcha(m),mcha(n),f1lo,f3lo)
+         tmp=tmp+(f1gmcz(m,n)*f1lo(i,j)+f3gmcz(m,n)*f3lo(i,j))
+     &       *(0.0d0,1.0d0)*xgmc*xzc/4.0d0/(3.1415926**2.0d0)
+       enddo
+       enddo
+       gmzlo(i,j)=tmp
+         enddo
+      enddo
+      return
+      end
+c************************************************************************
+      function gmzlot()
+c**********
+c     gama-z loop self energy transvers term
+c**********
+      implicit none
+      complex*16 gmzlot,tmp
+      complex*16 f1lot,f3lot,xgmc,xzc
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 f1gmcz,f3gmcz,sin2w,cw,sw,e
+      real*8 dot
+      common/const/sin2w,e
+      ks = 0.0d0
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xgmc=(0.0d0,-1.0d0)*e
+      xzc=(0.0d0,1.0d0)*e/sw/cw/2.0d0
+       tmp=(0.0d0,0.0d0)
+       do m=1,2
+       do n=m,2
+         call f13loopgmzt(mcha(m),mcha(n),f1lot,f3lot)
+         tmp=tmp+(f1gmcz(m,n)*f1lot+f3gmcz(m,n)*f3lot)
+     &       *xgmc*xzc/4.0d0/(3.1415926**2.0d0)
+       enddo
+       enddo
+       gmzlot=tmp
+      return
+      end
+c************************************************************************
+      subroutine zhloop(k,zhlo)
+c**********
+c     z-h loop self energy
+c**********
+      implicit none
+      complex*16 zhlo(4),tmp
+      complex*16 xz0,xzc,xh0,xhc
+      COMPLEX*16 B0,B1,B2(2)
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 sin2w,cw,sw,e,
+     &   ccz0hlr,ccz0hrl,ccz0hll,ccz0hrr,
+     &   cczchlr,cczchrl,cczchll, cczchrr  
+      real*8 dot
+      common/const/sin2w,e
+      ks = dot(k,k)
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xz0=(0.0d0,-1.0d0)*e/sw/cw/2.0d0
+      xzc=(0.0d0,1.0d0)*e/sw/cw/2.0d0
+      xh0=(0.0d0,-1.0d0)*e/sw/cw/2.0d0
+      xhc=(0.0d0,-1.0d0)*e/sw/dsqrt(2.0d0)
+      do i=1,4
+       tmp=(0.0d0,0.0d0)
+       do m=1,4
+       do n=m,4
+          call FFB0(ks,mntr(m),mntr(n),B0,B1,B2)
+          if (m.eq.n)then
+       tmp=tmp+(2.0d0*dsqrt(mntr(n))*ccz0hlr(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mntr(n))*ccz0hrl(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mntr(m))*ccz0hll(m,n)*(b1+b0)*k(i)
+     &  +2.0d0*dsqrt(mntr(m))*ccz0hrr(m,n)*(b1+b0)*k(i))*(0.0d0,-1.0d0)
+     &  *xz0*xh0/16.0d0/(3.1415926**2.0d0)/2.0d0
+          else
+       tmp=tmp+(2.0d0*dsqrt(mntr(n))*ccz0hlr(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mntr(n))*ccz0hrl(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mntr(m))*ccz0hll(m,n)*(b1+b0)*k(i)
+     &  +2.0d0*dsqrt(mntr(m))*ccz0hrr(m,n)*(b1+b0)*k(i))*(0.0d0,-1.0d0)
+     &  *xz0*xh0/16.0d0/(3.1415926**2.0d0)
+          endif
+       enddo
+       enddo
+       do m=1,2
+       do n=m,2
+          call FFB0(ks,mcha(m),mcha(n),B0,B1,B2)
+       tmp=tmp+(2.0d0*dsqrt(mcha(n))*cczchlr(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mcha(n))*cczchrl(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mcha(m))*cczchll(m,n)*(b1+b0)*k(i)
+     &  +2.0d0*dsqrt(mcha(m))*cczchrr(m,n)*(b1+b0)*k(i))*(0.0d0,-1.0d0)
+     &  *xzc*xhc/16.0d0/(3.1415926**2.0d0)
+       enddo
+       enddo
+       zhlo(i)=tmp
+      enddo
+      return
+      end
+c************************************************************************
+      subroutine zgloop(k,zglo)
+c**********
+c     z-g loop self energy
+c**********
+      implicit none
+      complex*16 zglo(4),tmp
+      complex*16 xz0,xzc,xg0,xgc
+      COMPLEX*16 B0,B1,B2(2)
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 sin2w,cw,sw,e,
+     &   ccz0glr,ccz0grl,ccz0gll,ccz0grr,
+     &   cczcglr,cczcgrl,cczcgll, cczcgrr  
+      real*8 dot
+      common/const/sin2w,e
+      ks = dot(k,k)
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xz0=(0.0d0,-1.0d0)*e/sw/cw/2.0d0
+      xzc=(0.0d0,1.0d0)*e/sw/cw/2.0d0
+      xg0=(1.0d0,0.0d0)*e/sw/cw/2.0d0
+      xgc=(1.0d0,0.0d0)*e/sw/dsqrt(2.0d0)
+      do i=1,4
+       tmp=(0.0d0,0.0d0)
+       do m=1,4
+       do n=m,4
+          call FFB0(ks,mntr(m),mntr(n),B0,B1,B2)
+          if (m.eq.n)then
+       tmp=tmp+(2.0d0*dsqrt(mntr(n))*ccz0glr(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mntr(n))*ccz0grl(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mntr(m))*ccz0gll(m,n)*(b1+b0)*k(i)
+     &  +2.0d0*dsqrt(mntr(m))*ccz0grr(m,n)*(b1+b0)*k(i))*(0.0d0,-1.0d0)
+     &  *xz0*xg0/16.0d0/(3.1415926**2.0d0)/2.0d0
+          else
+       tmp=tmp+(2.0d0*dsqrt(mntr(n))*ccz0glr(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mntr(n))*ccz0grl(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mntr(m))*ccz0gll(m,n)*(b1+b0)*k(i)
+     &  +2.0d0*dsqrt(mntr(m))*ccz0grr(m,n)*(b1+b0)*k(i))*(0.0d0,-1.0d0)
+     &  *xz0*xg0/16.0d0/(3.1415926**2.0d0)
+          endif
+       enddo
+       enddo
+       do m=1,2
+       do n=m,2
+          call FFB0(ks,mcha(m),mcha(n),B0,B1,B2)
+       tmp=tmp+(2.0d0*dsqrt(mcha(n))*cczcglr(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mcha(n))*cczcgrl(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mcha(m))*cczcgll(m,n)*(b1+b0)*k(i)
+     &  +2.0d0*dsqrt(mcha(m))*cczcgrr(m,n)*(b1+b0)*k(i))*(0.0d0,-1.0d0)
+     &  *xzc*xgc/16.0d0/(3.1415926**2.0d0)
+       enddo
+       enddo
+       zglo(i)=tmp
+      enddo
+      return
+      end
+c************************************************************************
+      subroutine gmgloop(k,gmglo)
+c**********
+c     gama-g loop self energy
+c**********
+      implicit none
+      complex*16 gmglo(4),tmp
+      complex*16 xgmc,xgc
+      COMPLEX*16 B0,B1,B2(2)
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 sin2w,cw,sw,e,
+     &   ccgmcglr,ccgmcgrl,ccgmcgll, ccgmcgrr  
+      real*8 dot
+      common/const/sin2w,e
+      ks = dot(k,k)
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xgmc=(0.0d0,-1.0d0)*e
+      xgc=(1.0d0,0.0d0)*e/sw/dsqrt(2.0d0)
+      do i=1,4
+       tmp=(0.0d0,0.0d0)
+       do m=1,2
+       do n=m,2
+          call FFB0(ks,mcha(m),mcha(n),B0,B1,B2)
+       tmp=tmp+(2.0d0*dsqrt(mcha(n))*ccgmcglr(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mcha(n))*ccgmcgrl(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mcha(m))*ccgmcgll(m,n)*(b1+b0)*k(i)
+     &  +2.0d0*dsqrt(mcha(m))*ccgmcgrr(m,n)*(b1+b0)*k(i))*(0.0d0,-1.0d0)
+     &  *xgmc*xgc/16.0d0/(3.1415926**2.0d0)
+       enddo
+       enddo
+       gmglo(i)=tmp
+      enddo
+      return
+      end
+c************************************************************************
+      subroutine gmhloop(k,gmhlo)
+c**********
+c     gama-h loop self energy
+c**********
+      implicit none
+      complex*16 gmhlo(4),tmp
+      complex*16 xgmc,xhc
+      COMPLEX*16 B0,B1,B2(2)
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 sin2w,cw,sw,e,
+     &   ccgmchlr,ccgmchrl,ccgmchll, ccgmchrr  
+      real*8 dot
+      common/const/sin2w,e
+      ks = dot(k,k)
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xgmc=(0.0d0,-1.0d0)*e
+      xhc=(0.0d0,-1.0d0)*e/sw/dsqrt(2.0d0)
+      do i=1,4
+       tmp=(0.0d0,0.0d0)
+       do m=1,2
+       do n=m,2
+          call FFB0(ks,mcha(m),mcha(n),B0,B1,B2)
+       tmp=tmp+(2.0d0*dsqrt(mcha(n))*ccgmchlr(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mcha(n))*ccgmchrl(m,n)*b1*k(i)
+     &  +2.0d0*dsqrt(mcha(m))*ccgmchll(m,n)*(b1+b0)*k(i)
+     &  +2.0d0*dsqrt(mcha(m))*ccgmchrr(m,n)*(b1+b0)*k(i))*(0.0d0,-1.0d0)
+     &  *xgmc*xhc/16.0d0/(3.1415926**2.0d0)
+       enddo
+       enddo
+       gmhlo(i)=tmp
+      enddo
+      return
+      end
+c********************************************************************
+      subroutine wwloop(k,wwlo)
+c**********
+c     w-w loop self energy
+c**********
+      implicit none
+      complex*16 wwlo(4,4),tmp
+      complex*16 f1lo(4,4),f3lo(4,4),xw0c
+      integer i,j,m,n
+      real*8 mcha(2),mntr(4),k(4),ks
+      common/mmass/mcha,mntr
+      real*8 f1w0cw,f3w0cw,sin2w,cw,sw,e
+      real*8 dot
+      common/const/sin2w,e
+      ks = dot(k,k)
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      xw0c=(0.0d0,1.0d0)*e/sw
+      do i=1,4
+         do j=1,4
+       tmp=(0.0d0,0.0d0)
+       do m=1,4
+           do n=1,2
+          call f13loop(k,mntr(m),mcha(n),f1lo,f3lo)
+       tmp=tmp+(f1w0cw(m,n)*f1lo(i,j)+f3w0cw(m,n)*f3lo(i,j))
+     &    *(0.0d0,1.0d0)*xw0c*xw0c/4.0d0/(3.1415926**2.0d0)
+           enddo
+       enddo
+
+       wwlo(i,j)=tmp
+         enddo
+      enddo
+      return
+      end
+c************************************************************************
+
+
+
+      subroutine zzhloop(p1,p2,zzhlo)
+      implicit none
+      real*8 p1(4),p2(4)
+      complex*16 zzhlo(4,4)
+      complex*16 m1(4,4),m2(4,4),m3(4,4),m4(4,4)
+      integer i,j
+      real*8 sin2w,cw,sw,e
+      common/const/sin2w,e
+      sw=dsqrt(sin2w)
+      cw=dsqrt(1.0d0-sin2w)
+      call zzhm(p1,p2,m1,m2,m3,m4)
+      do i=1,4
+         do j=1,4
+      zzhlo(i,j)=(-(e**3.0)*(0.0d0,1.0d0)/(sw**3.0)/(cw**3.0)/8.0d0
+     &      /16.0d0/(3.1415926**2.0))*(m1(i,j)+m2(i,j)+m3(i,j)+m4(i,j))
+         enddo
+      enddo
+      return
+      end
+c*********************************************************************
+c
+c       zzh vertex loop
+c
+c*********************************************************************
+      subroutine zzhm(p1,p2,m1,m2,m3,m4)
+      implicit none
+      real*8 p1(4),p2(4)
+      complex*16 m1(4,4),m2(4,4),m3(4,4),m4(4,4),
+     &           tmp,tmp1,tmp2,tmp3(4),tmp4(4),ccdot
+      integer i,j,k,m,n,pp,oo
+      COMPLEX*16 B0,B1,B2(2)
+      real*8 mcha(2),mntr(4),p21(4),p1s,p21s,p121
+      common/mmass/mcha,mntr
+      real*8 dot,epsino,gmunu
+      COMPLEX*16 C0,C1(2),C2(4),C3(6)
+      COMMON  /CX/C0,C1,C2,C3
+      REAL*8 AS(4,4,4),AA(4,4,4),BS(4,4,4),BA(4,4,4),
+     &       CS(4,4,4),CA(4,4,4),DS(4,4,4),DA(4,4,4)
+      REAL*8 ASC(2,2,2),AAC(2,2,2),BSC(2,2,2),BAC(2,2,2),
+     &       CSC(2,2,2),CAC(2,2,2),DSC(2,2,2),DAC(2,2,2)
+
+      call vertexabcd0(AS,AA,BS,BA,CS,CA,DS,DA)
+      call vertexabcd0(ASC,AAC,BSC,BAC,CSC,CAC,DSC,DAC)
+      do m=1,4
+         p21(i)=p2(i)-p1(i)
+      enddo
+      p1s=dot(p1,p1)
+      p21s=dot(p21,p21)
+      p121=dot(p1,p21)
+c**************  m1  *********************
+      do m=1,4
+         do n=1,4
+         tmp=(0.0d0,0.0d0)
+         do i=1,4
+            do j=i,4
+               do k=j,4
+         call FFCIJ(p1s,p21s,p121,mntr(i),mntr(j),mntr(k))
+         call FFB0(p21s,mntr(j),mntr(k),B0,B1,B2)
+         tmp2=(0.0d0,0.0d0)
+         tmp1=(0.0d0,0.0d0)
+         do pp=1,4
+            tmp3(pp)=(p1(pp)*c1(1)+p2(pp)*c1(2))
+            tmp4(pp)=cmplx(p1(pp)+p2(pp))
+         enddo
+         tmp2=ccdot(tmp3,tmp4)
+        do pp=1,4
+           do oo=1,4
+      tmp1=tmp1+4*(0.0d0,1.0d0)*dsqrt(mntr(i))*aa(i,j,k)*
+     &  epsino(pp,n,m,oo)*(p2(pp)*p1(oo)*c1(1)+p2(pp)*c1(2)*p1(oo)
+     &  +p2(pp)*p1(oo)*c0)
+           enddo
+        enddo
+      if ((j.eq.k).and.(i.eq.j)) then
+        tmp=tmp+(4.0d0*dsqrt(mntr(i))*as(i,j,k)*((p2(n)-p1(n))
+     &      *(p1(m)*c1(1)+p2(m)*c1(2))-(p1(m)-p2(m))*(p1(n)*c1(1)
+     &      +p2(n)*c1(2))+(p1(m)*p2(n)-p1(n)*p2(m))*c0)-tmp1+
+     &      (tmp2+dot(p1,p2)*c0+(b0+mntr(i))*c0)
+     &      *gmunu(m,n)*4.0d0*dsqrt(mntr(i))*as(i,j,k))
+      else
+        if ((i.eq.j).and.(j.ne.k)) then
+        tmp=tmp+(4.0d0*dsqrt(mntr(i))*as(i,j,k)*((p2(n)-p1(n))
+     &      *(p1(m)*c1(1)+p2(m)*c1(2))-(p1(m)-p2(m))*(p1(n)*c1(1)
+     &      +p2(n)*c1(2))+(p1(m)*p2(n)-p1(n)*p2(m))*c0)-tmp1+
+     &      (tmp2+dot(p1,p2)*c0+(b0+mntr(i))*c0)
+     &      *gmunu(m,n)*4.0d0*dsqrt(mntr(i))*as(i,j,k))*2.0d0
+        endif
+        if ((i.ne.j).and.(j.eq.k)) then
+        tmp=tmp+(4.0d0*dsqrt(mntr(i))*as(i,j,k)*((p2(n)-p1(n))
+     &      *(p1(m)*c1(1)+p2(m)*c1(2))-(p1(m)-p2(m))*(p1(n)*c1(1)
+     &      +p2(n)*c1(2))+(p1(m)*p2(n)-p1(n)*p2(m))*c0)-tmp1+
+     &      (tmp2+dot(p1,p2)*c0+(b0+mntr(i))*c0)
+     &      *gmunu(m,n)*4.0d0*dsqrt(mntr(i))*as(i,j,k))
+        endif
+        if ((i.ne.j).and.(j.ne.k)) then
+        tmp=tmp+(4.0d0*dsqrt(mntr(i))*as(i,j,k)*((p2(n)-p1(n))
+     &      *(p1(m)*c1(1)+p2(m)*c1(2))-(p1(m)-p2(m))*(p1(n)*c1(1)
+     &      +p2(n)*c1(2))+(p1(m)*p2(n)-p1(n)*p2(m))*c0)-tmp1+
+     &      (tmp2+dot(p1,p2)*c0+(b0+mntr(i))*c0)
+     &      *gmunu(m,n)*4.0d0*dsqrt(mntr(i))*as(i,j,k))*2.0d0
+        endif
+      endif
+               enddo
+            enddo
+         enddo
+         do i=1,2
+            do j=i,2
+               do k=j,2
+         call FFCIJ(p1s,p21s,p121,mcha(i),mcha(j),mcha(k))
+         call FFB0(p21s,mcha(j),mcha(k),B0,B1,B2)
+         tmp2=(0.0d0,0.0d0)
+         tmp1=(0.0d0,0.0d0)
+         do pp=1,4
+            tmp3(pp)=(p1(pp)*c1(1)+p2(pp)*c1(2))
+            tmp4(pp)=cmplx(p1(pp)+p2(pp))
+         enddo
+         tmp2=ccdot(tmp3,tmp4)
+        do pp=1,4
+           do oo=1,4
+      tmp1=tmp1+4*(0.0d0,1.0d0)*dsqrt(mcha(i))*aac(i,j,k)
+     &  *epsino(pp,n,m,oo)*(p2(pp)*p1(oo)*c1(1)+p2(pp)*c1(2)*p1(oo)
+     &  +p2(pp)*p1(oo)*c0)
+           enddo
+        enddo
+        tmp=tmp+(4.0d0*dsqrt(mcha(i))*asc(i,j,k)*((p2(n)-p1(n))
+     &      *(p1(m)*c1(1)+p2(m)*c1(2))-(p1(m)-p2(m))*(p1(n)*c1(1)
+     &      +p2(n)*c1(2))+(p1(m)*p2(n)-p1(n)*p2(m))*c0)-tmp1+
+     &      (tmp2+dot(p1,p2)*c0+(b0+mcha(i))*c0)
+     &      *gmunu(m,n)*4.0d0*dsqrt(mcha(i))*asc(i,j,k))*2.0d0
+               enddo
+            enddo
+         enddo
+         m1(m,n)=tmp
+         enddo
+      enddo
+c**************  m2  *********************
+      do m=1,4
+         do n=1,4
+         tmp=(0.0d0,0.0d0)
+         do i=1,4
+            do j=i,4
+               do k=j,4
+         call FFCIJ(p1s,p21s,p121,mntr(i),mntr(j),mntr(k))
+         call FFB0(p21s,mntr(j),mntr(k),B0,B1,B2)
+         tmp2=(0.0d0,0.0d0)
+         tmp1=(0.0d0,0.0d0)
+         do pp=1,4
+            tmp3(pp)=(p1(pp)*c1(1)+p2(pp)*c1(2))
+            tmp4(pp)=cmplx(p2(pp))
+         enddo
+         tmp2=ccdot(tmp3,tmp4)
+        do pp=1,4
+           do oo=1,4
+      tmp1=tmp1+4*(0.0d0,1.0d0)*dsqrt(mntr(j))*ba(i,j,k)*
+     &  epsino(pp,n,oo,m)*p2(pp)*p1(oo)*c1(1)
+           enddo
+        enddo
+      if ((j.eq.k).and.(i.eq.j)) then
+         tmp=tmp+(4.0d0*dsqrt(mntr(j))*bs(i,j,k)*(2.0d0*(c2(1)*p1(m)
+     &   *p1(n)+c2(2)*p2(m)*p2(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p2(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p2(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mntr(i)*c0-tmp2))-tmp1)
+      else
+         if ((i.eq.j).and.(j.ne.k)) then
+         tmp=tmp+(4.0d0*dsqrt(mntr(j))*bs(i,j,k)*(2.0d0*(c2(1)*p1(m)
+     &   *p1(n)+c2(2)*p1(m)*p1(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p2(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p2(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mntr(i)*c0-tmp2))-tmp1)*2.0d0
+         endif
+         if ((i.ne.j).and.(j.eq.k)) then
+         tmp=tmp+(4.0d0*dsqrt(mntr(j))*bs(i,j,k)*(2.0d0*(c2(1)*p1(m)
+     &   *p1(n)+c2(2)*p1(m)*p1(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p2(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p2(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mntr(i)*c0-tmp2))-tmp1)
+         endif
+         if ((i.ne.j).and.(j.eq.k)) then
+         tmp=tmp+(4.0d0*dsqrt(mntr(j))*bs(i,j,k)*(2.0d0*(c2(1)*p1(m)
+     &   *p1(n)+c2(2)*p1(m)*p1(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p2(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p2(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mntr(i)*c0-tmp2))-tmp1)*2.0d0
+         endif
+      endif
+               enddo
+            enddo
+         enddo
+         do i=1,2
+            do j=i,2
+               do k=j,2
+         call FFCIJ(p1s,p21s,p121,mcha(i),mcha(j),mcha(k))
+         call FFB0(p21s,mcha(j),mcha(k),B0,B1,B2)
+         tmp2=(0.0d0,0.0d0)
+         tmp1=(0.0d0,0.0d0)
+         do pp=1,4
+            tmp3(pp)=(p1(pp)*c1(1)+p2(pp)*c1(2))
+            tmp4(pp)=cmplx(p2(pp))
+         enddo
+         tmp2=ccdot(tmp3,tmp4)
+        do pp=1,4
+           do oo=1,4
+      tmp1=tmp1+4*(0.0d0,1.0d0)*dsqrt(mcha(j))*bac(i,j,k)*
+     &  epsino(pp,n,oo,m)*p2(pp)*p1(oo)*c1(1)
+           enddo
+        enddo
+         tmp=tmp+(4.0d0*dsqrt(mcha(j))*bsc(i,j,k)*(2.0d0*(c2(1)*p1(m)
+     &   *p1(n)+c2(2)*p1(m)*p1(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p2(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p2(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mcha(i)*c0-tmp2))-tmp1)*2.0d0
+               enddo
+            enddo
+         enddo
+         m2(m,n)=tmp
+         enddo
+      enddo
+c**************  m3  *********************
+      do m=1,4
+         do n=1,4
+         tmp=(0.0d0,0.0d0)
+         do i=1,4
+            do j=i,4
+               do k=j,4
+         call FFCIJ(p1s,p21s,p121,mntr(i),mntr(j),mntr(k))
+         call FFB0(p21s,mntr(j),mntr(k),B0,B1,B2)
+         tmp2=(0.0d0,0.0d0)
+         tmp1=(0.0d0,0.0d0)
+         do pp=1,4
+            tmp3(pp)=(p1(pp)*c1(1)+p2(pp)*c1(2))
+            tmp4(pp)=cmplx(p1(pp))
+         enddo
+         tmp2=ccdot(tmp3,tmp4)
+        do pp=1,4
+           do oo=1,4
+      tmp1=tmp1+4*(0.0d0,1.0d0)*dsqrt(mntr(k))*ca(i,j,k)*
+     &  epsino(n,pp,m,oo)*p1(oo)*p2(pp)*c1(2)
+           enddo
+        enddo
+      if ((j.eq.k).and.(i.eq.j)) then
+      tmp=tmp+(4.0d0*dsqrt(mntr(k))*cs(i,j,k)*(2.0d0*(c2(1)*p1(m)*p1(n)+
+     &       c2(2)*p2(m)*p2(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p1(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p1(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mntr(i)*c0-tmp2))-tmp1)
+      else
+         if ((i.eq.j).and.(j.ne.k)) then
+      tmp=tmp+(4.0d0*dsqrt(mntr(k))*cs(i,j,k)*(2.0d0*(c2(1)*p1(m)
+     &  *p1(n)+c2(2)*p2(m)*p2(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p1(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p1(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mntr(i)*c0-tmp2))-tmp1)*2.0d0
+         endif
+         if ((i.ne.j).and.(j.eq.k)) then
+      tmp=tmp+(4.0d0*dsqrt(mntr(k))*cs(i,j,k)*(2.0d0*(c2(1)*p1(m)*p1(n)+
+     &       c2(2)*p2(m)*p2(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p1(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p1(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mntr(i)*c0-tmp2))-tmp1)
+         endif
+         if ((i.ne.j).and.(j.ne.k)) then
+      tmp=tmp+(4.0d0*dsqrt(mntr(k))*cs(i,j,k)*(2.0d0*(c2(1)*p1(m)
+     &  *p1(n)+c2(2)*p2(m)*p2(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p1(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p1(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mntr(i)*c0-tmp2))-tmp1)*2.0d0
+         endif
+      endif
+               enddo
+            enddo
+         enddo
+         do i=1,2
+            do j=i,2
+               do k=j,2
+         call FFCIJ(p1s,p21s,p121,mcha(i),mcha(j),mcha(k))
+         call FFB0(p21s,mcha(j),mcha(k),B0,B1,B2)
+         tmp2=(0.0d0,0.0d0)
+         tmp1=(0.0d0,0.0d0)
+         do pp=1,4
+            tmp3(pp)=(p1(pp)*c1(1)+p2(pp)*c1(2))
+            tmp4(pp)=cmplx(p1(pp))
+         enddo
+         tmp2=ccdot(tmp3,tmp4)
+        do pp=1,4
+           do oo=1,4
+      tmp1=tmp1+4*(0.0d0,1.0d0)*dsqrt(mcha(k))*cac(i,j,k)*
+     &  epsino(n,pp,m,oo)*p1(oo)*p2(pp)*c1(2)
+           enddo
+        enddo
+      tmp=tmp+(4.0d0*dsqrt(mcha(k))*csc(i,j,k)*(2.0d0*(c2(1)*p1(m)
+     & *p1(n)+c2(2)*p2(m)*p2(n)+c2(3)*(p1(m)*p2(n)+p1(n)*p2(m))+
+     &       c2(4)*gmunu(m,n))+p1(n)*(p1(m)*c1(1)+p2(m)*c1(2))+
+     &       p1(m)*(p1(n)*c1(1)+p2(n)*c1(2))-gmunu(m,n)*(b0+
+     &       mcha(i)*c0-tmp2))-tmp1)*2.0d0
+               enddo
+            enddo
+         enddo
+         m3(m,n)=tmp
+         enddo
+      enddo
+c**************  m4  *********************
+      do m=1,4
+         do n=1,4
+         tmp=(0.0d0,0.0d0)
+         do i=1,4
+            do j=i,4
+               do k=j,4
+         call FFCIJ(p1s,p21s,p121,mntr(i),mntr(j),mntr(k))
+      if (j.eq.k) then
+        tmp=tmp+4.0d0*dsqrt(mntr(i))*dsqrt(mntr(j))*dsqrt(mntr(k))
+     &          *ds(i,j,k)*gmunu(m,n)*c0
+      else
+        tmp=tmp+4.0d0*dsqrt(mntr(i))*dsqrt(mntr(j))*dsqrt(mntr(k))
+     &          *ds(i,j,k)*gmunu(m,n)*c0*2.0d0
+      endif
+               enddo
+            enddo
+         enddo
+         do i=1,2
+            do j=i,2
+               do k=j,2
+         call FFCIJ(p1s,p21s,p121,mcha(i),mcha(j),mcha(k))
+        tmp=tmp+4.0d0*dsqrt(mcha(i))*dsqrt(mcha(j))*dsqrt(mcha(k))
+     &          *dsc(i,j,k)*gmunu(m,n)*c0*2.0d0
+               enddo
+            enddo
+         enddo
+         m4(m,n)=tmp
+         enddo
+      enddo
+      return
+      end
+c******************************************************************************
+
+

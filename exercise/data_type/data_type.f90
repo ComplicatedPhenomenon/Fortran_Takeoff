@@ -1,25 +1,64 @@
 program testingInt
 implicit none
 
-!two byte integer
-integer(kind=2) :: shortval
+!two byte real
+real(4) :: shortval
 
-!four byte integer
-integer(kind=4) :: longval
+!four byte real
+real(kind=8) :: longval
 
-!eight byte integer
-integer(kind=8) :: verylongval
-
-!sixteen byte integer
-integer(kind=16) :: veryverylongval
 
 !default integer
-integer :: defval
+real :: defval
 
-print *,"The largest number of integer with kind=2 is  :",huge(shortval)
-print *,"The largest number of integer with kind=4 is  :",huge(longval)
-print *,"The largest number of integer with kind=8 is  :",huge(verylongval)
-print *,"The largest number of integer with kind=16 is :",huge(veryverylongval)
-print *,"The largest number of integer with default kind is :",huge(defval)
+integer :: i
+!===============================================================!
+! print out 2**127 always get the error "Arithematica overflow  !
+! I know in Fortran the LHS is evaluated before assigning to the!
+! RHS. so `real(kind=8) :: var = 2d0**127d0`is invalid          !
+!===============================================================!
 
+integer, parameter :: dp1 = kind(1.)
+!`KIND` return the kind of the variable
+integer, parameter :: dp2 = kind(0.0d0)
+real(kind = 4) :: mantissa1
+real(kind = 8) :: mantissa2
+
+mantissa1 = 0d0
+mantissa2 = 0d0
+
+do i = 0, 23
+   mantissa1 = mantissa1 + 1./(2 ** i)
+end do
+
+
+do i = 0, 52
+   mantissa2 = mantissa2 + 1d0/(2d0 ** i)
+end do
+!**********************************************************************!
+!the difference between mantissa1 and mantisa2 is subtle, but vital    !
+!**********************************************************************!
+
+write(*,*)"------------------------------------------------------------------------------"
+print *,"KIND(1.)=",kind(1)
+print *,"KIND(1.)=",kind(1.)
+print *,"kind(1d0)= ",kind(1d0)
+write(*,*)"------------------------------------------------------------------------------"
+write(*,*)"Ranges of floating point datatypei with kind = 4 in Fortran"
+print *,"The lagest number : mantissa1 * 2d0 ** 127_dp1 = ",mantissa1 * 2d0 ** 127.
+print *,"The smallest numer: mantissa1 * 2d0 ** 127_dp1 = ",mantissa1 * 2d0 ** (-127.)
+
+write(*,*)"------------------------------------------------------------------------------"
+write(*,*)"Ranges of floating point datatypei with kind = 8 in Fortran"
+print *,"The lagest number : mantissa2 * 2d0 ** 1023_dp2 = ",mantissa2 * 2d0 ** 1023_dp2
+print *,"The smallest numer: mantissa2 * 2d0 ** 1023_dp2 = ",mantissa2 * 2d0 ** (-1023_dp2)
+
+write(*,*)"------------------------------------------------------------------------------"
+write(*,*)"Fetch the parameters by intrinsic functions"
+print *,"The largest number of real with kind=4 is  :",huge(shortval)
+print *,"The tinest number of real with kind=4 is  : ",tiny(shortval)
+print *,"The largest number of real with kind=8 is  :",huge(longval)
+print *,"The tinest number of real with kind=8 is  :",tiny(longval)
+print *,"The largest number of real with default kind is :",huge(defval)
+write(*,*)"------------------------------------------------------------------------------"
 end program testingInt
