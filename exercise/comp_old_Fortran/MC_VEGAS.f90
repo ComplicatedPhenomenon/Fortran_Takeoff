@@ -9,7 +9,11 @@ INTEGER,PARAMETER                         :: MAX_SIZE=20            ! The max di
 INTEGER,PRIVATE                           :: i_vegas
 REAL(KIND(1d0)),DIMENSION(MAX_SIZE),PUBLIC:: XL=(/(0d0,i_vegas=1,MAX_SIZE)/),&
                                              XU=(/(1d0,i_vegas=1,MAX_SIZE)/)
-INTEGER,PUBLIC                            :: NCALL=5000,&             ! The number of integrand evaluations per iteration
+INTEGER,PUBLIC                            :: NCALL=50000,&             ! The number of integrand evaluations per iteration
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++
+! You can change NCALL to change the precision
+!+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
                                              ITMX=5,&                 ! The maximum number of iterations
                                              NPRN=5,&                 ! printed or not
                                              NDEV=6,&                 ! device number for output
