@@ -30,11 +30,12 @@ module aa
 !--------------------------------------------------------------------------
 ! upper, lower, jacobianfactor,these arguments are local 
 !---------------------------------------------------------------------------
-    real(dp) :: upper, lower, jacobianfactor
+    real(dp), dimension(1:2) :: upper, lower
+    real(dp) ::jacobianfactor
     
     jacobianfactor = 1d0
     do i = 1, NDIM
-      jacobianfactor = jacobianfactor * (upper - lower)
+      jacobianfactor = jacobianfactor * (upper(i) - lower(i))
     end do
   end subroutine jacobian
 
