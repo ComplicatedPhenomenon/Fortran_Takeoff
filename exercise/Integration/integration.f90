@@ -32,5 +32,6 @@ end program test
 function function(x) result(expr)
 real :: x , expr 
 !expr = 4.0 / (1.0 + x ** 2) 
-expr = x
+!expr = x
+include 'expr.m'
 end function function
