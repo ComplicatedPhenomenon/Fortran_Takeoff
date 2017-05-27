@@ -1,14 +1,11 @@
 program main
-   use const
    use my_fxn
    use MC_VEGAS 
    implicit none
 
-   real(kind(0d0))           :: fxn_qq, fxn_gg
    integer, parameter        :: NDIM = 3
    real(kind(0d0))           :: avgi_qq, avgi_gg, sigma_qq, sigma_gg, sd, chi2a
-   NDIM=1
-   Character Tablefile*40
+   Character(len=40)         :: Tablefile
    data Tablefile/'CT14LL.pds'/
    Call SetCT14(Tablefile)
    open(1,file = 'DATA.txt', status='unknown')
@@ -26,7 +23,6 @@ program main
    print *, 'The cross section of the ppbar to ttbar is sigma_qq=',sigma_qq,'pb'
    print *, 'The cross section of the gg to ttbar is sigma_gg=',   sigma_gg,'pb'
 end program main
-include "FXN.f90"
-include "MC_VEGAS.f90"
-include "CT14Pdf.for"
+include "CT14Pdf.f90"
+! it's still not encapsulated in a module, so I have to include it here
 
