@@ -23,6 +23,7 @@ program main
    print *, 'The cross section of the ppbar to ttbar is sigma_qq=',sigma_qq,'pb'
    print *, 'The cross section of the gg to ttbar is sigma_gg=',   sigma_gg,'pb'
 end program main
-include "CT14Pdf.f90"
+!include "CT14Pdf.for"
+!include "fxn.f90"
+!include "MC_VEGAS.f90"
 ! it's still not encapsulated in a module, so I have to include it here
-
