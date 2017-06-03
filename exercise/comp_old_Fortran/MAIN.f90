@@ -4,13 +4,11 @@ program main
    implicit none
 
    integer, parameter        :: NDIM = 3
-   real(kind(0d0))           :: A
    real(kind(0d0))           :: avgi_qq, avgi_gg, sigma_qq, sigma_gg, sd, chi2a
    Character(len=40)         :: Tablefile
    !A = [ 1000000d0, 7000000d0, 8000000d0, 13000000d0, 14000000d0]
    !print *, A(1)
-   !i = 1 
-   A = 64000000d0
+   !i = 1
    data Tablefile/'CT14LL.pds'/
    Call SetCT14(Tablefile)
    open(1,file = 'DATA.txt', status='unknown')
