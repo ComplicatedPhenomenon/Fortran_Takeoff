@@ -53,12 +53,15 @@ module my_fxn
 !  momentum variable 
 !------------------------------------------!
       subroutine commonpart(A, t, u, f, tau_0)
+      !subroutine commonpart(t, u, f, tau_0)
          implicit none
+         !real(kind(0d0)), intent(in) :: A
          real(kind(0d0)) :: A
          real(kind(0d0)) :: t, u, f, tau_0
          real(kind(0d0)) :: theta, cos_theta, sin_theta
          real(kind(0d0)), dimension(0:3) :: p_1, p_2, p_3, p_4
-
+!         print *, A
+!         pause
          cos_theta = cos(theta)
          sin_theta = sqrt(1-cos_theta**2) 
          p_1 = [sqrt(s)/2d0,0d0,0d0, sqrt(s)/2d0]
@@ -75,7 +78,7 @@ module my_fxn
 
 
 
-      function fxn_1(x, wgt) result(fxn_qq)       ! NO `,` 
+      function fxn_1( x, wgt) result(fxn_qq)       ! NO `,` 
          implicit none
          real(kind(0d0)), dimension(2:3) :: x
          real(kind(0d0)) :: wgt
@@ -85,15 +88,13 @@ module my_fxn
          real(kind(0d0)) :: theta
          real(kind(0d0)), dimension(1:3) :: upper, lower
          real(kind(0d0)) :: jfactor
-
+         A = 64000000d0
          wgt = 0
          s=x(2)*x(3)*A
-         print *,x(2)
-         print *,x(3)
-         print *, A
-         pause
          sqrts=sqrt(s)
          m_res=2*m
+!        print *, A
+!        pause
          if (sqrts < m_res)then
             fxn_qq=0d0
             return
@@ -101,6 +102,7 @@ module my_fxn
          endif
 
          call commonpart(A, t, u, f, tau_0)
+         !call commonpart(A, t, u, f, tau_0)
          part_qq = 0d0
          do i = 1, 5
             part_qq = part_qq+CT14Pdf(i, x(2), Q)*CT14Pdf(-i, x(3), Q) * &
@@ -121,7 +123,7 @@ module my_fxn
 
 
 
-      function fxn_2(x, wgt) result(fxn_gg)
+      function fxn_2( x, wgt) result(fxn_gg)
          implicit none 
          real(kind(0d0)), dimension(2:3) :: x
          real(kind(0d0)) :: wgt
@@ -132,6 +134,7 @@ module my_fxn
          real(kind(0d0)), dimension(1:3) :: upper, lower
          real(kind(0d0)) :: jfactor
 
+         A = 64000000d0
          wgt = 0
          s = x(2) * x(3) * A
          sqrts = sqrt(s)
@@ -142,6 +145,7 @@ module my_fxn
          else 
          endif
          call commonpart(A, t, u, f, tau_0)
+!        call commonpart(A, t, u, f, tau_0)
          part_gg = CT14Pdf(0,x(2),Q)*CT14Pdf(0,x(3),Q)* &
                   2*pi*(a_s**2/(32*s))*sqrt(1d0-4*m**2/s)*  &                                            
                   (6/s**2*f-(m**2*(s-4*m**2))/(3*f) +       &
