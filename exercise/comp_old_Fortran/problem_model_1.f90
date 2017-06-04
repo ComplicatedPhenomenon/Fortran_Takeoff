@@ -8,6 +8,7 @@ module wz
          !real :: a
          real,intent(in):: a
          real :: expr
+         print *,a
          expr = const * a
       end function f_a
 
@@ -16,7 +17,8 @@ module wz
          real :: last_val
          real,intent(in):: a
          real :: expr
-
+         
+         print *,a
          expr = f_a(a)
          last_val = const * expr
          print *, last_val

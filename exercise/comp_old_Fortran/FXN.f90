@@ -9,11 +9,11 @@
 module my_fxn
    implicit none   
    private
-   public :: fxn_1, fxn_2            ! for external use
+   public :: fxn_1, fxn_2             ! for external use
                                       ! PRIVATE :: subname_1, subname_2
                                       ! all entities listed in PRIVATE will NOT be accessible from outside of the module 
    ! (Declared shared data here)      ! and all entities listed in PUBLIC can be accessed fron the out side of the module
-  ! real(kind(0d0)), parameter      :: A = 64000000d0
+   real(kind(0d0)), parameter      :: A=64000000d0
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
@@ -52,16 +52,14 @@ module my_fxn
 !------------------------------------------!
 !  momentum variable 
 !------------------------------------------!
-      subroutine commonpart(A, t, u, f, tau_0)
-      !subroutine commonpart(t, u, f, tau_0)
+!     subroutine commonpart(A, t, u, f, tau_0)
+      subroutine commonpart(t, u, f, tau_0)
          implicit none
-         !real(kind(0d0)), intent(in) :: A
-         real(kind(0d0)) :: A
          real(kind(0d0)) :: t, u, f, tau_0
          real(kind(0d0)) :: theta, cos_theta, sin_theta
          real(kind(0d0)), dimension(0:3) :: p_1, p_2, p_3, p_4
-!         print *, A
-!         pause
+!        print *, A
+!        pause
          cos_theta = cos(theta)
          sin_theta = sqrt(1-cos_theta**2) 
          p_1 = [sqrt(s)/2d0,0d0,0d0, sqrt(s)/2d0]
@@ -85,10 +83,11 @@ module my_fxn
          real(kind(0d0)) :: A
          real(kind(0d0)) :: t, u, f, tau_0
          real(kind(0d0)) :: part_qq, fxn_qq 
-         real(kind(0d0)) :: theta
+         real(kind(0d0))  :: theta
          real(kind(0d0)), dimension(1:3) :: upper, lower
          real(kind(0d0)) :: jfactor
          A = 64000000d0
+
          wgt = 0
          s=x(2)*x(3)*A
          sqrts=sqrt(s)
@@ -100,9 +99,9 @@ module my_fxn
             return
           else 
          endif
+         call commonpart(t, u, f, tau_0)
 
-         call commonpart(A, t, u, f, tau_0)
-         !call commonpart(A, t, u, f, tau_0)
+!        call commonpart(A, t, u, f, tau_0)
          part_qq = 0d0
          do i = 1, 5
             part_qq = part_qq+CT14Pdf(i, x(2), Q)*CT14Pdf(-i, x(3), Q) * &
@@ -144,8 +143,8 @@ module my_fxn
             return
          else 
          endif
-         call commonpart(A, t, u, f, tau_0)
 !        call commonpart(A, t, u, f, tau_0)
+         call commonpart(t, u, f, tau_0)
          part_gg = CT14Pdf(0,x(2),Q)*CT14Pdf(0,x(3),Q)* &
                   2*pi*(a_s**2/(32*s))*sqrt(1d0-4*m**2/s)*  &                                            
                   (6/s**2*f-(m**2*(s-4*m**2))/(3*f) +       &
