@@ -55,6 +55,7 @@ module my_fxn
 !     subroutine commonpart(A, t, u, f, tau_0)
       subroutine commonpart(t, u, f, tau_0)
          implicit none
+!        real(kind(0d0)) :: A
          real(kind(0d0)) :: t, u, f, tau_0
          real(kind(0d0)) :: theta, cos_theta, sin_theta
          real(kind(0d0)), dimension(0:3) :: p_1, p_2, p_3, p_4

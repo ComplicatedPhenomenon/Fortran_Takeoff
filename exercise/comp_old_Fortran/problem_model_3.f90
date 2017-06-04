@@ -21,8 +21,8 @@ module wz
          real :: A
          real :: q
          real :: x, y, z
-         print *, A
-         pause
+!        print *, A
+!        pause
          q  = 2
          call london(A, x, y, z)
         ! call london(x, y, z)
