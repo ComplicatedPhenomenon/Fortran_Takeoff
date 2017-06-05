@@ -24,6 +24,9 @@ program ex1
 
    print *, x
    print *, y
+   print *, y
+   print *, x - y
+   print *,1 + x - y
    print *,L_t(t)
    distance = L_t(t)
    print *, distance
