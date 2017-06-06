@@ -40,7 +40,7 @@ module my_fxn
       
       
 
-      subroutine commonpart(p3_0, p4_0,cos_theta,eta, gm, s12, k_v, p4_v, s13, s14, s23, s24) 
+      subroutine commonpart(p3_0, p4_0,cos_theta,eta, gm, s12, k_v,P3_v, p4_v, s13, s14, s23, s24) 
          implicit none
          real(kind(0d0)) :: s12,  s13, s14, s23, s24
          real(kind(0d0)) :: p3_v, p4_v, k_v   ! intermediate vars
@@ -50,9 +50,7 @@ module my_fxn
                             p3_0, p4_0, gm
          real(kind(0d0)), dimension(0:3) :: k1, k2, p3, p4, k ! 5 kinematics vars
 
-         p3_v = sqrt(p3_0**2-m**2)    !Do you see you make p3_0 satisfy 0<p3_0<1
-         p4_v = sqrt(p4_0**2-m**2) 
-         k_v = sqrt((sqrt(s12)-p3_0-p4_0)**2-gm**2)
+         
 
          sin_theta = sqrt(1-cos_theta**2) 
          cos_eta = cos(eta)
@@ -66,11 +64,22 @@ module my_fxn
                p3_v* sin_eta*sin_ksi, p3_v*( cos_theta*cos_ksi-sin_theta*cos_eta*sin_ksi)]
          p4 = [p4_0, p4_v*sin_theta, 0d0, p4_v*cos_theta]
          k  = 0 - p3 - p4
-
-         print *,'k1=',k1
-         print *,'k2=',k2
-         print *, 'k=',k
-         pause
+!         print *,'p3_0=', p3_0
+!         print *,'p4_0=', p4_0
+!         print *,'p3_v=', p3_v
+!         print *,'p4_v=', p4_v
+!         print *,'k_v=', k_v
+!         print *, 'cos_theta=', cos_theta
+!         print *, 'sin_theta=', sin_theta
+!         print *, 'cos_eta=', cos_eta
+!         print *, 'cos_ksi=', cos_ksi
+!         print *, 'p3+p4=', p3+p4
+!         print *, 'p3=', p3
+!         print *, 'p4=', p4
+!         print *,'k1=',k1
+!         print *,'k2=',k2
+!         print *, 'k=',k
+!         pause
 
          s13 = (m**2- 2*dot_vec(k1,p3))
          s14 = (m**2- 2*dot_vec(k1,p4))
@@ -102,16 +111,21 @@ module my_fxn
          sunn = 3                                          !!! only a test
          wgt = 0
          tau_0 = m**2/S
-         print *, z
-         pause
+       !  print *, z
+       !  pause
 !-----------------------------------------------------------
 !        z = [ p3_0, p4_0, theta, eta, gm, x(1),x(2)]
 !-----------------------------------------------------------
 
+         s12 = z(6)*z(7) * S
+         p3_v = sqrt(z(1)**2-m**2)    !Do you see you make p3_0 satisfy 0<p3_0<1
+         p4_v = sqrt(z(2)**2-m**2) 
+         k_v = sqrt((sqrt(s12)-z(1)-z(2))**2-z(5)**2)
+
          sigma = sqrt(s12)-p4_0
          tau = sigma**2 - p4_v**2
-         m_plus = m + gm
-         m_minus = m - gm
+         m_plus = m + z(5)
+         m_minus = m - z(5)
          
          p3_0_max = 1/(2*tau)*(sigma*(tau+m_plus*m_minus)+p4_v*sqrt((tau-m_plus**2)*(tau-m_minus**2)))
          p3_0_min = 1/(2*tau)*(sigma*(tau+m_plus*m_minus)-p4_v-sqrt((tau-m_plus**2)*(tau-m_minus**2)))
@@ -121,23 +135,35 @@ module my_fxn
          theta_min = -1
          eta_max = 2*pi
          eta_min = 0
-         gm_max = sqrt(s12)/4                                      !!! 
-         gm_min = sqrt(s12)/10
+         gm_max = m/4                                      !!! 
+         gm_min = m/10
          x1_max = 1
          x1_min = 1/tau_0
          x2_max = 1
-         x2_min = tau_0/x(2)
+         x2_min = tau_0/z(6)
 
          upper = [p3_0_max, p4_0_max, theta_max, eta_max, gm_max, x1_max, x2_max]
          lower = [p3_0_min, p4_0_min, theta_min, eta_min, gm_min, x1_min, x2_min]
 
-         s12 = z(6)*z(7) * S
-         z = (upper - lower)*z + lower  ! feel the power of using advanced concept
 
-         call commonpart(z(1), z(2), z(3),z(4), z(5), s12, k_v, p4_v, s13, s14, s23, s24) 
+         z = (upper - lower)*z + lower  ! feel the power of using advanced concept
+!         print *, z
+!         pause
+
+         if (z(1)<p3_0_min)then
+            return
+            if (z(2)< m)then
+               return
+               if (z(5)<gm_min)then
+               else
+               end if
+            end if
+         end if
+
+         call commonpart(z(1), z(2), z(3),z(4), z(5), s12, k_v,p3_v, p4_v, s13, s14, s23, s24) 
+         
          
          jfactor = jacobian(upper, lower)
-         
          print *, 'jfactor', jfactor
 
          m_res = 2*m
@@ -153,3 +179,5 @@ module my_fxn
          fxn_gg = jfactor * part_gg
       end function fxn_2
 end module my_fxn
+
+! s12, m_plus and m_minus all are problems
