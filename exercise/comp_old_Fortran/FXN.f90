@@ -67,7 +67,7 @@ module my_fxn
          t = (m**2-2*dot_vec(p_1,p_3))  
          u = (m**2-2*dot_vec(p_1,p_4))
          f = (m**2-t)*(m**2-u) 
-         tau_0 = m**2/A
+         tau_0 = 4*m**2/A
       end subroutine commonpart
 
 
