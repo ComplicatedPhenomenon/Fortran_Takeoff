@@ -157,8 +157,8 @@ module my_fxn
          gm = z(1)
 
          call commonpart(z(7),z(6),z(3),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
-         print *, gm, s12, s13, s14, s23, s24
-         pause
+!         print *, gm, s12, s13, s14, s23, s24
+!         pause
 
          include "apple21.m"
 !         print *, part_gg
