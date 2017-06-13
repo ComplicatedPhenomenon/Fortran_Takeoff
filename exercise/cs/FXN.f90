@@ -5,8 +5,8 @@ module my_fxn
    
    
    real(kind(0d0)), parameter      :: S=64000000d0
-   real(kind(0d0)), parameter      :: g_s = 0.001d0
-   real(kind(0d0)), parameter      :: M_p = 1000d0
+   real(kind(0d0)), parameter      :: g_s = 0.118d0
+   real(kind(0d0)), parameter      :: M_D = 1000d0
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
@@ -56,15 +56,24 @@ module my_fxn
          sin_theta = sqrt(1-cos_theta**2) 
          cos_eta = cos(eta)
          sin_eta = sqrt(1-cos_eta**2)  
+!         print *, k_v, p3_v, p4_v
+!         pause
          cos_ksi = (k_v**2-p3_v**2-p4_v**2)/(2*p3_v*p4_v)
          sin_ksi = sqrt(1-cos_ksi**2)
 
          k1 = [sqrt(s12)/2d0,0d0,0d0, sqrt(s12)/2d0]
-         k2 = [sqrt(s12)/2d0,0d0,0d0, sqrt(s12)/2d0]
+         k2 = [sqrt(s12)/2d0,0d0,0d0, -sqrt(s12)/2d0]
          p3 = [p3_0, p3_v*(cos_theta*cos_eta*sin_ksi+sin_theta*cos_ksi), &
                p3_v* sin_eta*sin_ksi, p3_v*( cos_theta*cos_ksi-sin_theta*cos_eta*sin_ksi)]
          p4 = [p4_0, p4_v*sin_theta, 0d0, p4_v*cos_theta]
-         k  = 0 - p3 - p4
+         do i = 1, 3
+         k(i)  = 0 - p3(i) - p4(i)
+         end do
+         k(0) = sqrt(s12) - p3_0-p4_0
+
+!         print *, k1, p3,s12, p3_0, p4_0, p3_v, p4_v, cos_theta, sin_theta, cos_eta, sin_eta,cos_ksi,sin_ksi
+!         print *, cos_ksi, sin_ksi
+!         pause
 
          s13 = m**2- 2*dot_vec(k1,p3)
          s14 = m**2- 2*dot_vec(k1,p4)
@@ -83,7 +92,7 @@ module my_fxn
          real(kind(0d0)) :: tau_0
          real(kind(0d0)) :: sigma, tau, m_plus, m_minus,  &   ! intermediate var 
                             p3_v, p4_v, k_v
-         real(kind(0d0)) :: s13,s14,s23, s24, gm, sunn       ! var from input file
+         real(kind(0d0)) :: s13,s14,s23, s24, gm, sunn    
          real(kind(0d0)) :: part_gg,fxn_gg       
          real(kind(0d0)) :: p3_0_max, p4_0_max, cos_theta_max, eta_max, gm_max, x1_max, x2_max, &
                             p3_0_min, p4_0_min, cos_theta_min, eta_min, gm_min, x1_min, x2_min
@@ -97,34 +106,42 @@ module my_fxn
 !        z = [ gm, eta, cos_theta,x(1),x(2),p4_0, p3_0]]
 !       call commonpart(z(7),z(6),z(3),z(2),z(1)...)
 !-----------------------------------------------------------
-         gm_max = 1000d0                                      !!! 
-         gm_min = 1d0
+!         print *, z
+         gm_max = 3000d0    
+         gm_min = 0.01d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
+!         print *, z
          eta_max = 2*pi
          eta_min = 0
          z(2) = (eta_max-eta_min)*z(2)+eta_min
 
+!         print *, z
          cos_theta_max = 1
          cos_theta_min = -1
          z(3) = (cos_theta_max-cos_theta_min)*z(3)+cos_theta_min
           
          tau_0 = (2*m+z(1))**2/S
 
+!         print *, z
          x1_max = 1
          x1_min = tau_0
          z(4) = (x1_max-x1_min)*z(4) + x1_min
 
+!         print *, z
          x2_max = 1
          x2_min = tau_0/z(4)
          z(5) = (x2_max-x2_min)*z(5)+x2_min
 
+!         print *, z
          s12 = z(4)*z(5) * S
 
-         p4_0_max = sqrt(s12)/2 - (4*m**2-z(1)**2)/(2*sqrt(s12))
+         p4_0_max = sqrt(s12)/2 - ((m+z(1))**2-m**2)/(2*sqrt(s12))
          p4_0_min = m
          z(6) = (p4_0_max-p4_0_min)*z(6)+p4_0_min
 
+!         print *, z(6)
+!         pause
          p4_v = sqrt(z(6)**2-m**2) 
          sigma = sqrt(s12)-z(6)
          tau = sigma**2 - p4_v**2
@@ -135,17 +152,17 @@ module my_fxn
          p3_0_min = 1/(2*tau)*(sigma*(tau+m_plus*m_minus)-p4_v-sqrt((tau-m_plus**2)*(tau-m_minus**2)))
          z(7) = (p3_0_max-p3_0_min)*z(7)+p3_0_min
 
+!         print *, z
          p3_v = sqrt(z(7)**2-m**2)  
          k_v = sqrt((sqrt(s12)-z(6)-z(7))**2-z(1)**2)
-!         z = (upper - lower)*z + lower  
-!---------------------------------------------------------------------------------
-! oder! order! order !
-!---------------------------------------------------------------------------------
-!         print *,z
+
+!         print *, k_v, p3_v, p4_v
 !         pause
+
          upper = [gm_max, eta_max, cos_theta_max, x1_max, x2_max, p4_0_max, p3_0_max]
          lower = [gm_min, eta_min, cos_theta_min, x1_min, x2_min, p4_0_min, p3_0_min]
          jfactor = jacobian(upper, lower)
+
 !         print *, jfactor
 !         pause
 
@@ -154,21 +171,29 @@ module my_fxn
             return
             else
          end if
-         gm = z(1)
+
 
          call commonpart(z(7),z(6),z(3),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
+
+
+         gm = z(1)
+
 !         print *, gm, s12, s13, s14, s23, s24
 !         pause
 
          include "apple21.m"
+
 !         print *, part_gg
 !         pause
+
          part_gg = CT14Pdf(0,z(4),Q)*CT14Pdf(0,z(5),Q) * part_gg
+
 !         print *, part_gg
 !         pause
 !         print *, g_s**4/M_p**2
 !         pause
-         fxn_gg = jfactor * g_s**4/M_p**2 * part_gg
+
+         fxn_gg = jfactor * g_s**4/M_D**4*2*pi*z(1) * part_gg
       end function fxn_2
 end module my_fxn
 
