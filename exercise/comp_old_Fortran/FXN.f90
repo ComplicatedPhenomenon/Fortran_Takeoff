@@ -51,9 +51,9 @@ module my_fxn
 !------------------------------------------!
 !  momentum variable 
 !------------------------------------------!
-      subroutine commonpart(x, t, u, f, tau_0)
+      subroutine commonpart(x, t, u, f)
          implicit none
-         real(kind(0d0)) :: t, u, f, tau_0
+         real(kind(0d0)) :: t, u, f
          real(kind(0d0)) :: x, sin_theta
          real(kind(0d0)), dimension(0:3) :: p_1, p_2, p_3, p_4
 
@@ -67,7 +67,6 @@ module my_fxn
          t = (m**2-2*dot_vec(p_1,p_3))  
          u = (m**2-2*dot_vec(p_1,p_4))
          f = (m**2-t)*(m**2-u) 
-         tau_0 = 4*m**2/A
       end subroutine commonpart
 
 
@@ -83,6 +82,11 @@ module my_fxn
          real(kind(0d0)) :: jfactor
 
          wgt = 0
+         tau_0 = 4*m**2/A
+         upper = [1d0, 1d0, 1d0]
+         lower = [-1d0, tau_0, tau_0/x(2)]
+         x = (upper - lower)*x+lower
+
          s=x(2)*x(3)*A
          sqrts=sqrt(s)
          m_res=2*m
@@ -92,7 +96,7 @@ module my_fxn
           else 
          endif
          
-         call commonpart(x(1), t, u, f, tau_0)   
+         call commonpart(x(1), t, u, f)   
 
          part_qq = 0d0
          do i = 1, 5
@@ -101,9 +105,6 @@ module my_fxn
             ((m**2-t)**2+(m**2-u)**2+2d0*m**2*s)
          end do
 
-         upper = [1d0, 1d0, 1d0]
-         lower = [-1d0, tau_0, tau_0/x(2)]
-         x = (upper - lower)*x+lower
          jfactor = jacobian(upper, lower)       
          fxn_qq = jfactor * part_qq
 
@@ -122,6 +123,10 @@ module my_fxn
          real(kind(0d0)) :: jfactor
 
          wgt = 0
+         tau_0 = 4*m**2/A
+         upper = [1d0, 1d0, 1d0]
+         lower = [-1d0, tau_0, tau_0/x(2)]
+         x = (upper - lower)*x+lower
          s = x(2) * x(3) * A
          sqrts = sqrt(s)
          m_res = 2*m
@@ -131,7 +136,7 @@ module my_fxn
          else 
          endif
 
-         call commonpart(x(1), t, u, f, tau_0)
+         call commonpart(x(1), t, u, f)
          part_gg = CT14Pdf(0,x(2),Q)*CT14Pdf(0,x(3),Q)* &
                   2*pi*(a_s**2/(32*s))*sqrt(1d0-4*m**2/s)*  &                                            
                   (6/s**2*f-(m**2*(s-4*m**2))/(3*f) +       &
@@ -140,9 +145,6 @@ module my_fxn
                   3*(f+m**2*(u-t))/(s*(m**2-t))-            &
                   3*(f+m**2*(t-u))/(s*(m**2-u)))
 
-         upper = [1d0, 1d0, 1d0]
-         lower = [-1d0, tau_0, tau_0/x(2)]
-         x = (upper - lower)*x+lower
          jfactor = jacobian(upper, lower)
          fxn_gg = jfactor * part_gg
       end function fxn_2
