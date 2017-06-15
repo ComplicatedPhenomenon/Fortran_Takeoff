@@ -1,13 +1,15 @@
 module my_fxn
    implicit none   
    private
-   public ::  fxn_1   
+   public ::  fxn_2   
    
    
    real(kind(0d0)), parameter      :: S=6.4d7
    real(kind(0d0)), parameter      :: g_s = 0.118d0
 !   real(kind(0d0)), parameter      :: M_p = 1.220910d19
-   real(kind(0d0)), parameter      :: M_D = 1d4
+   real(kind(0d0)), parameter      :: M_D = 1d3
+!   real(kind(0d0)), parameter      :: M_D = 1d5
+!   real(kind(0d0)), parameter      :: M_D = 1d4
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
@@ -78,7 +80,7 @@ module my_fxn
 
       end subroutine commonpart
 
-      function fxn_1(z, wgt) result(fxn_qq)
+      function fxn_2(z, wgt) result(fxn_gg)
          implicit none 
          real(kind(0d0)), dimension(1:7) :: z      
 !         real(kind(0d0)), dimension(2:7) :: z      
@@ -87,7 +89,7 @@ module my_fxn
          real(kind(0d0)) :: sigma, tau, m_plus, m_minus,  &   ! intermediate var 
                             p3_v, p4_v, k_v, phi
          real(kind(0d0)) :: s13,s14,s23, s24, gm, sunn    
-         real(kind(0d0)) :: part1_qq,part_qq,fxn_qq       
+         real(kind(0d0)) :: part_gg,fxn_gg       
          real(kind(0d0)) :: p3_0_max, p4_0_max, cos_theta_max, eta_max, gm_max, x1_max, x2_max, &
                             p3_0_min, p4_0_min, cos_theta_min, eta_min, gm_min, x1_min, x2_min
          real(kind(0d0)), dimension(1:7) :: upper, lower
@@ -127,7 +129,7 @@ module my_fxn
          s12 = z(4)*z(5) * S
          if (sqrt(s12) < 2*m+z(1))then
 !         if (sqrt(s12) < 2*m+1)then
-            fxn_qq = 0d0 
+            fxn_gg = 0d0 
             return
             else
          end if
@@ -163,17 +165,14 @@ module my_fxn
          jfactor = jacobian(upper, lower)
          call commonpart(z(7),z(6),z(3),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
-         include "Fortranjuicy.m"
+         include "apple1.m"
  !        print *,part_gg
  !        pause
-         part1_qq = 0d0
-         do i = 1, 5
-            part1_qq = part1_qq+CT14Pdf(i, z(4), Q)*CT14Pdf(-i, z(5), Q)*part_qq 
-         end do
 
+         part_gg = CT14Pdf(0,z(4),Q)*CT14Pdf(0,z(5),Q) * part_gg
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
-!         fxn_qq = jfactor * g_s**4/M_p**2*phi*part1_qq
-         fxn_qq = jfactor * g_s**4/M_D**4*2*pi*z(1)*phi*part1_qq
-      end function fxn_1
+!         fxn_gg = jfactor*g_s**4/M_p**2*phi*part_gg
+         fxn_gg = jfactor*g_s**4/M_D**4*2*pi*z(1)*phi*part_gg
+      end function fxn_2
 end module my_fxn
 

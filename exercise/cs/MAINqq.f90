@@ -15,6 +15,6 @@ program main
    write(1,*) avgi_qq ,'Mev'
    write(1,*) sigma_qq ,'pb'
    close(1)
-   print *, 'The cross section of the gg to ttbar is avgi_qq= ',  avgi_qq,'Mev'
-   print *, 'The cross section of the gg to ttbar is sigma_qq=',   sigma_qq,'pb'
+   print *, 'The cross section of the qq to ttbar is avgi_qq= ',  avgi_qq,'Mev'
+   print *, 'The cross section of the qq to ttbar is sigma_qq=',   sigma_qq,'pb'
 end program main
