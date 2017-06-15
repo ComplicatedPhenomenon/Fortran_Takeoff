@@ -3,8 +3,8 @@ program main
    use MC_VEGAS 
    implicit none
 
-!   integer, parameter        :: NDIM = 7
-   integer, parameter        :: NDIM = 6
+   integer, parameter        :: NDIM = 7
+!   integer, parameter        :: NDIM = 6
    real(kind(0d0))           :: avgi_qq, sigma_qq, sd, chi2a
    Character(len=40)         :: Tablefile
    data Tablefile/'CT14LL.pds'/

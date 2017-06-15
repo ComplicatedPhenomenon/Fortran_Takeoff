@@ -6,8 +6,8 @@ module my_fxn
    
    real(kind(0d0)), parameter      :: S=6.4d7
    real(kind(0d0)), parameter      :: g_s = 0.118d0
-!   real(kind(0d0)), parameter      :: M_D = 3d3
    real(kind(0d0)), parameter      :: M_p = 1.220910d19
+!   real(kind(0d0)), parameter      :: M_D = 3d3
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
@@ -17,11 +17,13 @@ module my_fxn
    contains        
       function jacobian( upper, lower) result(jfactor)
          implicit none
-         real(kind(0d0)), dimension(1:3) :: upper, lower
+!         real(kind(0d0)), dimension(1:7) :: upper, lower
+         real(kind(0d0)), dimension(1:6) :: upper, lower
          real(kind(0d0))  :: jfactor
           
          jfactor = 1d0
-         do i = 1, 3
+!         do i = 1, 7
+         do i = 1, 6
             jfactor = jfactor * (upper(i) - lower(i))
          end do
       end function jacobian
@@ -56,8 +58,6 @@ module my_fxn
          sin_theta = sqrt(1-cos_theta**2) 
          cos_eta = cos(eta)
          sin_eta = sqrt(1-cos_eta**2)  
-!         print *, k_v, p3_v, p4_v
-!         pause
          cos_ksi = (k_v**2-p3_v**2-p4_v**2)/(2*p3_v*p4_v)
          sin_ksi = sqrt(1-cos_ksi**2)
 
@@ -85,7 +85,7 @@ module my_fxn
          real(kind(0d0)) :: wgt
          real(kind(0d0)) :: tau_0
          real(kind(0d0)) :: sigma, tau, m_plus, m_minus,  &   ! intermediate var 
-                            p3_v, p4_v, k_v
+                            p3_v, p4_v, k_v, phi
          real(kind(0d0)) :: s13,s14,s23, s24, gm, sunn    
          real(kind(0d0)) :: part_gg,fxn_gg       
          real(kind(0d0)) :: p3_0_max, p4_0_max, cos_theta_max, eta_max, gm_max, x1_max, x2_max, &
@@ -150,15 +150,13 @@ module my_fxn
          p3_0_min = 1/(2*tau)*(sigma*(tau+m_plus*m_minus)-p4_v-sqrt((tau-m_plus**2)*(tau-m_minus**2)))
          z(7) = (p3_0_max-p3_0_min)*z(7)+p3_0_min
 
-!         print *, z
          p3_v = sqrt(z(7)**2-m**2)  
 !         k_v = sqrt((sqrt(s12)-z(6)-z(7))**2-z(1)**2)
          k_v = sqrt((sqrt(s12)-z(6)-z(7))**2-1**2)
 
-!         print *, k_v, p3_v, p4_v
-!         pause
          gm = 1
-         
+!         gm = z(1)
+
 !         upper = [gm_max, eta_max, cos_theta_max, x1_max, x2_max, p4_0_max, p3_0_max]
 !         lower = [gm_min, eta_min, cos_theta_min, x1_min, x2_min, p4_0_min, p3_0_min]
          upper = [eta_max, cos_theta_max, x1_max, x2_max, p4_0_max, p3_0_max]
@@ -166,12 +164,14 @@ module my_fxn
          jfactor = jacobian(upper, lower)
          call commonpart(z(7),z(6),z(3),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
-         include "apple21.m"
+         include "apple1.m"
+         print *,part_gg
+         pause
 
          part_gg = CT14Pdf(0,z(4),Q)*CT14Pdf(0,z(5),Q) * part_gg
-
-         fxn_gg = jfactor*g_s**4/M_p**2*part_gg
-!         fxn_gg = jfactor*g_s**4/M_D**2*z(1)*part_gg
+         phi = 1/(8*(2*pi)**4) * 1/(2*s12)
+         fxn_gg = jfactor*g_s**4/M_p**2*phi*part_gg
+!         fxn_gg = jfactor*g_s**4/M_D**4*z(1)*phi*part_gg
       end function fxn_2
 end module my_fxn
 
