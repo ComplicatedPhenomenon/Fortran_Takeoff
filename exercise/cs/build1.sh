@@ -1,7 +1,6 @@
 #!/bin/sh
 rm -rf *.mod
 rm -rf *.o
-rm DATA.txt
 rm -rf ./calc
 
 gfortran -c CT14Pdf.for

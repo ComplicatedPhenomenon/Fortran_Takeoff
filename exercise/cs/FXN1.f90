@@ -7,9 +7,9 @@ module my_fxn
    real(kind(0d0)), parameter      :: S=6.4d7
    real(kind(0d0)), parameter      :: g_s = 0.118d0
 !   real(kind(0d0)), parameter      :: M_p = 1.220910d19
-   real(kind(0d0)), parameter      :: M_D = 1d3
+!   real(kind(0d0)), parameter      :: M_D = 1d3
 !   real(kind(0d0)), parameter      :: M_D = 1d5
-!   real(kind(0d0)), parameter      :: M_D = 1d4
+   real(kind(0d0)), parameter      :: M_D = 1d4
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
@@ -165,9 +165,9 @@ module my_fxn
          jfactor = jacobian(upper, lower)
          call commonpart(z(7),z(6),z(3),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
-         include "apple1.m"
- !        print *,part_gg
- !        pause
+         include "apple13.m"
+         print *,part_gg
+         pause
 
          part_gg = CT14Pdf(0,z(4),Q)*CT14Pdf(0,z(5),Q) * part_gg
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)

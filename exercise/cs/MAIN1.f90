@@ -9,7 +9,7 @@ program main
    Character(len=40)         :: Tablefile
    data Tablefile/'CT14LL.pds'/
    Call SetCT14(Tablefile)
-   open(1,file = 'DATA1.txt', status='unknown')
+   open(1,file = 'DATA13.txt', status='unknown')
    call vegas(NDIM,fxn_2,avgi_gg,sd,chi2a)
    sigma_gg=avgi_gg*3.894*10**8
    write(1,*) avgi_gg ,'Mev'

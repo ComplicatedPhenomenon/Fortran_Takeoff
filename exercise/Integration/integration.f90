@@ -12,7 +12,7 @@ divisions = 100000.
 !=====================================================
 ! DON'T write step = 1 / divisions, it take me hours *
 ! to find out the mistake. (or step is always 0, How *
-! can you be unware of it?). Although you already   *
+! can you be unware of it?). Although you already    *
 ! learned the data type in Fortran. PNWU             *
 !=====================================================
 step = 1. / divisions
@@ -31,7 +31,5 @@ end program test
 !=====================================================
 function function(x) result(expr)
 real :: x , expr 
-!expr = 4.0 / (1.0 + x ** 2) 
-!expr = x
-include 'expr.m'
+expr = 4.0 / (1.0 + x ** 2) 
 end function function

@@ -174,6 +174,7 @@ module my_fxn
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
 !         fxn_qq = jfactor * g_s**4/M_p**2*phi*part1_qq
          fxn_qq = jfactor * g_s**4/M_D**4*2*pi*z(1)*phi*part1_qq
+         open(9, file = 'fxnqq.dat', status = 'unknown')
       end function fxn_1
 end module my_fxn
 

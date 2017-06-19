@@ -4,7 +4,7 @@ implicit none
 real, dimension(100) :: x, y
 integer              :: i
 character (len=200)  :: text
-text = 'WANGMIAO, I HOPE U CAN UNDERSTAND, THE SPACE IS VERY LIMITED, SO U NRRD TO BE MAKE GOOD USE OF IT'
+text = 'WANGMIAO, I HOPE U CAN UNDERSTAND, THE SPACE IS VERY LIMITED, SO U NeeD TO BE MAKE GOOD USE OF IT'
 open(9, file = 'secrets.txt', status = 'new')
 write (9,*) text
 close(9)
