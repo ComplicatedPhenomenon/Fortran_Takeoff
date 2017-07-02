@@ -10,7 +10,7 @@ program main
    data Tablefile/'CT14LL.pds'/
    Call SetCT14(Tablefile)
    close(9)
-   open(1,file = 'DATA.txt', status='unknown')
+   open(1,file = 'DATAqq.txt', status='unknown')
    call vegas(NDIM,fxn_1,avgi_qq,sd,chi2a)
    close(9)
    sigma_qq=avgi_qq*3.894*10**8

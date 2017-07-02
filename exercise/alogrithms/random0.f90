@@ -10,8 +10,9 @@ subroutine random0(ran)
 use ran001
 implicit none
 
-real,intent (out) :: ran 
-n = mod (8121 * n + 26411,134456)
+real,intent (out) :: ran
+!--------------------------------------------------
+n = mod (8121 * n + 28411,134456)
 ran = real (n) / 134456.
 end subroutine random0
 

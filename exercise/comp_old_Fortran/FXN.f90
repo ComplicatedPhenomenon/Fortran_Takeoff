@@ -12,8 +12,7 @@ module my_fxn
    public :: fxn_1, fxn_2           
                                      
    
-!   real(kind(0d0)), parameter      :: A=6.4d7
-   real(kind(0d0)), parameter      :: A=1.96d8
+   real(kind(0d0)), parameter      :: A=6.4d7
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
