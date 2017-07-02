@@ -9,3 +9,5 @@ Even if I heard about it long ago, I haven't done it.
 > People hearing without listening.  :upside_down:
 
 > If you break the problem down into small exercises and lessons, and do them every day, you can learn to do almost anything. If you focus on slowly improving and enjoying the learning process, then you will benefit no matter how good you are at it.
+
+
