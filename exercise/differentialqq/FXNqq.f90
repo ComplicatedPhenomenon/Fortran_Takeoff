@@ -2,6 +2,12 @@ module my_fxn
    implicit none   
    private
    public ::  fxn_1   
+   public ::  i, cos_theta         
+   !*********************************************************************************
+   ! From some perspective, it's like <form [module name] import [], []...> in Python
+   ! Without attribut private and public , it like <from [module name] import *>
+   ! With only private, then accessing permission to variable is limited
+   !*********************************************************************************
    
    
    real(kind(0d0)), parameter      :: S=6.4d7
@@ -12,6 +18,7 @@ module my_fxn
    real(kind(0d0)), parameter      :: pi=3.14159d0
    real(kind(0d0)), external       :: CT14pdf
    real(kind(0d0)) :: s12
+   real(kind(0d0)) :: cos_theta
    integer         :: i
    contains        
       function jacobian( upper, lower) result(jfactor)
@@ -41,11 +48,11 @@ module my_fxn
       
       
 
-      subroutine commonpart(p3_0, p4_0,cos_theta,eta, k_v,P3_v, p4_v, s13, s14, s23, s24) 
+      subroutine commonpart(p3_0, p4_0,eta, k_v,P3_v, p4_v, s13, s14, s23, s24) 
          implicit none
          real(kind(0d0)) :: s13, s14, s23, s24
          real(kind(0d0)) :: p3_v, p4_v, k_v  
-         real(kind(0d0)) :: cos_theta, sin_theta, &
+         real(kind(0d0)) :: sin_theta, &
                             eta, cos_eta, sin_eta,        &
                             ksi, cos_ksi, sin_ksi,        &
                             p3_0, p4_0
@@ -77,7 +84,7 @@ module my_fxn
 
       function fxn_1(z, wgt) result(fxn_qq)
          implicit none 
-         real(kind(0d0)), dimension(1:7) :: z      
+         real(kind(0d0)), dimension(1:6) :: z      
          real(kind(0d0)) :: wgt
          real(kind(0d0)) :: tau_0
          real(kind(0d0)) :: sigma, tau, m_plus, m_minus,  &   ! intermediate var 
@@ -130,8 +137,6 @@ module my_fxn
          tau = sigma**2 - p4_v**2
          m_plus = m + z(1)
          m_minus = m - z(1)
-!         m_plus = m + 1
-!         m_minus = m - 1
 
          p3_0_max = 1/(2*tau)*(sigma*(tau+m_plus*m_minus)+p4_v*sqrt((tau-m_plus**2)*(tau-m_minus**2)))
          p3_0_min = 1/(2*tau)*(sigma*(tau+m_plus*m_minus)-p4_v-sqrt((tau-m_plus**2)*(tau-m_minus**2)))
@@ -142,24 +147,19 @@ module my_fxn
 
          gm = z(1)
 
-         upper = [gm_max, eta_max,x1_max, x2_max, p4_0_max, p3_0_max]
-         lower = [gm_min, eta_min,x1_min, x2_min, p4_0_min, p3_0_min]
+         upper = [gm_max, eta_max, x1_max, x2_max, p4_0_max, p3_0_max]
+         lower = [gm_min, eta_min, x1_min, x2_min, p4_0_min, p3_0_min]
          jfactor = jacobian(upper, lower)
-         ! TRANSPORT cos_theta = 1
-         call commonpart(z(6),z(5),cos_theta,z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
+         call commonpart(z(6),z(5),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
          include "Fortranjuicy.m"
- !        print *,part_gg
- !        pause
          part1_qq = 0d0
          do i = 1, 5
             part1_qq = part1_qq+CT14Pdf(i, z(3), Q)*CT14Pdf(-i, z(4), Q)*part_qq 
          end do
 
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
-!         fxn_qq = jfactor * g_s**4/M_p**2*phi*part1_qq
          fxn_qq = jfactor * g_s**4/M_D**4*2*pi*z(1)*phi*part1_qq
-         open(9, file = 'fxnqq.dat', status = 'unknown')
       end function fxn_1
 end module my_fxn
 
