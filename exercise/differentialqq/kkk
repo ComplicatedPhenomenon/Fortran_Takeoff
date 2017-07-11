@@ -1,0 +1,16 @@
+program main
+   use my_fxn
+   use MC_VEGAS 
+   implicit none
+
+   integer, parameter        :: NDIM = 6
+   real(kind(0d0))           :: avgi_qq, sigma_qq, sd, chi2a
+   Character(len=40)         :: Tablefile
+   data Tablefile/'CT14LL.pds'/
+   Call SetCT14(Tablefile)
+   open(1,file = 'DATAqq.txt', status='unknown')
+   call vegas(NDIM,fxn_1,avgi_qq,sd,chi2a)
+   write(1,*) avgi_qq 
+   print *,cos_theta, avgi_qq 
+   close(1)
+end program main

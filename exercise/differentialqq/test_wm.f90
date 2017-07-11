@@ -10,5 +10,7 @@ program wm
    print *,'***Print  pi,e ,and varfo via a subroutine defined in a module*****'
 
    call ps
+   print *,'Test appending to a file '
+   call loop
    print *,"You cann't assign to e any more, cause it's a constant"
 end program wm
