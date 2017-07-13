@@ -4,10 +4,9 @@ module my_fxn
    public ::  fxn_1   
    
    
-   real(kind(0d0)), parameter      :: S=6.4d7
+   real(kind(0d0)), parameter      :: S=1.690d8
    real(kind(0d0)), parameter      :: g_s = 0.118d0
-!   real(kind(0d0)), parameter      :: M_p = 1.220910d19
-   real(kind(0d0)), parameter      :: M_D = 1d4
+   real(kind(0d0)), parameter      :: M_D = 3d3
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
@@ -30,7 +29,7 @@ module my_fxn
 
       function dot_vec(p,q) result(fourvectordot)
          implicit none
-         integer :: i,j 
+         integer :: j 
          real(kind(0d0)) :: fourvectordot
          real(kind(0d0)), dimension(0:3) :: p,q
 
@@ -44,12 +43,11 @@ module my_fxn
 
       subroutine commonpart(p3_0, p4_0,cos_theta,eta, k_v,P3_v, p4_v, s13, s14, s23, s24) 
          implicit none
-         real(kind(0d0)) :: s13, s14, s23, s24
-         real(kind(0d0)) :: p3_v, p4_v, k_v  
-         real(kind(0d0)) :: cos_theta, sin_theta, &
-                            eta, cos_eta, sin_eta,        &
-                            ksi, cos_ksi, sin_ksi,        &
-                            p3_0, p4_0
+         real(kind(0d0)), intent(in) :: p3_0, p4_0, cos_theta, eta, k_v, p3_v, p4_v 
+         real(kind(0d0)), intent(out):: s13, s14, s23, s24
+         real(kind(0d0)) :: sin_theta, &
+                            cos_eta, sin_eta,   &
+                            cos_ksi, sin_ksi
          real(kind(0d0)), dimension(0:3) :: k1, k2, p3, p4, k 
 
 
@@ -83,25 +81,21 @@ module my_fxn
          real(kind(0d0)) :: tau_0
          real(kind(0d0)) :: sigma, tau, m_plus, m_minus,  &   ! intermediate var 
                             p3_v, p4_v, k_v, phi
-         real(kind(0d0)) :: s13,s14,s23, s24, gm, sunn    
+         real(kind(0d0)) :: s13,s14,s23, s24, gm    
          real(kind(0d0)) :: part1_qq,part_qq,fxn_qq       
          real(kind(0d0)) :: p3_0_max, p4_0_max, cos_theta_max, eta_max, gm_max, x1_max, x2_max, &
                             p3_0_min, p4_0_min, cos_theta_min, eta_min, gm_min, x1_min, x2_min
          real(kind(0d0)), dimension(1:7) :: upper, lower
          real(kind(0d0)) :: jfactor
 
-         sunn = 3                                        
          wgt = 0
-!-----------------------------------------------------------
-!        z = [ gm, eta, cos_theta,x(1),x(2),p4_0, p3_0]]
-!       call commonpart(z(7),z(6),z(3),z(2),z(1)...)
-!-----------------------------------------------------------
+
          gm_max = M_D
-         gm_min = 0.01d0
+         gm_min = 0.1d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
-         tau_0 = (2*m+z(1))**2/S
-         tau_0 = (2*m+1)**2/S
+!         tau_0 = (2*m+M_D)**2/S
+         tau_0 = (2*m)**2/S
 
          eta_max = 2*pi
          eta_min = 0
@@ -158,7 +152,8 @@ module my_fxn
          end do
 
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
-         fxn_qq = jfactor * g_s**4/M_D**4*2*pi*z(1)*phi*part1_qq
+!         fxn_qq = jfactor * g_s**4/M_D**4*2*pi*z(1)*phi*part1_qq
+         fxn_qq = jfactor * g_s**4/M_D**5*pi*z(1)**2*phi*part1_qq
       end function fxn_1
 end module my_fxn
 

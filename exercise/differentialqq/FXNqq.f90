@@ -1,7 +1,7 @@
 module my_fxn
    implicit none   
    private
-   public ::  fxn_1   
+   public ::  fxn_1, dividing_line   
    public ::  cos_theta         
    !*********************************************************************************
    ! From some perspective, it's like <form [module name] import [], []...> in Python
@@ -46,16 +46,35 @@ module my_fxn
          end do
       end function dot_vec
       
-      
+      subroutine dividing_line
+         implicit none
+     
+         integer :: j = 0;
+         integer :: n = 16;
+         i = 1  
+         do while (i<n)
+            j = 0;
+            do while (j<n)
+               if (j>=i) then
+                  write(*,"(A)",advance="no") " *"
+               else
+                  write(*,"(A)",advance="no") " ."
+               end if
+               j=j+1;
+            end do
+            i = i +1;
+            print *,""
+         end do
+      end subroutine dividing_line
+
 
       subroutine commonpart(p3_0, p4_0,eta, k_v,P3_v, p4_v, s13, s14, s23, s24) 
          implicit none
-         real(kind(0d0)) :: s13, s14, s23, s24
-         real(kind(0d0)) :: p3_v, p4_v, k_v  
+         real(kind(0d0)), intent(in) :: p3_0, p4_0, eta, k_v, p3_v, p4_v 
+         real(kind(0d0)), intent(out):: s13, s14, s23, s24
          real(kind(0d0)) :: sin_theta, &
-                            eta, cos_eta, sin_eta,        &
-                            cos_ksi, sin_ksi,        &
-                            p3_0, p4_0
+                            cos_eta, sin_eta,        &
+                            cos_ksi, sin_ksi
          real(kind(0d0)), dimension(0:3) :: k1, k2, p3, p4, k 
 
 
@@ -102,11 +121,11 @@ module my_fxn
 !       call commonpart(z(7),z(6),z(3),z(2),z(1)...)
 !-----------------------------------------------------------
          gm_max = M_D
-         gm_min = 0.01d0
+         gm_min = 0.1d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
-         tau_0 = (2*m+z(1))**2/S
-         tau_0 = (2*m+1)**2/S
+!         tau_0 = (2*m+z(1))**2/S
+         tau_0 = (2*m)**2/S
 
          eta_max = 2*pi
          eta_min = 0
@@ -121,7 +140,7 @@ module my_fxn
          z(4) = (x2_max-x2_min)*z(4)+x2_min
 
          s12 = z(3)*z(4) * S
-         if (sqrt(s12) < 2*m)then
+         if (sqrt(s12) < 2*m+z(1))then
             fxn_qq = 0d0 
             return
             else
@@ -151,8 +170,8 @@ module my_fxn
          jfactor = jacobian(upper, lower)
          call commonpart(z(6),z(5),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
-         include "Fortranjuicy.m"
-!         include "juicy.m"
+!         include "Fortranjuicy.m"
+         include "juicy.m"
          part1_qq = 0d0
 
          do i = 1, 5

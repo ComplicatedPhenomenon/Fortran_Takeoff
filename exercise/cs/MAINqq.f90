@@ -9,10 +9,8 @@ program main
    Character(len=40)         :: Tablefile
    data Tablefile/'CT14LL.pds'/
    Call SetCT14(Tablefile)
-   close(9)
    open(1,file = 'DATAqq.txt', status='unknown')
    call vegas(NDIM,fxn_1,avgi_qq,sd,chi2a)
-   close(9)
    sigma_qq=avgi_qq*3.894*10**8
    write(1,*) avgi_qq ,'Mev'
    write(1,*) sigma_qq ,'pb'

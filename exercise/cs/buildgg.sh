@@ -9,7 +9,7 @@ gfortran -c FXNgg.f90
 gfortran -c MC_VEGAS.f90
 gfortran -c MAINgg.f90
 
-gfortran -o calc MAINgg.o CT14Pdf.o FXNgg.o MC_VEGAS.o
+gfortran -time -o calc MAINgg.o CT14Pdf.o FXNgg.o MC_VEGAS.o
 ./calc
 rm -rf *.mod
 rm -rf *.o
