@@ -2,11 +2,12 @@ module my_fxn
    implicit none   
    private
    public ::  fxn_1   
+   public ::  M_D
    
    
    real(kind(0d0)), parameter      :: S=1.690d8
    real(kind(0d0)), parameter      :: g_s = 0.118d0
-   real(kind(0d0)), parameter      :: M_D = 3d3
+   real(kind(0d0))                 :: M_D 
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
@@ -29,7 +30,6 @@ module my_fxn
 
       function dot_vec(p,q) result(fourvectordot)
          implicit none
-         integer :: j 
          real(kind(0d0)) :: fourvectordot
          real(kind(0d0)), dimension(0:3) :: p,q
 
