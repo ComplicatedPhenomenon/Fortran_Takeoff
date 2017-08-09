@@ -12,14 +12,13 @@ module my_fxn
    
    real(kind(0d0)), parameter      :: S=1.69d8
    real(kind(0d0)), parameter      :: g_s = 0.118d0
-   real(kind(0d0)), parameter      :: M_D = 1d4
+   real(kind(0d0)), parameter      :: M_D = 5d3
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
    real(kind(0d0)), external       :: CT14pdf
    real(kind(0d0)) :: s12
    real(kind(0d0)) :: cos_theta
-!   real(kind(0d0)), parameter      :: cos_theta=-0.99399999999999999
    integer         :: i
    contains        
       function jacobian( upper, lower) result(jfactor)

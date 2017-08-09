@@ -3,13 +3,12 @@ program main
    use MC_VEGAS 
    implicit none
 
-!   integer, parameter        :: NDIM = 7
-   integer, parameter        :: NDIM = 6 
+   integer, parameter        :: NDIM = 7
    real(kind(0d0))           :: avgi_gg, sigma_gg, sd, chi2a
    Character(len=40)         :: Tablefile
    data Tablefile/'CT14LL.pds'/
    Call SetCT14(Tablefile)
-   open(1,file = 'DATA.txt', status='unknown')
+   open(1,file = 'DATAgg.txt', status='unknown')
    call vegas(NDIM,fxn_2,avgi_gg,sd,chi2a)
    sigma_gg=avgi_gg*3.894*10**8
    write(1,*) avgi_gg ,'Mev'

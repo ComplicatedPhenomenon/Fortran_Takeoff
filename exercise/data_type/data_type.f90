@@ -1,16 +1,9 @@
 program testingInt
 implicit none
 
-!two byte real
 real(4) :: shortval
-
-!four byte real
-real(kind=8) :: longval
-
-
-!default integer
+real(8) :: longval
 real :: defval
-
 integer :: i
 !===============================================================!
 ! print out 2**127 always get the error "Arithematica overflow  !
@@ -19,7 +12,6 @@ integer :: i
 !===============================================================!
 
 integer, parameter :: dp1 = kind(1.)
-!`KIND` return the kind of the variable
 integer, parameter :: dp2 = kind(0.0d0)
 real(kind = 4) :: mantissa1
 real(kind = 8) :: mantissa2
@@ -35,14 +27,11 @@ end do
 do i = 0, 52
    mantissa2 = mantissa2 + 1d0/(2d0 ** i)
 end do
-!**********************************************************************!
-!the difference between mantissa1 and mantisa2 is subtle, but vital    !
-!**********************************************************************!
 
 write(*,*)"------------------------------------------------------------------------------"
-print *,"KIND(1.)=",kind(1)
 print *,"KIND(1.)=",kind(1.)
 print *,"kind(1d0)= ",kind(1d0)
+print *,"kind of real = ",kind(defval)
 write(*,*)"------------------------------------------------------------------------------"
 write(*,*)"Ranges of floating point datatypei with kind = 4 in Fortran"
 print *,"The lagest number : mantissa1 * 2d0 ** 127_dp1 = ",mantissa1 * 2d0 ** 127.

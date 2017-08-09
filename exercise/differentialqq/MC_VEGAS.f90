@@ -173,8 +173,8 @@ ini2:IF(initflag.LE.2)THEN
       NDO=ND
    ENDIF
 
-   IF(NPRN.GE.0) WRITE(NDEV,200) NDIM,CALLS,IT,ITMX,ACC,NPRN,&
-                         ALPH,MDS,ND,(XL(J),XU(J),J=1,NDIM)
+!   IF(NPRN.GE.0) WRITE(NDEV,200) NDIM,CALLS,IT,ITMX,ACC,NPRN,&
+!                         ALPH,MDS,ND,(XL(J),XU(J),J=1,NDIM)
 ENDIF ini2
 !ENTRY VEGAS3(NDIM,FXN,AVGI,SD,CHI2A)     INIT=3   - MAIN INTEGRATION LOOP
 mainloop:DO
@@ -260,15 +260,16 @@ mainloop:DO
     AVGI=MC_SI/SWGT
     CHI2A=(SCHI-MC_SI*AVGI)/(IT-0.9999d0)
     SD=DSQRT(ONE/SWGT)
-    IF(NPRN.GE.0) THEN
-      TSI=DSQRT(TSI)
-      WRITE(NDEV,201) IT,TI,TSI,AVGI,SD,CHI2A
-      ENDIF
-    IF(NPRN.GT.0) THEN
-      DO J=1,NDIM
-         WRITE(NDEV,202) J,(XI(I,J),DI(I,J),I=1+NPRN/2,ND,NPRN)
-      ENDDO
-      ENDIF
+! comment the print out message
+!    IF(NPRN.GE.0) THEN
+!      TSI=DSQRT(TSI)
+!      WRITE(NDEV,201) IT,TI,TSI,AVGI,SD,CHI2A
+!      ENDIF
+!    IF(NPRN.GT.0) THEN
+!      DO J=1,NDIM
+!         WRITE(NDEV,202) J,(XI(I,J),DI(I,J),I=1+NPRN/2,ND,NPRN)
+!      ENDDO
+!      ENDIF
 !*************************************************************************************
 !   REFINE GRID
 !   XI(k,j)=XI(k,j)-(XI(k,j)-XI(k-1,j))*(sum(R(i),i=1,k)-s*sum(R(i),i=1,ND)/M)/R(k)
@@ -337,18 +338,18 @@ mainloop:DO
 
     IF(IT.GE.ITMX.OR.ACC*ABS(AVGI).GE.SD) EXIT
 ENDDO mainloop
-200   FORMAT(/," INPUT PARAMETERS FOR MC_VEGAS: ",/," NDIM=",I3,"    NCALL=",F8.0,&
-     "     IT=",I3,/," ITMX=",I3,"    ACC=   ",G9.3,&
-     "   NPRN=",I3,/," ALPH=",F5.2,"    MDS=",I3,"          ND=",I4,/,&
-     "(XL,XU)=",(T10,"(" G12.6,",",G12.6 ")"))
-201   FORMAT(/," INTEGRATION BY MC_VEGAS ", " ITERATION NO. ",I3, /,&
-     " INTEGRAL = ",G14.8, /," SQURE DEV  = ",G10.4,/,&
-     " ACCUMULATED RESULTS:   INTEGRAL = ",G14.8,/,&
-     " DEV  = ",G10.4, /," CHI**2 PER IT'N = ",G10.4)
+!200   FORMAT(/," INPUT PARAMETERS FOR MC_VEGAS: ",/," NDIM=",I3,"    NCALL=",F8.0,&
+!     "     IT=",I3,/," ITMX=",I3,"    ACC=   ",G9.3,&
+!     "   NPRN=",I3,/," ALPH=",F5.2,"    MDS=",I3,"          ND=",I4,/,&
+!     "(XL,XU)=",(T10,"(" G12.6,",",G12.6 ")"))
+!201   FORMAT(/," INTEGRATION BY MC_VEGAS ", " ITERATION NO. ",I3, /,&
+!     " INTEGRAL = ",G14.8, /," SQURE DEV  = ",G10.4,/,&
+!     " ACCUMULATED RESULTS:   INTEGRAL = ",G14.8,/,&
+!     " DEV  = ",G10.4, /," CHI**2 PER IT'N = ",G10.4)
 ! X is the division of the coordinate
 ! DELTA I is the sum of F in this interval 
-202   FORMAT(/,"DATA FOR AXIS ",I2,/,"    X       DELTA I       ", &
-     24H   X       DELTA I      ,18H   X       DELTA I, &
-      /(1H ,F7.6,1X,G11.4,5X,F7.6,1X,G11.4,5X,F7.6,1X,G11.4))
+!202   FORMAT(/,"DATA FOR AXIS ",I2,/,"    X       DELTA I       ", &
+!     24H   X       DELTA I      ,18H   X       DELTA I, &
+!      /(1H ,F7.6,1X,G11.4,5X,F7.6,1X,G11.4,5X,F7.6,1X,G11.4))
 END SUBROUTINE VEGAS
 END MODULE MC_VEGAS

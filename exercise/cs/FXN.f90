@@ -163,14 +163,11 @@ module my_fxn
          jfactor = jacobian(upper, lower)
          call commonpart(z(7),z(6),z(3),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
-         include "apple1.m"
- !        print *,part_gg
- !        pause
+         include "lemon.m"
 
          part_gg = CT14Pdf(0,z(4),Q)*CT14Pdf(0,z(5),Q) * part_gg
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
          fxn_gg = jfactor*g_s**4/M_p**2*phi*part_gg
-!         fxn_gg = jfactor*g_s**4/M_D**4*z(1)*phi*part_gg
       end function fxn_2
 end module my_fxn
 
