@@ -1,12 +1,12 @@
 module my_fxn
    implicit none   
    private
-   public ::  fxn_2   
+   public ::  fxn_2, M_D   
    
    
    real(kind(0d0)), parameter      :: S=1.69d8
    real(kind(0d0)), parameter      :: g_s = 0.118d0
-   real(kind(0d0)), parameter      :: M_D = 3d3
+   real(kind(0d0))                 :: M_D
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
@@ -94,7 +94,7 @@ module my_fxn
          gm_min = 0.1d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
-         tau_0 = (2*m)**2/S
+         tau_0 = (2*m )**2/S
 
          eta_max = 2*pi
          eta_min = 0

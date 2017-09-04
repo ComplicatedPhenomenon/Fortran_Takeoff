@@ -10,13 +10,10 @@ program main
    Character(len=40)         :: Tablefile
    character(len = 128)      :: arg
    data Tablefile/'CT14LL.pds'/
-
-   n_d = NDIM
-
    Call SetCT14(Tablefile)
    open(1,file = 'DATAqq.txt', position = 'append', status='unknown')
    interval = 7d3/100
-   
+
    M_D = 3d3
    i = 1
    call get_command_argument(i,arg)

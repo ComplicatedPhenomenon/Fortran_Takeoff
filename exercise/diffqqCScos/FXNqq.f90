@@ -1,33 +1,29 @@
 module my_fxn
    implicit none   
    private
-   public ::  fxn_1, dividing_line   
-   public ::  cos_theta         
-   !*********************************************************************************
-   ! From some perspective, it's like <form [module name] import [], []...> in Python
-   ! Without attribut private and public , it like <from [module name] import *>
-   ! With only private, then accessing permission to variable is limited
-   !*********************************************************************************
+   public ::  fxn_1   
+   public ::  nd, cos_theta
    
    
-   real(kind(0d0)), parameter      :: S=1.69d8
+   real(kind(0d0)), parameter      :: S=1.690d8
+   integer                         :: nd
+   real(kind(0d0))                 :: cos_theta 
    real(kind(0d0)), parameter      :: g_s = 0.118d0
-   real(kind(0d0)), parameter      :: M_D = 5d3
+   real(kind(0d0)), parameter      :: M_D = 6d3
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
    real(kind(0d0)), external       :: CT14pdf
    real(kind(0d0)) :: s12
-   real(kind(0d0)) :: cos_theta
    integer         :: i
    contains        
       function jacobian( upper, lower) result(jfactor)
          implicit none
-         real(kind(0d0)), dimension(1:6) :: upper, lower
+         real(kind(0d0)), dimension(1:nd) :: upper, lower
          real(kind(0d0))  :: jfactor
           
          jfactor = 1d0
-         do i = 1, 6
+         do i = 1, nd
             jfactor = jfactor * (upper(i) - lower(i))
          end do
       end function jacobian
@@ -45,34 +41,14 @@ module my_fxn
          end do
       end function dot_vec
       
-      subroutine dividing_line
-         implicit none
-     
-         integer :: j = 0;
-         integer :: n = 16;
-         i = 1  
-         do while (i<n)
-            j = 0;
-            do while (j<n)
-               if (j>=i) then
-                  write(*,"(A)",advance="no") " *"
-               else
-                  write(*,"(A)",advance="no") " ."
-               end if
-               j=j+1;
-            end do
-            i = i +1;
-            print *,""
-         end do
-      end subroutine dividing_line
-
+      
 
       subroutine commonpart(p3_0, p4_0,eta, k_v,P3_v, p4_v, s13, s14, s23, s24) 
          implicit none
          real(kind(0d0)), intent(in) :: p3_0, p4_0, eta, k_v, p3_v, p4_v 
          real(kind(0d0)), intent(out):: s13, s14, s23, s24
          real(kind(0d0)) :: sin_theta, &
-                            cos_eta, sin_eta,        &
+                            cos_eta, sin_eta,   &
                             cos_ksi, sin_ksi
          real(kind(0d0)), dimension(0:3) :: k1, k2, p3, p4, k 
 
@@ -102,33 +78,31 @@ module my_fxn
 
       function fxn_1(z, wgt) result(fxn_qq)
          implicit none 
-         real(kind(0d0)), dimension(1:6) :: z      
+         real(kind(0d0)), dimension(1:nd) :: z      
          real(kind(0d0)) :: wgt
          real(kind(0d0)) :: tau_0
          real(kind(0d0)) :: sigma, tau, m_plus, m_minus,  &   ! intermediate var 
                             p3_v, p4_v, k_v, phi
-         real(kind(0d0)) :: s13,s14,s23, s24, gm   
+         real(kind(0d0)) :: s13,s14,s23, s24, gm    
          real(kind(0d0)) :: part1_qq,part_qq,fxn_qq       
          real(kind(0d0)) :: p3_0_max, p4_0_max, eta_max, gm_max, x1_max, x2_max, &
                             p3_0_min, p4_0_min, eta_min, gm_min, x1_min, x2_min
-         real(kind(0d0)), dimension(1:6) :: upper, lower
+         real(kind(0d0)), dimension(1:nd) :: upper, lower
          real(kind(0d0)) :: jfactor
 
          wgt = 0
-!-----------------------------------------------------------
-!        z = [ gm, eta, cos_theta,x(1),x(2),p4_0, p3_0]]
-!       call commonpart(z(7),z(6),z(3),z(2),z(1)...)
-!-----------------------------------------------------------
+
          gm_max = M_D
          gm_min = 0.1d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
-         tau_0 = (2*m+z(1))**2/S
 !         tau_0 = (2*m)**2/S
+         tau_0 = (2*m+z(1))**2/S
 
          eta_max = 2*pi
          eta_min = 0
          z(2) = (eta_max-eta_min)*z(2)+eta_min
+
 
          x1_max = 1
          x1_min = tau_0
@@ -159,7 +133,7 @@ module my_fxn
          p3_0_min = 1/(2*tau)*(sigma*(tau+m_plus*m_minus)-p4_v-sqrt((tau-m_plus**2)*(tau-m_minus**2)))
          z(6) = (p3_0_max-p3_0_min)*z(6)+p3_0_min
 
-         p3_v = sqrt(z(6)**2-m**2)  
+         p3_v = sqrt(z(nd)**2-m**2)  
          k_v = sqrt((sqrt(s12)-z(5)-z(6))**2-z(1)**2)
 
          gm = z(1)
@@ -167,12 +141,10 @@ module my_fxn
          upper = [gm_max, eta_max, x1_max, x2_max, p4_0_max, p3_0_max]
          lower = [gm_min, eta_min, x1_min, x2_min, p4_0_min, p3_0_min]
          jfactor = jacobian(upper, lower)
-         call commonpart(z(6),z(5),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
+         call commonpart(z(nd), z(5), z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
-!         include "Fortranjuicy.m"
          include "juicy.m"
          part1_qq = 0d0
-
          do i = 1, 5
             part1_qq = part1_qq+CT14Pdf(i, z(3), Q)*CT14Pdf(-i, z(4), Q)*part_qq 
          end do

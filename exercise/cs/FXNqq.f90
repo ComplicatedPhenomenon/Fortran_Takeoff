@@ -2,13 +2,14 @@ module my_fxn
    implicit none   
    private
    public ::  fxn_1   
-   public ::  M_D
+   public ::  nd, M_D
    
    
    real(kind(0d0)), parameter      :: S=1.690d8
    real(kind(0d0)), parameter      :: g_s = 0.118d0
    real(kind(0d0))                 :: M_D 
-   real(kind(0d0)), parameter      :: m=172d0
+   real(kind(0d0))                 :: nd 
+   real(kind(0d0)), parameter      :: m=1nd2d0
    real(kind(0d0)), parameter      :: Q=2d0 
    real(kind(0d0)), parameter      :: pi=3.14159d0
    real(kind(0d0)), external       :: CT14pdf
@@ -17,11 +18,11 @@ module my_fxn
    contains        
       function jacobian( upper, lower) result(jfactor)
          implicit none
-         real(kind(0d0)), dimension(1:7) :: upper, lower
+         real(kind(0d0)), dimension(1:nd) :: upper, lower
          real(kind(0d0))  :: jfactor
           
          jfactor = 1d0
-         do i = 1, 7
+         do i = 1, nd
             jfactor = jfactor * (upper(i) - lower(i))
          end do
       end function jacobian
@@ -76,7 +77,7 @@ module my_fxn
 
       function fxn_1(z, wgt) result(fxn_qq)
          implicit none 
-         real(kind(0d0)), dimension(1:7) :: z      
+         real(kind(0d0)), dimension(1:nd) :: z      
          real(kind(0d0)) :: wgt
          real(kind(0d0)) :: tau_0
          real(kind(0d0)) :: sigma, tau, m_plus, m_minus,  &   ! intermediate var 
@@ -85,7 +86,7 @@ module my_fxn
          real(kind(0d0)) :: part1_qq,part_qq,fxn_qq       
          real(kind(0d0)) :: p3_0_max, p4_0_max, cos_theta_max, eta_max, gm_max, x1_max, x2_max, &
                             p3_0_min, p4_0_min, cos_theta_min, eta_min, gm_min, x1_min, x2_min
-         real(kind(0d0)), dimension(1:7) :: upper, lower
+         real(kind(0d0)), dimension(1:nd) :: upper, lower
          real(kind(0d0)) :: jfactor
 
          wgt = 0
@@ -94,8 +95,8 @@ module my_fxn
          gm_min = 0.1d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
-!         tau_0 = (2*m+M_D)**2/S
          tau_0 = (2*m)**2/S
+!         tau_0 = (2*m+z(1))**2/S
 
          eta_max = 2*pi
          eta_min = 0
@@ -135,8 +136,8 @@ module my_fxn
          p3_0_min = 1/(2*tau)*(sigma*(tau+m_plus*m_minus)-p4_v-sqrt((tau-m_plus**2)*(tau-m_minus**2)))
          z(7) = (p3_0_max-p3_0_min)*z(7)+p3_0_min
 
-         p3_v = sqrt(z(7)**2-m**2)  
-         k_v = sqrt((sqrt(s12)-z(6)-z(7))**2-z(1)**2)
+         p3_v = sqrt(z(nd)**2-m**2)  
+         k_v = sqrt((sqrt(s12)-z(6)-z(nd))**2-z(1)**2)
 
          gm = z(1)
 

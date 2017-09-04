@@ -9,6 +9,6 @@ gfortran -g -fbacktrace -fcheck=all -Wall -c FXNqq.f90
 gfortran -g -fbacktrace -fcheck=all -Wall -c MC_VEGAS.f90
 gfortran -g -fbacktrace -fcheck=all -Wall -c MAINqq.f90
 
-gfortran -g -fbacktrace -fcheck=all -Wall -o calc MAINqq.o CT14Pdf.o FXNqq.o MC_VEGAS.o
+gfortran  -g -fbacktrace -fcheck=all -Wall -o calc MAINqq.o CT14Pdf.o FXNqq.o MC_VEGAS.o
 rm -rf *.mod
 rm -rf *.o
