@@ -9,9 +9,9 @@ module my_fxn
    integer                         :: nd
    real(kind(0d0))                 :: cos_theta 
    real(kind(0d0)), parameter      :: g_s = 0.118d0
-   real(kind(0d0)), parameter      :: M_D = 6d3
+   real(kind(0d0)), parameter      :: M_D = 3d3
    real(kind(0d0)), parameter      :: m=172d0
-   real(kind(0d0)), parameter      :: Q=2d0 
+   real(kind(0d0)), parameter      :: Q=1d2 
    real(kind(0d0)), parameter      :: pi=3.14159d0
    real(kind(0d0)), external       :: CT14pdf
    real(kind(0d0)) :: s12
@@ -146,7 +146,7 @@ module my_fxn
          include "juicy.m"
          part1_qq = 0d0
          do i = 1, 5
-            part1_qq = part1_qq+CT14Pdf(i, z(3), Q)*CT14Pdf(-i, z(4), Q)*part_qq 
+            part1_qq = part1_qq+CT14Pdf(i, z(3), Q**2)*CT14Pdf(-i, z(4), Q**2)*part_qq 
          end do
 
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)

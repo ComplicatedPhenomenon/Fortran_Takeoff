@@ -25,8 +25,12 @@ CS = np.array([float(row.split()[1]) for row in data])
 print S
 print CS
 
-plt.plot(S,CS)
-plt.legend()
-plt.title('Cross section with respect to S')
-plt.show()
+plt.plot(S,CS, linestyle = '-', color = 'darkgreen')
+#fig = plt.figure()
+#axes = fig.add_axes()
+#axes.plot(S,CS, linestyle = 'none', color = 'darkgreen', marker = '.')
+#axes.set_xlabel('hahaha')
+#axes.set_xlabel('$ha$')
 
+#axes.set_title('Cross section with respect to S')
+plt.show()

@@ -8,7 +8,7 @@ module my_fxn
    real(kind(0d0)), parameter      :: g_s = 0.118d0
    real(kind(0d0))                 :: M_D
    real(kind(0d0)), parameter      :: m=172d0
-   real(kind(0d0)), parameter      :: Q=2d0 
+   real(kind(0d0)), parameter      :: Q=1d3 
    real(kind(0d0)), parameter      :: pi=3.14159d0
    real(kind(0d0)), external       :: CT14pdf
    real(kind(0d0)) :: s12
@@ -94,7 +94,7 @@ module my_fxn
          gm_min = 0.1d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
-         tau_0 = (2*m )**2/S
+         tau_0 = (2*m+z(1) )**2/S
 
          eta_max = 2*pi
          eta_min = 0
@@ -146,7 +146,7 @@ module my_fxn
 
          include "www.m"
 
-         part_gg = CT14Pdf(0,z(4),Q)*CT14Pdf(0,z(5),Q) * part_gg
+         part_gg = CT14Pdf(0,z(4),Q**2)*CT14Pdf(0,z(5),Q**2) * part_gg
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
 !         fxn_gg = jfactor*g_s**4/M_D**4*2*pi*z(1)*phi*part_gg
          fxn_gg = jfactor*g_s**4/M_D**5*pi*z(1)**2*phi*part_gg

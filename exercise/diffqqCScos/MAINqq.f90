@@ -6,7 +6,7 @@ program main
 
    integer, parameter        :: NDIM = 6
    integer                   :: i,j
-   real(kind(0d0))           :: interval
+   real(kind(0d0))           :: interval, interval_sigma_qq 
    real(kind(0d0))           :: avgi_qq, sigma_qq, sd, chi2a
    Character(len=40)         :: Tablefile
    character(len = 128)      :: arg
@@ -16,7 +16,7 @@ program main
 
    open(1,file = 'DATAqq.txt', position = 'append', status='unknown')
 
-   interval = 2d0/100
+   interval = 2d0/300
    cos_theta = -1d0
    i = 1
 
@@ -26,8 +26,9 @@ program main
    call vegas(NDIM,fxn_1,avgi_qq,sd,chi2a,2)
 
    sigma_qq = avgi_qq * 3.894 * 10 ** 8
-   print *, j, cos_theta, sigma_qq
-   write(1,*) cos_theta, sigma_qq ,'pb'
+   interval_sigma_qq = DLOG(sigma_qq)
+   print *, j, cos_theta, interval_sigma_qq 
+   write(1,*) cos_theta, interval_sigma_qq, 'pb'
 
    close(1)
 end program main

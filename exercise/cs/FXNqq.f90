@@ -7,10 +7,11 @@ module my_fxn
    
    real(kind(0d0)), parameter      :: S=1.690d8
    real(kind(0d0)), parameter      :: g_s = 0.118d0
+
    real(kind(0d0))                 :: M_D 
-   real(kind(0d0))                 :: nd 
-   real(kind(0d0)), parameter      :: m=1nd2d0
-   real(kind(0d0)), parameter      :: Q=2d0 
+   integer                         :: nd 
+   real(kind(0d0)), parameter      :: m=172d0
+   real(kind(0d0)), parameter      :: Q=1d2 
    real(kind(0d0)), parameter      :: pi=3.14159d0
    real(kind(0d0)), external       :: CT14pdf
    real(kind(0d0)) :: s12
@@ -91,7 +92,7 @@ module my_fxn
 
          wgt = 0
 
-         gm_max = M_D
+         gm_max = 1d3
          gm_min = 0.1d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
@@ -137,7 +138,7 @@ module my_fxn
          z(7) = (p3_0_max-p3_0_min)*z(7)+p3_0_min
 
          p3_v = sqrt(z(nd)**2-m**2)  
-         k_v = sqrt((sqrt(s12)-z(6)-z(nd))**2-z(1)**2)
+         k_v = sqrt((sqrt(s12)-z(6)-z(7))**2-z(1)**2)
 
          gm = z(1)
 
@@ -149,7 +150,7 @@ module my_fxn
          include "juicy.m"
          part1_qq = 0d0
          do i = 1, 5
-            part1_qq = part1_qq+CT14Pdf(i, z(4), Q)*CT14Pdf(-i, z(5), Q)*part_qq 
+            part1_qq = part1_qq+CT14Pdf(i, z(4), Q**2)*CT14Pdf(-i, z(5), Q**2)*part_qq 
          end do
 
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
