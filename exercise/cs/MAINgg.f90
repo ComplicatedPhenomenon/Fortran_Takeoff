@@ -10,9 +10,13 @@ program main
    Character(len=40)         :: Tablefile
    character(len = 128)      :: arg
    data Tablefile/'CT14LL.pds'/
+
+   nd = NDIM
+
    Call SetCT14(Tablefile)
-   open(1,file = 'DATAqgg.txt', position = 'append', status='unknown')
-   interval = 7d3/100
+   open(1,file = 'DATAgg2.txt', position = 'append', status='unknown')
+   interval = 7d3/300
+
    M_D = 3d3
    i = 1
    call get_command_argument(i,arg)
@@ -22,4 +26,6 @@ program main
    sigma_gg=avgi_gg*3.894*10**8
    print *, j, M_D, sigma_gg
    write(1,*) M_D, sigma_gg ,'pb'
+
+   close(1)
 end program main

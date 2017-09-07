@@ -2,7 +2,7 @@
 rm -rf *.mod
 rm -rf *.o
 rm -rf ./calc
-rm DATAgg.txt
+#rm DATAgg.txt
 
 gfortran -g -fbacktrace -fcheck=all -Wall -c CT14Pdf.for
 gfortran -g -fbacktrace -fcheck=all -Wall -c FXNgg.f90

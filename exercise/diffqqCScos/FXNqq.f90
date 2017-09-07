@@ -5,13 +5,13 @@ module my_fxn
    public ::  nd, cos_theta
    
    
-   real(kind(0d0)), parameter      :: S=1.690d8
+   real(kind(0d0)), parameter      :: G_E=1.690d8
    integer                         :: nd
    real(kind(0d0))                 :: cos_theta 
    real(kind(0d0)), parameter      :: g_s = 0.118d0
    real(kind(0d0)), parameter      :: M_D = 3d3
    real(kind(0d0)), parameter      :: m=172d0
-   real(kind(0d0)), parameter      :: Q=1d2 
+   real(kind(0d0)), parameter      :: G_QCDFactorazationScale=1d2            !QCD factorization scale to be G_QCDFactorazationScale^2 = 10^4 GeV^2.
    real(kind(0d0)), parameter      :: pi=3.14159d0
    real(kind(0d0)), external       :: CT14pdf
    real(kind(0d0)) :: s12
@@ -92,12 +92,12 @@ module my_fxn
 
          wgt = 0
 
-         gm_max = M_D
+         gm_max = 1d3
          gm_min = 0.1d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
-!         tau_0 = (2*m)**2/S
-         tau_0 = (2*m+z(1))**2/S
+!         tau_0 = (2*m)**2/G_E
+         tau_0 = (2*m+z(1))**2/G_E
 
          eta_max = 2*pi
          eta_min = 0
@@ -112,7 +112,7 @@ module my_fxn
          x2_min = tau_0/z(3)
          z(4) = (x2_max-x2_min)*z(4)+x2_min
 
-         s12 = z(3)*z(4) * S
+         s12 = z(3)*z(4) * G_E
          if (sqrt(s12) < 2*m+z(1))then
             fxn_qq = 0d0 
             return
@@ -133,7 +133,7 @@ module my_fxn
          p3_0_min = 1/(2*tau)*(sigma*(tau+m_plus*m_minus)-p4_v-sqrt((tau-m_plus**2)*(tau-m_minus**2)))
          z(6) = (p3_0_max-p3_0_min)*z(6)+p3_0_min
 
-         p3_v = sqrt(z(nd)**2-m**2)  
+         p3_v = sqrt(z(6)**2-m**2)  
          k_v = sqrt((sqrt(s12)-z(5)-z(6))**2-z(1)**2)
 
          gm = z(1)
@@ -141,12 +141,12 @@ module my_fxn
          upper = [gm_max, eta_max, x1_max, x2_max, p4_0_max, p3_0_max]
          lower = [gm_min, eta_min, x1_min, x2_min, p4_0_min, p3_0_min]
          jfactor = jacobian(upper, lower)
-         call commonpart(z(nd), z(5), z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
+         call commonpart(z(6), z(5), z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
          include "juicy.m"
          part1_qq = 0d0
          do i = 1, 5
-            part1_qq = part1_qq+CT14Pdf(i, z(3), Q**2)*CT14Pdf(-i, z(4), Q**2)*part_qq 
+            part1_qq = part1_qq+CT14Pdf(i, z(3), G_QCDFactorazationScale**2)*CT14Pdf(-i, z(4), G_QCDFactorazationScale**2)*part_qq 
          end do
 
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)

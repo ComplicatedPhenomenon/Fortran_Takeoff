@@ -8,8 +8,8 @@ module my_fxn
    real(kind(0d0)), parameter      :: S=1.690d8
    real(kind(0d0)), parameter      :: g_s = 0.118d0
 
-   real(kind(0d0))                 :: M_D 
    integer                         :: nd 
+   real(kind(0d0))                 :: M_D 
    real(kind(0d0)), parameter      :: m=172d0
    real(kind(0d0)), parameter      :: Q=1d2 
    real(kind(0d0)), parameter      :: pi=3.14159d0
