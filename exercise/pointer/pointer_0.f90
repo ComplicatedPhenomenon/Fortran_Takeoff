@@ -11,8 +11,8 @@ ALLOCATE(ptr1(1:10), STAT = istat)
 print *,'After Allocating ptr1(1:10) is istat =',istat 
 ALLOCATE(ptr2(1:10), STAT = istat)
 print *,'After Allocating ptr2(1:10) is istat =',istat 
-ptr1  = (/ (i, i = 1, 10) /)
-ptr2  = (/ (i, i = 11, 20) /)
+ptr1  = [ (i, i = 1, 10) ]
+ptr2  = [ (i, i = 11, 20) ]
 !check associated status of ptrs
 WRITE(*,'(A,2L5)') 'ARE ptr1, ptr2 associated? ', &
         ASSOCIATED(ptr1),ASSOCIATED(ptr2)
