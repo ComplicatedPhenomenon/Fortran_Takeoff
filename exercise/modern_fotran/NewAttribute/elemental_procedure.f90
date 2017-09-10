@@ -1,3 +1,11 @@
+! 2017 / 09 /10  version  1.1    
+! -----------------------------------------------------------------------------
+! The ELEMENTAL attribute allows for declaring procedures that operate element
+! by element and can be applied to arrays of any dimensions. This is another 
+! way for defining more general procedures. 
+! CAUTION :
+! In a simplified model, we leave off implicit none, private, public
+! -----------------------------------------------------------------------------
 module mod1
    contains
 
@@ -12,9 +20,14 @@ module mod1
          integer, intent(out) :: c
          c = a - b
       end subroutine elesub1
+
+      subroutine elesub2(a, b, c)
+         integer, intent(in) :: a, b
+         integer, intent(out) :: c
+         c = a - b
+      end subroutine elesub2
 end module mod1
 
-! In a simplified model, we ingnore implicit none, private, public
 
 program prog1
    use mod1
@@ -28,10 +41,20 @@ program prog1
    write (*,*) contract(i, ia)
    write (*,*) contract(ib, i)
    write (*,*) contract(ia, ib)
+
    call elesub1(i, j, k)
    write(*,*) k
    call elesub1(ia, j, ic)
    write(*,*) ic
    call elesub1(ia, ib, ic)
    write(*,*) ic
+
+   ! call elesub2(ia, j, ic)
+   !               1
+   ! Error: Rank mismatch in argument ‘a’ at (1) (scalar and rank-1)
+
+   ! call elesub2(ia, j, ic)
+   ! write(*,*) ic
+   ! call elesub2(ia, ib, ic)
+   ! write(*,*) ic
 end program prog1

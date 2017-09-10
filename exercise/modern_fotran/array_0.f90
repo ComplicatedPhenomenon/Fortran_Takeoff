@@ -10,12 +10,14 @@ print *,allocated(x_1d)
 x_1d = [1,2,3,4,5,6,5,4,3,2,1]
 print *,allocated(x_1d)
 print *,x_1d
+deallocate(x_1d)
 
 print *,allocated(x_2d)
 allocate(x_2d(2,3))
 x_2d =reshape([1,2,3,4,5,6], shape(x_2d))
 print *,allocated(x_2d)
 print *,x_2d
+deallocate(x_2d)
 
 allocate(array(2, 3))
 print *,allocated(array)
