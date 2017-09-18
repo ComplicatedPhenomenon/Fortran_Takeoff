@@ -1,35 +1,33 @@
-program main
-   use my_fxn
-   use MC_VEGAS 
-   implicit none
+PROGRAM main
+   USE my_fxn
+   USE MC_VEGAS
+   IMPLICIT NONE
 
-
-   integer, parameter        :: NDIM = 6
-   integer                   :: i,j
-   real(kind(0d0))           :: interval, interval_sigma_qq 
-   real(kind(0d0))           :: avgi_qq, sigma_qq, sd, chi2a
-   Character(len=40)         :: Tablefile
-   character(len = 128)      :: arg
-   data Tablefile/'CT14LL.pds'/
+   INTEGER, PARAMETER        :: NDIM = 6
+   INTEGER                   :: i,j
+   REAL(KIND(0D0))           :: interval
+   REAL(KIND(0d0))           :: avgi_qq, diffCSqq, sd, chi2a
+   cHARACTER(LEN=40)         :: Tablefile
+   CHARACTER(LEN = 128)      :: arg
+   DATA Tablefile/'CT14LL.pds'/
    nd = NDIM
-   Call SetCT14(Tablefile)
 
-   open(1,file = 'DATAqq.txt', position = 'append', status='unknown')
-
+   CALL SetCT14(Tablefile)
    interval = 2d0/300
-   cos_theta = -1d0
+
+   cos_theta= -1
    i = 1
-
-   call get_command_argument(i,arg)
+   CALL GET_COMMAND_ARGUMENT(i,arg)
    read(arg,*) j
-   cos_theta = cos_theta + j * interval
-   call vegas(NDIM,fxn_1,avgi_qq,sd,chi2a,2)
+   cos_theta = cos_theta + j*interval
 
-   sigma_qq = avgi_qq * 3.894 * 10 ** 8
-   interval_sigma_qq = DLOG(sigma_qq)
-   print *, j, cos_theta, interval_sigma_qq 
-   write(1,*) cos_theta, interval_sigma_qq, 'pb'
+   CALL vegas(NDIM,fxn_1,avgi_qq,sd,chi2a)
+
+   diffCSqq = LOG(avgi_qq * 3.894 * 10 ** 8)
+
+   OPEN(1,file = 'DATAqq.txt', position = 'append', status='unknown')
+   PRINT *, j, cos_theta, diffCSqq
+   WRITE(1,*)  cos_theta, diffCSqq 
 
    close(1)
 end program main
-

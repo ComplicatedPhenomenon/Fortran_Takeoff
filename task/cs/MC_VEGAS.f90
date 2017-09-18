@@ -1,54 +1,57 @@
 MODULE MC_VEGAS
-!*****************************************************************
+!
 !  This module is a modification f95 version of VEGA_ALPHA.for
 !  by G.P. LEPAGE SEPT 1976/(REV)AUG 1979.
-!*****************************************************************
+!  
+!   author: Hua-Sheng Shao
+!   Physics school of Peking University
+!
 IMPLICIT NONE
 SAVE
-INTEGER,PARAMETER                         :: MAX_SIZE=20            ! The max dimensions of the integrals
-INTEGER,PRIVATE                           :: i_vegas
-REAL(KIND(1d0)),DIMENSION(MAX_SIZE),PUBLIC:: XL=(/(0d0,i_vegas=1,MAX_SIZE)/),&
-                                             XU=(/(1d0,i_vegas=1,MAX_SIZE)/)
-INTEGER,PUBLIC                            :: NCALL=50000,&             ! The number of integrand evaluations per iteration
-!+++++++++++++++++++++++++++++++++++++++++++++++++++++
-! You can change NCALL to change the precision
-!+++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-                                             ITMX=5,&                 ! The maximum number of iterations
-                                             NPRN=5,&                 ! printed or not
-                                             NDEV=6,&                 ! device number for output
-                                             IT=0,&                   ! number of iterations completed
-                                             NDO=1,&                  ! number of subdivisions on an axis
-                                             NDMX=50,&                ! determines the maximum number of increments along each axis
-                                             MDS=1                    ! =0 use importance sampling only
-                                                                      ! =\0 use importance sampling and stratified sampling
-                                                                      ! increments are concentrated either wehre the
-                                                                      ! integrand is largest in magnitude (MDS=1), or
-                                                                      ! where the contribution to the error is largest(MDS=-1)
-INTEGER,PUBLIC                            :: IINIP
-REAL(KIND(1d0)),PUBLIC                    :: ACC=-1d0                 ! Algorithm stops when the relative accuracy,
-                                                                      ! |SD/AVGI|, is less than ACC; accuracy is not
-                                                                      ! cheched when ACC<0
-REAL(KIND(1d0)),PUBLIC                    :: MC_SI=0d0,&              ! sum(AVGI_i/SD_i^2,i=1,IT)
-                                             SWGT=0d0,&               ! sum(1/SD_i^2,i=1,IT)
-                                             SCHI=0d0,&               ! sum(AVGI_i^2/SD_i^2,i=1,IT)
-                                             ALPH=1.5d0               ! controls the rate which the grid is modified from
-                                                                      ! iteration to iteration; decreasing ALPH slows
-                                                                      ! modification of the grid
-                                                                      ! (ALPH=0 implies no modification)
-REAL(KIND(1d0)),PUBLIC                    :: DSEED=1234567d0    ! seed of 
-! location of the I-th division on the J-th axi, normalized to lie between 0 and 1.
+INTEGER,PARAMETER::MAX_SIZE=20            ! The max dimensions of the integrals
+! The lower and upper integration limit
+INTEGER,PRIVATE::i_vegas
+REAL(KIND(1d0)),DIMENSION(MAX_SIZE),PUBLIC::XL=(/(0d0,i_vegas=1,MAX_SIZE)/),&
+                                      XU=(/(1d0,i_vegas=1,MAX_SIZE)/)
+INTEGER,PUBLIC::NCALL=5000,&              ! The number of integrand evaluations per iteration
+                ITMX=5,&                  ! The maximum number of iteratios
+                NPRN=5,&                  ! printed or not
+                NDEV=6,&                  ! device number for output
+                IT=0,&                    ! number of iterations completed
+                NDO=1,&                   ! number of subdivisions on an axis
+                NDMX=50,&                 ! determines the maximum number of increments along each axis
+                MDS=1                     ! =0 use importance sampling only
+                                          ! =\0 use importance sampling and stratified sampling
+                                          ! increments are concentrated either wehre the
+                                          ! integrand is largest in magnitude (MDS=1), or
+                                          ! where the contribution to the error is largest(MDS=-1)
+INTEGER,PUBLIC::IINIP
+REAL(KIND(1d0)),PUBLIC::ACC=-1d0           ! Algorithm stops when the relative accuracy,
+                                           ! |SD/AVGI|, is less than ACC; accuracy is not 
+                                           ! cheched when ACC<0
+REAL(KIND(1d0)),PUBLIC::MC_SI=0d0,&        ! sum(AVGI_i/SD_i^2,i=1,IT)
+                SWGT=0d0,&                 ! sum(1/SD_i^2,i=1,IT)
+                SCHI=0d0,&                ! sum(AVGI_i^2/SD_i^2,i=1,IT)
+                ALPH=1.5d0                ! controls the rate which the grid is modified from
+                                          ! iteration to iteration; decreasing ALPH slows
+                                          ! modification of the grid
+                                          ! (ALPH=0 implies no modification)
+REAL(KIND(1d0)),PUBLIC::DSEED=1234567d0    ! seed of 
+! location of the I-th division on the J-th axis, normalized to lie between 0 and 1.
 REAL(KIND(1d0)),DIMENSION(50,MAX_SIZE),PUBLIC::XI=1d0
-REAL(KIND(1d0)),PUBLIC                    :: CALLS,TI,TSI
+REAL(KIND(1d0)),PUBLIC::CALLS,TI,TSI
 
 CONTAINS
 
+! Generate random numbers
 SUBROUTINE RANDA(NR,R)
-IMPLICIT NONE
-INTEGER,INTENT(IN)                        :: NR
-REAL(KIND(1d0)),DIMENSION(NR),INTENT(OUT) :: R
-INTEGER                                   :: I
-! D2P31M=(2**31) - 1 D2P31 =(2**31)(OR AN ADJUSTED VALUE)
+!SPECIFICATIONS FOR ARGUMENTS
+INTEGER,INTENT(IN)::NR
+REAL(KIND(1d0)),DIMENSION(NR),INTENT(OUT)::R
+!SPECIFICATIONS FOR LOCAL VARIABLES
+INTEGER::I
+! D2P31M=(2**31) - 1
+! D2P31 =(2**31)(OR AN ADJUSTED VALUE)
 REAL(KIND(1d0))::D2P31M=2147483647.d0,D2P31=2147483711.d0
 !FIRST EXECUTABLE STATEMENT
 DO I=1,NR
@@ -58,35 +61,31 @@ ENDDO
 END SUBROUTINE RANDA
 
 SUBROUTINE VEGAS(NDIM,FXN,AVGI,SD,CHI2A,INIT)
-!***************************************************************
+!
 !     SUBROUTINE PERFORMS NDIM-DIMENSIONAL MONTE CARLO INTEG'N
 !     - BY G.P. LEPAGE    SEPT 1976/(REV)AUG 1979
 !     - ALGORITHM DESCRIBED IN J COMP PHYS 27,192(1978)
-!***************************************************************
+!
 ! Without INIT or INIT=0, CALL VEGAS
 ! INIT=1  CALL VEGAS1
 ! INIT=2  CALL VEGAS2
 ! INIT=3  CALL VEGAS3
-!***************************************************************
-IMPLICIT NONE
-INTEGER,INTENT(IN)                    :: NDIM
-REAL(KIND(1d0)),EXTERNAL              :: FXN
-INTEGER,INTENT(IN),OPTIONAL           :: INIT
-REAL(KIND(1d0)),INTENT(INOUT)         :: AVGI,SD,CHI2A
-REAL(KIND(1d0)),DIMENSION(50,MAX_SIZE):: D,DI
-REAL(KIND(1d0)),DIMENSION(50)         :: XIN,R
-REAL(KIND(1d0)),DIMENSION(MAX_SIZE)   :: DX,X,DT,RAND
-INTEGER,DIMENSION(MAX_SIZE)           :: IA,KG
-INTEGER                               :: initflag
-REAL(KIND(1d0)),PARAMETER             :: ONE=1.d0
-INTEGER                               :: I, J, K, NPG, NG, ND, NDM, LABEL = 0
-REAL(KIND(1d0))                       :: DXG, DV2G, XND, XJAC, RC, XN, DR, XO, TI2, WGT, FB, F2B, F, F2
-!***************************
+INTEGER,INTENT(IN)::NDIM
+REAL(KIND(1d0)),EXTERNAL::FXN
+INTEGER,INTENT(IN),OPTIONAL::INIT
+REAL(KIND(1d0)),INTENT(INOUT)::AVGI,SD,CHI2A
+REAL(KIND(1d0)),DIMENSION(50,MAX_SIZE)::D,DI
+REAL(KIND(1d0)),DIMENSION(50)::XIN,R
+REAL(KIND(1d0)),DIMENSION(MAX_SIZE)::DX,X,DT,RAND
+INTEGER,DIMENSION(MAX_SIZE)::IA,KG
+INTEGER::initflag
+REAL(KIND(1d0)),PARAMETER::ONE=1.d0
+INTEGER::I,J,K,NPG,NG,ND,NDM,LABEL=0
+REAL(KIND(1d0))::DXG,DV2G,XND,XJAC,RC,XN,DR,XO,TI2,WGT,FB,F2B,F,F2
 !SAVE AVGI,SD,CHI2A
 !SQRT(A)=DSQRT(A)
 !ALOG(A)=DLOG(A)
 !ABS(A)=DABS(A)
-!***************************
 IF(PRESENT(INIT))THEN
    initflag=INIT
 ELSE
@@ -118,7 +117,7 @@ ini2:IF(initflag.LE.2)THEN
        NPG=NG/NDMX+1
        ND=NG/NPG
        NG=NPG*ND
-       ENDIF
+      ENDIF
    ENDIF
    K=NG**NDIM                      ! K sub volumes
    NPG=NCALL/K                     ! The number of random numbers in per sub volumes Ms
@@ -137,46 +136,47 @@ ini2:IF(initflag.LE.2)THEN
    ENDDO
 !     REBIN, PRESERVING BIN DENSITY
    IF(ND.NE.NDO) THEN
-      RC=NDO/XND                   ! XND=ND
-      outer:DO J=1, NDIM           ! Set the new division
-          K=0
-          XN=0.d0
-          DR=XN
-          I=K
-          LABEL=0
-          inner5:DO
-          IF(LABEL.EQ.0) THEN
-                  inner4:DO
-                    K=K+1
-                    DR=DR+ONE
-                    XO=XN
-                    XN=XI(K,J)
-                    IF(RC.LE.DR) EXIT
-               ENDDO inner4
-          ENDIF
-             I=I+1
-             DR=DR-RC
-             XIN(I)=XN-(XN-XO)*DR
-             IF(I.GE.NDM) THEN
-                     EXIT
-             ELSEIF(RC.LE.DR) THEN
-                     LABEL=1
-             ELSE
-                     LABEL=0
-             ENDIF
-             ENDDO inner5
+     RC=NDO/XND                   ! XND=ND
+     outer:DO J=1, NDIM           ! Set the new division
+        K=0
+        XN=0.d0
+        DR=XN
+        I=K
+        LABEL=0
+        inner5:DO
+           IF(LABEL.EQ.0) THEN
+           inner4:DO
+           K=K+1
+           DR=DR+ONE
+           XO=XN
+           XN=XI(K,J)
+           IF(RC.LE.DR) EXIT
+             ENDDO inner4
+           ENDIF
+           I=I+1
+           DR=DR-RC
+           XIN(I)=XN-(XN-XO)*DR
+           IF(I.GE.NDM) THEN
+              EXIT
+           ELSEIF(RC.LE.DR) THEN
+              LABEL=1
+           ELSE
+              LABEL=0
+           ENDIF
+           ENDDO inner5
            inner:DO I=1,NDM
              XI(I,J)=XIN(I)
            ENDDO inner
            XI(ND,J)=ONE
-      ENDDO outer
+        ENDDO outer
       NDO=ND
    ENDIF
 
 !   IF(NPRN.GE.0) WRITE(NDEV,200) NDIM,CALLS,IT,ITMX,ACC,NPRN,&
 !                         ALPH,MDS,ND,(XL(J),XU(J),J=1,NDIM)
 ENDIF ini2
-!ENTRY VEGAS3(NDIM,FXN,AVGI,SD,CHI2A)     INIT=3   - MAIN INTEGRATION LOOP
+!      ENTRY VEGAS3(NDIM,FXN,AVGI,SD,CHI2A)
+!  INIT=3       - MAIN INTEGRATION LOOP
 mainloop:DO
     IT=IT+1
     TI=0.d0
@@ -187,68 +187,68 @@ mainloop:DO
           D(I,J)=TI
           DI(I,J)=TI
        ENDDO
-       ENDDO
+    ENDDO
     
     LABEL=0
     level1:DO
-    level2:DO
-    ifla:IF(LABEL.EQ.0)THEN
-           FB=0.d0
-           F2B=FB
-           level3:DO K=1,NPG
-              CALL RANDA(NDIM,RAND)
-              WGT=XJAC
-              DO J=1,NDIM
-                 XN=(KG(J)-RAND(J))*DXG+ONE
-                 IA(J)=XN
-                 IF(IA(J).LE.1) THEN
-                    XO=XI(IA(J),J)
-                    RC=(XN-IA(J))*XO
-                 ELSE
-                    XO=XI(IA(J),J)-XI(IA(J)-1,J)
-                    RC=XI(IA(J)-1,J)+(XN-IA(J))*XO
-            ENDIF
-                 X(J)=XL(J)+RC*DX(J)
-                 WGT=WGT*XO*XND
-              ENDDO
+       level2:DO
+       ifla:IF(LABEL.EQ.0)THEN
+          FB=0.d0
+          F2B=FB
+          level3:DO K=1,NPG
+             CALL RANDA(NDIM,RAND)
+             WGT=XJAC
+             DO J=1,NDIM
+                XN=(KG(J)-RAND(J))*DXG+ONE
+                IA(J)=XN
+                IF(IA(J).LE.1) THEN
+                   XO=XI(IA(J),J)
+                   RC=(XN-IA(J))*XO
+                ELSE
+                   XO=XI(IA(J),J)-XI(IA(J)-1,J)
+                   RC=XI(IA(J)-1,J)+(XN-IA(J))*XO
+                ENDIF
+                X(J)=XL(J)+RC*DX(J)
+                WGT=WGT*XO*XND
+             END DO
 
-              F=WGT
-              F=F*FXN(X,WGT)
-              F2=F*F
-              FB=FB+F
-              F2B=F2B+F2
-              DO J=1,NDIM
-                 DI(IA(J),J)=DI(IA(J),J)+F
-                 IF(MDS.GE.0) D(IA(J),J)=D(IA(J),J)+F2
-              ENDDO
-           ENDDO level3
-!          K=K-1                    !K=NPG
+             F=WGT
+             F=F*FXN(X,WGT)
+             F2=F*F
+             FB=FB+F
+             F2B=F2B+F2
+             DO J=1,NDIM
+                DI(IA(J),J)=DI(IA(J),J)+F
+                IF(MDS.GE.0) D(IA(J),J)=D(IA(J),J)+F2
+             END DO
+          END DO level3
+!         K=K-1                    !K=NPG
 
-           F2B=DSQRT(F2B*DBLE(NPG))
-           F2B=(F2B-FB)*(F2B+FB)
-           TI=TI+FB
-           TSI=TSI+F2B
-           IF(MDS.LT.0) THEN
-              DO J=1,NDIM
+          F2B=DSQRT(F2B*DBLE(NPG))
+          F2B=(F2B-FB)*(F2B+FB)
+          TI=TI+FB
+          TSI=TSI+F2B
+          IF(MDS.LT.0) THEN
+             DO J=1,NDIM
                 D(IA(J),J)=D(IA(J),J)+F2B
-              ENDDO
-      ENDIF 
-           K=NDIM
-        ENDIF ifla
-        KG(K)=MOD(KG(K),NG)+1
-        IF(KG(K).EQ.1) THEN
-                EXIT
-        ELSE
-                LABEL=0
-        ENDIF
-        ENDDO level2
-      K=K-1
-      IF(K.GT.0) THEN
-              LABEL=1
-      ELSE
-              EXIT
-      ENDIF
-      ENDDO level1
+             END DO
+          ENDIF 
+          K=NDIM
+       ENDIF ifla
+       KG(K)=MOD(KG(K),NG)+1
+       IF(KG(K).EQ.1) THEN
+          EXIT
+       ELSE
+          LABEL=0
+       ENDIF
+    END DO level2
+       K=K-1
+       IF(K.GT.0) THEN
+          LABEL=1
+       ELSE
+          EXIT
+       ENDIF
+       ENDDO level1
 
 !    COMPUTE FINAL RESULTS FOR THIS ITERATION
     TSI=TSI*DV2G
@@ -260,21 +260,19 @@ mainloop:DO
     AVGI=MC_SI/SWGT
     CHI2A=(SCHI-MC_SI*AVGI)/(IT-0.9999d0)
     SD=DSQRT(ONE/SWGT)
-! comment the print out message
-!    IF(NPRN.GE.0) THEN
-!      TSI=DSQRT(TSI)
+    IF(NPRN.GE.0) THEN
+      TSI=DSQRT(TSI)
 !      WRITE(NDEV,201) IT,TI,TSI,AVGI,SD,CHI2A
-!      ENDIF
-!    IF(NPRN.GT.0) THEN
-!      DO J=1,NDIM
+    ENDIF
+    IF(NPRN.GT.0) THEN
+      DO J=1,NDIM
 !         WRITE(NDEV,202) J,(XI(I,J),DI(I,J),I=1+NPRN/2,ND,NPRN)
-!      ENDDO
-!      ENDIF
-!*************************************************************************************
+      ENDDO
+    ENDIF
+
 !   REFINE GRID
 !   XI(k,j)=XI(k,j)-(XI(k,j)-XI(k-1,j))*(sum(R(i),i=1,k)-s*sum(R(i),i=1,ND)/M)/R(k)
 !   divides the original k-th interval into s parts
-!*************************************************************************************
     outer2:DO J=1,NDIM
           XO=D(1,J)
           XN=D(2,J)
@@ -298,7 +296,7 @@ mainloop:DO
            IF(D(I,J).GT.0.) THEN
                XO=DT(J)/D(I,J)
                R(I)=((XO-ONE)/XO/DLOG(XO))**ALPH
-       ENDIF
+		   ENDIF
            RC=RC+R(I)
         ENDDO
         RC=RC/XND
@@ -306,30 +304,30 @@ mainloop:DO
         XN=0.d0
         DR=XN
         I=K
-        LABEL=0
-        le2:DO
-        le3:DO
-        IF(LABEL.EQ.0)THEN
+		LABEL=0
+		le2:DO
+		   le3:DO
+		     IF(LABEL.EQ.0)THEN
                 K=K+1
                 DR=DR+R(K)
                 XO=XN
                 XN=XI(K,J)
-        ENDIF
-        IF(RC.LE.DR) THEN
+			 ENDIF
+             IF(RC.LE.DR) THEN
                 EXIT
-        ELSE
-                LABEL=0
-        ENDIF
+			 ELSE
+			    LABEL=0
+			 ENDIF
            ENDDO le3
            I=I+1
            DR=DR-RC
            XIN(I)=XN-(XN-XO)*DR/R(K)
            IF(I.GE.NDM) THEN
-                   EXIT
-           ELSE
-                   LABEL=1
-           ENDIF 
-           ENDDO le2
+		      EXIT
+		   ELSE
+			  LABEL=1
+		   ENDIF 
+		ENDDO le2
         DO I=1,NDM
            XI(I,J)=XIN(I)
         ENDDO
