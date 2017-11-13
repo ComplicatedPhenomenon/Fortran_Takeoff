@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for (( x=1; x<=10; x++ ))
-do
-   ./te $x 
+for (( i = 0; i <=300; i++ ))
+do 
+    ./calc $i
 done
