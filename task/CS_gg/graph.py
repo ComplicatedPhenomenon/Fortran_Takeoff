@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-datafile = open('DATAqq.txt','r')
+datafile = open('DATAgg4.txt','r')
 data =  datafile.readlines()
 datafile.close()
 

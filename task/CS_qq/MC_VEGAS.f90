@@ -305,29 +305,29 @@ mainloop:DO
         DR=XN
         I=K
         LABEL=0
-        le2:DO
-            le3:DO
-                IF(LABEL.EQ.0)THEN
+    le2:DO
+    le3:DO
+        IF(LABEL.EQ.0)THEN
                 K=K+1
                 DR=DR+R(K)
                 XO=XN
                 XN=XI(K,J)
-                ENDIF
-                IF(RC.LE.DR) THEN
+        ENDIF
+             IF(RC.LE.DR) THEN
                 EXIT
-                ELSE
+        ELSE
                 LABEL=0
-                ENDIF
+            ENDIF
            ENDDO le3
            I=I+1
            DR=DR-RC
            XIN(I)=XN-(XN-XO)*DR/R(K)
            IF(I.GE.NDM) THEN
-               EXIT
-               ELSE
-               LABEL=1
+                   EXIT
+           ELSE
+                   LABEL=1
            ENDIF 
-        ENDDO le2
+    ENDDO le2
         DO I=1,NDM
            XI(I,J)=XIN(I)
         ENDDO

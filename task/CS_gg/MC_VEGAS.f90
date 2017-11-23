@@ -296,7 +296,7 @@ mainloop:DO
            IF(D(I,J).GT.0.) THEN
                XO=DT(J)/D(I,J)
                R(I)=((XO-ONE)/XO/DLOG(XO))**ALPH
-		   ENDIF
+           ENDIF
            RC=RC+R(I)
         ENDDO
         RC=RC/XND
@@ -304,30 +304,30 @@ mainloop:DO
         XN=0.d0
         DR=XN
         I=K
-		LABEL=0
-		le2:DO
-		   le3:DO
-		     IF(LABEL.EQ.0)THEN
+        LABEL=0
+    le2:DO
+    le3:DO
+        IF(LABEL.EQ.0)THEN
                 K=K+1
                 DR=DR+R(K)
                 XO=XN
                 XN=XI(K,J)
-			 ENDIF
+        ENDIF
              IF(RC.LE.DR) THEN
                 EXIT
-			 ELSE
-			    LABEL=0
-			 ENDIF
+        ELSE
+                LABEL=0
+            ENDIF
            ENDDO le3
            I=I+1
            DR=DR-RC
            XIN(I)=XN-(XN-XO)*DR/R(K)
            IF(I.GE.NDM) THEN
-		      EXIT
-		   ELSE
-			  LABEL=1
-		   ENDIF 
-		ENDDO le2
+                   EXIT
+           ELSE
+                   LABEL=1
+           ENDIF 
+    ENDDO le2
         DO I=1,NDM
            XI(I,J)=XIN(I)
         ENDDO
