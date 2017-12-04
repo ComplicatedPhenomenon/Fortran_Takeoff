@@ -152,8 +152,15 @@ MODULE my_fxn
             part1_qq = part1_qq+CT14Pdf(i, z(4), G_QCDFactorazationScale**2)*CT14Pdf(-i, z(5), G_QCDFactorazationScale**2)*part_qq 
          END DO
 
-         phi = 1/(8*(2*pi)**4) * 1/(2*s12)
-         fxn_qq = jfactor * g_s**4/M_D**5*pi*z(1)**2*phi*part1_qq
+         phi = 1/(8*(2*pi)**4) * 1/(2*s12)  ! \phi = \frac{1}{8(2\pi}^4}\frac{1}{4|\vec{k_1|\sqrt{s_{12}}} mean while \vec{k_1} = \frac{\sqrt{s_{12}}}{2}
+                                            ! Inclusive graviton S_{\delta-1}\frac{\bar{M_p}^2}{M_D^{2+\delta}}m^{\delata-1}
+                                            ! S_{\delta-1} = \frac{2\pi^{\frac{\delta}{2}}{\Gamma(\frac{\delta}{2})}
+         fxn_qq = jfactor * g_s**4/M_D**5*pi*z(1)**2*phi*part1_qq ! I calculate the S factor manually
+                                            ! Constant factor include 3 parts
+                                            ! 1. For all vertex \frac{g_s^4}{\bar{M_p}^2}
+                                            ! 2. For 3 body phase space integration   Cite from FC4Guide
+                                            ! 3. For adding up all the graviton's mass Cite from GRW's arxiv: 9811291v2
+										
       END FUNCTION fxn_1
 END MODULE my_fxn
 
