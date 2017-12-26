@@ -26,7 +26,7 @@ PROGRAM main
    sigma_gg=avgi_gg*3.894*10**8
    PRINT *,j, M_D, sigma_gg
 
-   OPEN(1,file = 'DATAgg4.txt', position = 'append', status='unknown')
+   OPEN(1,file = 'DATAgg1.txt', position = 'append', status='unknown')
    WRITE(1,*) M_D, sigma_gg ,'pb'
    CLOSE(1)
 

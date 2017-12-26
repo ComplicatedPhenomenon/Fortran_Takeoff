@@ -148,7 +148,7 @@ MODULE my_fxn
          jfactor = jacobian(upper, lower)
          CALL commonpart(z(7),z(6),z(3),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
-         INCLUDE "bingos4.m"
+         INCLUDE "bingos1.m"
 
          part_gg = CT14Pdf(0,z(4),G_QCDFactorazationScale**2)*CT14Pdf(0,z(5),G_QCDFactorazationScale**2) * part_gg
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
