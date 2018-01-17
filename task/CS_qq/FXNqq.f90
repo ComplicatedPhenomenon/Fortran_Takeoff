@@ -9,7 +9,7 @@ MODULE my_fxn
    REAL(KIND(0D0)), PARAMETER      :: g_s = 0.118d0
    REAL(KIND(0d0))                 :: M_D                                     ! Plack energy in D dimensional
    INTEGER                         :: nd                                      ! nd is the number of integration 
-   INTEGER                         :: delta                                      ! nd is the number of integration 
+   INTEGER                         :: delta                                   ! delta is the number of extra dimension
    REAL(KIND(0D0)), PARAMETER      :: m=172d0                                 ! The mass of top quark
    REAL(KIND(0D0)), PARAMETER      :: G_QCDFactorazationScale=1d2             
    REAL(KIND(0D0)), PARAMETER      :: pi=3.14159d0

@@ -2,8 +2,3 @@
 
 Turning text file into CSV makes it convenient to manipulate the file.
 
-merge four files into one:
-
-`cat bingos1.m bingos2.m bingos3.m bingos4.m > bingo.m`
-
-* We only change the number of extra dimension `delta` and the lower limits of `M_D`.

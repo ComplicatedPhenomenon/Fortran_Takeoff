@@ -1,8 +1,8 @@
 MODULE my_fxn
    IMPLICIT NONE
    PRIVATE
-   PUBLIC ::  fxn_1
-   PUBLIC ::  nd, delta, cos_theta
+   PUBLIC ::  fxn_2
+   PUBLIC ::  nd, delta, cos_theta  
 
 
    REAL(KIND(0D0)), PARAMETER      :: S=1.69d8                                ! S = (P1+P2)^2 which P1, P2 is four vector of protons
@@ -71,34 +71,37 @@ MODULE my_fxn
          END DO
          k(0) = sqrt(s12) - p3_0-p4_0
 
-         s13 = m**2- 2*dot_vec(k1,p3)
-         s14 = m**2- 2*dot_vec(k1,p4)
+         s13 = m**2- 2*dot_vec(k1,p3)  ! Defination of mandelstam variable in 2 to 3 particle scattering process
+         s14 = m**2- 2*dot_vec(k1,p4)  ! where we leave off the mass of the initial particles.
          s23 = m**2- 2*dot_vec(k2,p3)
          s24 = m**2- 2*dot_vec(k2,p4)
 
       END SUBROUTINE commonpart
 
-      FUNCTION fxn_1(z, wgt) RESULT(fxn_qq)
+      FUNCTION fxn_2(z, wgt) RESULT(fxn_gg)
          IMPLICIT NONE
          REAL(KIND(0D0)), DIMENSION(1:nd) :: z
          REAL(KIND(0d0)) :: wgt
-         REAL(KIND(0d0)) :: tau_0
+         REAL(KIND(0D0)) :: tau_0                             ! The variable τ characterizes the (invariant) mass of the
+                                                              ! reaction, with τ_0 = (m_res)^2/S
          REAL(KIND(0d0)) :: sigma, tau, m_plus, m_minus,  &   ! intermediate var
                             p3_v, p4_v, k_v
-         REAL(KIND(0D0)) :: s13,s14,s23, s24, gm
-         REAL(KIND(0d0)) :: part1_qq,part_qq,fxn_qq
+         REAL(KIND(0D0)) :: s13,s14,s23, s24, gm, sunn
+         REAL(KIND(0D0)) :: part_gg,fxn_gg
          REAL(KIND(0d0)) :: p3_0_max, p4_0_max, eta_max, gm_max, x1_max, x2_max, &
                             p3_0_min, p4_0_min, eta_min, gm_min, x1_min, x2_min
          REAL(KIND(0D0)), DIMENSION(1:nd) :: upper, lower
-         REAL(KIND(0d0)) :: jfactor, phi, S_
+         REAL(KIND(0D0)) :: jfactor, phi, S_
 
+
+         sunn = 3
          wgt = 0
 
          gm_max = M_D
          gm_min = 0.1d0
          z(1)= (gm_max-gm_min)*z(1) + gm_min
 
-         tau_0 = (2*m +z(1) )**2/S
+         tau_0 = (2*m+z(1) )**2/S
 
          eta_max = 2*pi
          eta_min = 0
@@ -114,7 +117,7 @@ MODULE my_fxn
 
          s12 = z(3)*z(4) * S
          IF (SQRT(s12) < 2*m+z(1))THEN
-            fxn_qq = 0d0
+            fxn_gg = 0d0
             RETURN
             ELSE
          END IF
@@ -134,21 +137,18 @@ MODULE my_fxn
          z(6) = (p3_0_max-p3_0_min)*z(6)+p3_0_min
 
          p3_v = SQRT(z(6)**2-m**2)
-         k_v = SQRT((sqrt(s12)-z(5)-z(6))**2-z(1)**2)
+         k_v = SQRT((SQRT(s12)-z(5)-z(6))**2-z(1)**2)
 
          gm = z(1)
 
          upper = [gm_max, eta_max, x1_max, x2_max, p4_0_max, p3_0_max]
          lower = [gm_min, eta_min, x1_min, x2_min, p4_0_min, p3_0_min]
          jfactor = jacobian(upper, lower)
-         call commonpart(z(6),z(5),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24)
+         CALL commonpart(z(6), z(5), z(2), k_v, p3_v, p4_v, s13, s14, s23, s24)
 
-         INCLUDE "input/juicy.m"
-         part1_qq = 0d0
-         DO i = 1, 5
-            part1_qq = part1_qq+CT14Pdf(i, z(3), G_QCDFactorazationScale**2)*CT14Pdf(-i, z(4), G_QCDFactorazationScale**2)*part_qq
-         END DO
+         INCLUDE "input/bingo.m"
 
+         part_gg = CT14Pdf(0,z(3),G_QCDFactorazationScale**2)*CT14Pdf(0,z(4),G_QCDFactorazationScale**2) * part_gg
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
 
          ! \phi = \frac{1}{8(2\pi}^4}\frac{1}{4|\vec{k_1|\sqrt{s_{12}}} mean while \vec{k_1} = \frac{\sqrt{s_{12}}}{2}
@@ -156,7 +156,7 @@ MODULE my_fxn
          ! S_{\delta-1} = \frac{2\pi^{\frac{\delta}{2}}{\Gamma(\frac{\delta}{2})}
 
          S_ = 2*pi**(delta/2)/gamma(delta/2d0)
-         fxn_qq = g_s**4*S_*1/M_D**(2+delta)*pi*z(1)**(delta-1)*phi*jfactor*part1_qq
+         fxn_gg = g_s**4*S_*1/M_D**(2+delta)*pi*z(1)**(delta-1)*phi*jfactor*part_gg
 
          ! I calculate the S factor manually
          ! Constant factor include 3 parts
@@ -164,5 +164,5 @@ MODULE my_fxn
          ! 2. For 3 body phase space integration   Cite from FC4Guide
          ! 3. For adding up all the graviton's mass Cite from GRW's arxiv: 9811291v2
            ! S_{\delta-1} * gm
-      END FUNCTION fxn_1
+      END FUNCTION fxn_2
 END MODULE my_fxn

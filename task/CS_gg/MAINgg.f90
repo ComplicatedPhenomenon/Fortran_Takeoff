@@ -14,19 +14,22 @@ PROGRAM main
    nd = NDIM
 
    CALL SetCT14(Tablefile)
-   interval = 7d3/300
 
+   delta = 4
    M_D = 3d3
+   interval = 2d3/100
+
    i = 1
    CALL GET_COMMAND_ARGUMENT(i,arg)
    READ(arg,*) j
+
    M_D = M_D + j*interval
 
    CALL vegas(NDIM,fxn_2,avgi_gg,sd,chi2a)
    sigma_gg=avgi_gg*3.894*10**8
    PRINT *,j, M_D, sigma_gg
 
-   OPEN(1,file = 'DATAgg1.txt', position = 'append', status='unknown')
+   OPEN(1,file = 'result/DATAgg_d4.txt', position = 'append', status='unknown')
    WRITE(1,*) M_D, sigma_gg ,'pb'
    CLOSE(1)
 

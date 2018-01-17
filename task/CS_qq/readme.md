@@ -5,6 +5,7 @@ This project is to calculate the process of $q\bar{q}\rightarrow t\bar{t}G_n$
 * `MC_VEGAS.f90` is the key algorithm for multiple integration in the phase space. Borrow from [HELAC-Onia](https://archive.org/details/arxiv-1212.5293)
 * `FXNqq.f90` is for final state of three body phase space integration.
 * `MAINqq.f90` is the main program.
+  * The cross section are calculated as a function of $M_D$. 
 * Citing `CT14pdf.for` and `CT14.pds` from [CT14 parton distribution functions](http://hep.pa.msu.edu/cteq/public/index.html) of its General-purpose LO central sets  
 * `buildqq.sh` is a simple makefile.
 * `loop.sh` is a script for controlling the loop outside of main program.

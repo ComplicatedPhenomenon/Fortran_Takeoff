@@ -2,13 +2,14 @@ MODULE my_fxn
    IMPLICIT NONE   
    PRIVATE
    PUBLIC ::  fxn_2, &
-              M_D, nd   
+              M_D, nd, delta 
    
    
    REAL(KIND(0D0)), PARAMETER      :: S=1.69d8                                ! S = (P1+P2)^2 which P1, P2 is four vector of protons 
    REAL(KIND(0D0)), PARAMETER      :: g_s = 0.118d0
    REAL(KIND(0d0))                 :: M_D                                     ! Plack energy in D dimensional
    INTEGER                         :: nd                                      ! nd is the number of integration 
+   INTEGER                         :: delta                                   ! delta is the number of extra dimension 
    REAL(KIND(0D0)), PARAMETER      :: m=172d0                                 ! The mass of top quark
    REAL(KIND(0D0)), PARAMETER      :: G_QCDFactorazationScale=1d2             
    REAL(KIND(0D0)), PARAMETER      :: pi=3.14159d0
@@ -83,13 +84,13 @@ MODULE my_fxn
          REAL(KIND(0D0)) :: tau_0                             ! The variable τ characterizes the (invariant) mass of the 
                                                               ! reaction, with τ_0 = (m_res)^2/S      
          REAL(KIND(0d0)) :: sigma, tau, m_plus, m_minus,  &   ! intermediate var 
-                            p3_v, p4_v, k_v, phi
+                            p3_v, p4_v, k_v
          REAL(KIND(0D0)) :: s13,s14,s23, s24, gm, sunn    
          REAL(KIND(0D0)) :: part_gg,fxn_gg       
          REAL(KIND(0d0)) :: p3_0_max, p4_0_max, cos_theta_max, eta_max, gm_max, x1_max, x2_max, &
                             p3_0_min, p4_0_min, cos_theta_min, eta_min, gm_min, x1_min, x2_min
          REAL(KIND(0D0)), DIMENSION(1:nd) :: upper, lower
-         REAL(KIND(0D0)) :: jfactor
+         REAL(KIND(0D0)) :: jfactor, phi, S_
 
          sunn = 3                                        
          wgt = 0
@@ -148,11 +149,23 @@ MODULE my_fxn
          jfactor = jacobian(upper, lower)
          CALL commonpart(z(7),z(6),z(3),z(2), k_v,p3_v, p4_v, s13, s14, s23, s24) 
 
-         INCLUDE "bingos1.m"
+         INCLUDE "input/bingo.m"
 
          part_gg = CT14Pdf(0,z(4),G_QCDFactorazationScale**2)*CT14Pdf(0,z(5),G_QCDFactorazationScale**2) * part_gg
          phi = 1/(8*(2*pi)**4) * 1/(2*s12)
-         fxn_gg = jfactor*g_s**4/M_D**5*pi*z(1)**2*phi*part_gg
+
+         ! \phi = \frac{1}{8(2\pi}^4}\frac{1}{4|\vec{k_1|\sqrt{s_{12}}} mean while \vec{k_1} = \frac{\sqrt{s_{12}}}{2}
+         ! Inclusive graviton S_{\delta-1}\frac{\bar{M_p}^2}{M_D^{2+\delta}}m^{\delata-1}
+         ! S_{\delta-1} = \frac{2\pi^{\frac{\delta}{2}}{\Gamma(\frac{\delta}{2})}
+
+         S_ = 2*pi**(delta/2)/gamma(delta/2d0)
+         fxn_gg = g_s**4*S_*1/M_D**(2+delta)*pi*z(1)**(delta-1)*phi*jfactor*part_gg 
+
+         ! I calculate the S factor manually
+         ! Constant factor include 3 parts
+         ! 1. For all vertex \frac{g_s^4}{\bar{M_p}^2}
+         ! 2. For 3 body phase space integration   Cite from FC4Guide
+         ! 3. For adding up all the graviton's mass Cite from GRW's arxiv: 9811291v2
+           ! S_{\delta-1} * gm
       END FUNCTION fxn_2
 END MODULE my_fxn
-
