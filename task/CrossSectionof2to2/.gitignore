@@ -1,4 +1,5 @@
 result/*
 input/*
 
-! *.f90
+# Executables
+calc
