@@ -1,7 +1,0 @@
-! *.for
-! *.f90
-! *.sh
-
-a.out 
-input/*
-output/*

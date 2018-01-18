@@ -2,12 +2,12 @@ MODULE my_fxn
    IMPLICIT NONE
    PRIVATE
    PUBLIC ::  fxn_1
-   PUBLIC ::  nd, delta, cos_theta
+   PUBLIC ::  nd, delta,M_D, cos_theta
 
 
    REAL(KIND(0D0)), PARAMETER      :: S=1.69d8                                ! S = (P1+P2)^2 which P1, P2 is four vector of protons
    REAL(KIND(0D0)), PARAMETER      :: g_s = 0.118d0
-   REAL(KIND(0d0)), PARAMETER      :: M_D = 3d3                               ! Plack energy in D dimensional
+   REAL(KIND(0d0))                 :: M_D                                     ! Plack energy in D dimensional
    REAL(KIND(0d0))                 :: cos_theta
    INTEGER                         :: nd                                      ! nd is the number of integration
    INTEGER                         :: delta                                   ! delta is the number of extra dimension

@@ -11,7 +11,8 @@ PROGRAM main
    CHARACTER(LEN = 128)      :: arg
    DATA Tablefile/'CT14LL.pds'/
    nd = NDIM
-   delta = 4
+   delta = 3
+   M_D = 3d3
    CALL SetCT14(Tablefile)
    interval = 2d0/100
 
@@ -26,7 +27,7 @@ PROGRAM main
 
    diffCSqq = LOG(avgi_qq * 3.894 * 10 ** 8)
 
-   OPEN(1,file = 'DATAqq_d4.txt', position = 'append', status='unknown')
+   OPEN(1,file = 'result/diffDATAqq_d3.txt', position = 'append', status='unknown')
    PRINT *, j, cos_theta, diffCSqq
    WRITE(1,*)  cos_theta, diffCSqq 
 

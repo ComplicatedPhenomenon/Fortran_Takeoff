@@ -16,11 +16,11 @@ PROGRAM main
     CALL SetCT14(Tablefile)
     interval = 2d3/100
    
-    OPEN(1,file = 'DATAqq_5.txt', position = 'append', status='unknown')
+    OPEN(1,file = 'result/DATAqq_d4.txt', position = 'append', status='unknown')
 
-    M_D = 2d3
+    M_D = 3d3
 
-    delta = 5
+    delta = 4
     CALL GET_COMMAND_ARGUMENT(1,arg)
     READ(arg,*) j
     M_D = M_D + j*interval

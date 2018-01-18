@@ -1,15 +1,14 @@
-This project is to calculate the process of $q\bar{q}\rightarrow t\bar{t}G_n$
+Master's thesis to calculate the process of $p\bar{p}\rightarrow t\bar{t}G_n$
 
 `Framework of code`
 
 * `MC_VEGAS.f90` is the key algorithm for multiple integration in the phase space. Borrow from [HELAC-Onia](https://archive.org/details/arxiv-1212.5293)
-* `FXNqq.f90` is for final state of three body phase space integration.
-* `MAINqq.f90` is the main program.
-  * The cross section are calculated as a function of $M_D$. 
+* `FXN*.f90` is for final state of three body phase space integration.
+* `MAIN*.f90` is the main program.
 * Citing `CT14pdf.for` and `CT14.pds` from [CT14 parton distribution functions](http://hep.pa.msu.edu/cteq/public/index.html) of its General-purpose LO central sets  
-* `buildqq.sh` is a simple makefile.
-* `loop.sh` is a script for controlling the loop outside of main program.
-* `graph.py` is used to plot with the outcome.
+* `build*.sh` is to generate the executable file.
+* `loop.sh` is a script call that executable file.
+* `notebooks` contains the Jupyter Notebook for  analysing and displaying the outcome.
 ---
 * [**skills in handling the input file containing the long expression**](https://github.com/ComplicatedPhenomenon/Fortran_Takeoff/issues/2#issuecomment-303884938)
 
@@ -17,3 +16,8 @@ This project is to calculate the process of $q\bar{q}\rightarrow t\bar{t}G_n$
 * [vim Tips](http://vim.wikia.com/wiki/Ranges)
   * [Delete all lines containing a pattern ](http://vim.wikia.com/wiki/Delete_all_lines_containing_a_pattern)
   * Change variable name in the whole program, naming it in a more readable way. `:%s/\<foo\>/bar/gc` Change only whole words exactly matching `foo` to `bar`; ask for confirmation.
+
+* [Parse a plain text file into a CSV file](https://stackoverflow.com/questions/16248513/parse-a-plain-text-file-into-a-csv-file-using-python)
+  * Turning text file into CSV makes it convenient to manipulate the file.
+* Merge four files into one: `cat bingos1.m bingos2.m bingos3.m bingos4.m > bingo.m`
+

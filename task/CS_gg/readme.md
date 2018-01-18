@@ -1,9 +1,0 @@
-[Parse a plain text file into a CSV file](https://stackoverflow.com/questions/16248513/parse-a-plain-text-file-into-a-csv-file-using-python)
-
-Turning text file into CSV makes it convenient to manipulate the file.
-
-merge four files into one:
-
-`cat bingos1.m bingos2.m bingos3.m bingos4.m > bingo.m`
-
-* We only change the number of extra dimension `delta` and the lower limits of `M_D`.
