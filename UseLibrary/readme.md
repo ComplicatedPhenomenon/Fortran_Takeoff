@@ -73,4 +73,4 @@ Traceback (most recent call last): ...
 ---
 List of numerical libraries. [Transport Door](https://en.wikipedia.org/wiki/List_of_numerical_libraries)
 
-Install Lapack
+Lapack
