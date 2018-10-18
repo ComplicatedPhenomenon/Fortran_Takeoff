@@ -30,14 +30,14 @@ private arrat scratch not accessible from outside of the module.
 Keywords private and public can stand alone, or be an attribute
 
 **The position is the only information avaliable.**
-```fortran 
+```fortran
 subroutine s(a,b,c,n,...)
 ...
 call       s(x,y,z,m,...)
 ```
 #### Stuctures and Derived Types
 * Declarations specifies a list of items (Derived Type)
-* A Structure ( a variable of derived type) can hold 
+* A Structure ( a variable of derived type) can hold
   * variable of simple types (real, integer, character, logical, complex)
   * arrays: static and allocatable
   * other derived types
@@ -62,7 +62,7 @@ end type cat
 end type people
 ```
 ####Why do we use subprograms?
-subroutine and functions serve mainly 3 puposes, while one of them is not familiar with me.
+subroutine and functions serve mainly 3 purposes, while one of them is not familiar with me.
 
 **Hide Local variables**, so that the name can be re-used
 ####Modules are another, more flexible too to hide contents
