@@ -10,9 +10,10 @@ real                 :: height
 end type person
 
 type(person) :: anyone
-      
-print *,'Input first name, last name, sex, age, height by order.' 
+
+print *,'Demonstrate how a defined type <person> works'      
+print *,'Input first name, last name, sex, age, height by order.'
 read (*,*) anyone
-      
+
 write (*,*) anyone
 end program test_derived_data

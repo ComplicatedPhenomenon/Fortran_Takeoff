@@ -8,7 +8,7 @@ The extensions .f90, .f95, and .f03 are used for modern, free form source code c
 #### Allocatable arrays
 In the old days :smile:, the maximum size arrays had to be declared when the code is written. This was a great disadvantages,(**?**), as it result in wasted RAM(are you kidding me, Displaying you the space exactly you need wastes RAM?)(Array size has to be the maximum possible)or in frequent recompilations.
 #### Public, Private Subroutine
-Default is *public*: all public content can be **used** from the outside of the mdule. *Private* items are only accessible from within the module.\
+Default is *public*: all public content can be **used** from the outside of the mdule. *Private* items are only accessible from within the module.
 #### Public, Private Variables
 ```fortran
 module mad_science
