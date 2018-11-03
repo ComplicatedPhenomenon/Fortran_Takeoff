@@ -11,9 +11,10 @@ end type person
 
 type(person) :: anyone
 
-print *,'Demonstrate how a defined type <person> works'      
+print *,'Demonstrate how a defined type <person> works'
 print *,'Input first name, last name, sex, age, height by order.'
 read (*,*) anyone
 
 write (*,*) anyone
+print  *, anyone%sex ! Access one element.
 end program test_derived_data

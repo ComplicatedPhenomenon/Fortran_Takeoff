@@ -1,6 +1,6 @@
 module wz
    private
-   public :: uk 
+   public :: uk
    contains
       subroutine london(A, x, y ,z )
      ! subroutine london(x, y ,z )
@@ -34,11 +34,8 @@ end module wz
 program un
    use wz
    implicit none
-   real :: B     
+   real :: B
    real :: q
    B = 3
    print *,uk(B, q) ! place holder
 end program un
-
-
-! The statement with ! is used to replace no ! ones. However it went wrong

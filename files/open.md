@@ -25,4 +25,5 @@ Remember to use the module before accessing the public entity from the outside.
 In order to memorize it's been a long way to get here for Fortran.
 
 All attributes in capital. Better to convert the code written a year ago while
-script. 
+script.
+# Variable string as file names
