@@ -1,8 +1,14 @@
-#### Why do we need initialize variable?
+# Why do we need initialize variable?
 In order to make sure running on different machine won't produce mistakes
-#### Why do we need to give the length of an character type?
-
-#### Module procedure
+# When do we need `KIND`?
+In Fortran 90 and later, intrinsic types such as `real` and `integer` have a
+kind attribute which guarantees a specific precision and/or range.
+```fortran
+integer, parameter :: dp = selected_real_kind(15, 307)
+real(kind=dp) :: a
+real(dp)      :: b
+```
+# Module procedure
 module can contain procedures
 
 There are two types of procedures:

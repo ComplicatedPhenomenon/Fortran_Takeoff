@@ -1,13 +1,15 @@
-Take a try to  refer to a library
+# Turn to a library
 
 Install a Library.
 * First find the source code of the library.
+  * datetime-fortran
+  * [functional-fortran](https://wavebitscientific.github.io/functional-fortran/)
+  * BLAS
+  * Lapack
 * Build
-  * A KISS tool for automatic building modern Fortran projects.
-* Install.
-  * Install a library didn't depend on the third party.
 
-Install [FoBiS.py](https://github.com/szaghi/FoBiS.git).(Fortran Building System for poor people.)
+# Install [FoBiS.py](https://github.com/szaghi/FoBiS.git) first
+Fortran Building System for poor people.
 
 >  FoBiS.py is able to build almost automatically complex Fortran projects with cumbersome inter-modules dependency. This removes the necessity to write complex makefile.
 
@@ -24,53 +26,19 @@ Install [FoBiS.py](https://github.com/szaghi/FoBiS.git).(Fortran Building System
 
    I use `sudo -H pip3 install FoBiS.py`, It went well.  
 
-Install [forbear](https://github.com/szaghi/forbear.git)
+## Use FoBis.py to install Fortran library [forbear](https://github.com/szaghi/forbear.git)
 
-* [reference](https://github.com/ComplicatedPhenomenon/Fortran_Takeoff/issues/3)    
-  * > Module 'pygooglechart' not found: Gcov graphs disabled
-Traceback (most recent call last): ...
+> An awesome package is one that is mature (not recently released), is well
+maintained, has a good amount of users, has good documentation, follows the best
+practices, and which latest release is less than 1 year old.
 
-    > Pygooglechart I a python module used by FoBiS to generate nice coverage reports.
+Following this standard to find some library.
 
-  [pygooglechart source](https://github.com/gak/pygooglechart)
+# A very basic way using library
+`FoBiS.py build -ext_libs datetime --lib_dir /path/to/datetime-fortran/build/lib --include /path/to/datetime-fortran/build/include`
 
-  [Tip](https://github.com/Fortran-FOSS-Programmers/FOODIE/issues/37)
-
-  ```
-  git clone --recursive https://github.com/szaghi/forbear
-  ```
-  `sudo easy_install3 pygooglechart`
-  * Whenever I run `FoBiS.py build`, I get
-    ```
-    FoBiS.py build
-    Traceback (most recent call last):
-    File "/usr/local/bin/FoBiS.py", line 4, in <module>
-    __import__('pkg_resources').run_script('FoBiS.py==2.2.8', 'FoBiS.py')
-    File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 742, in run_script
-    self.require(requires)[0].run_script(script_name, ns)
-    File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 1510, in run_script
-    exec(script_code, namespace, namespace)
-    File "/usr/local/lib/python3.6/dist-packages/FoBiS.py-2.2.8-py3.6.egg/EGG-INFO/scripts/FoBiS.py", line 21, in <module>
-    File "/usr/local/lib/python3.6/dist-packages/FoBiS.py-2.2.8-py3.6.egg/fobis/fobis.py", line 45, in main
-    File "/usr/local/lib/python3.6/dist-packages/FoBiS.py-2.2.8-py3.6.egg/fobis/fobis.py", line 58, in run_fobis
-    File "/usr/local/lib/python3.6/dist-packages/FoBiS.py-2.2.8-py3.6.egg/fobis/FoBiSConfig.py", line 65, in __init__
-    File "/usr/local/lib/python3.6/dist-packages/FoBiS.py-2.2.8-py3.6.egg/fobis/Fobos.py", line 76, in __init__
-    File "/usr/local/lib/python3.6/dist-packages/FoBiS.py-2.2.8-py3.6.egg/fobis/Fobos.py", line 238, in _set_cliargs
-    File "/usr/local/lib/python3.6/dist-packages/FoBiS.py-2.2.8-py3.6.egg/fobis/Fobos.py", line 176, in _check_local_variables
-    File "/usr/local/lib/python3.6/dist-packages/FoBiS.py-2.2.8-py3.6.egg/fobis/Fobos.py", line 144, in _get_local_variables
-    File "/usr/lib/python3.6/configparser.py", line 858, in items
-    return [(option, value_getter(option)) for option in d.keys()]
-    File "/usr/lib/python3.6/configparser.py", line 858, in <listcomp>
-    return [(option, value_getter(option)) for option in d.keys()]
-    File "/usr/lib/python3.6/configparser.py", line 855, in <lambda>
-    section, option, d[option], d)
-    File "/usr/lib/python3.6/configparser.py", line 394, in before_get
-    self._interpolate_some(parser, option, L, value, section, defaults, 1)
-    File "/usr/lib/python3.6/configparser.py", line 444, in _interpolate_some
-    "found: %r" % (rest,))
-    configparser.InterpolationSyntaxError: '%' must be followed by '%' or '(', found: '%^%FACE/%" -czf FACE.tar.gz *'
-   ```
----
-List of numerical libraries. [Transport Door](https://en.wikipedia.org/wiki/List_of_numerical_libraries)
-
-Lapack
+# [Open Coarrays](https://github.com/sourceryinstitute/OpenCoarrays)
+```sh
+$ caf --show
+/usr/local/bin/gfortran -I/usr/local/Cellar/opencoarrays/2.3.1/include/OpenCoarrays-2.3.1_GNU-8.2.0 -fcoarray=lib -Wl,-flat_namespace -Wl,-commons,use_dylibs -L/usr/local/Cellar/libevent/2.1.8/lib -L/usr/local/Cellar/open-mpi/3.1.2/lib ${@} /usr/local/Cellar/opencoarrays/2.3.1/lib/libcaf_mpi.a /usr/local/lib/libmpi_usempif08.dylib /usr/local/lib/libmpi_usempi_ignore_tkr.dylib /usr/local/lib/libmpi_mpifh.dylib /usr/local/lib/libmpi.dylib
+```

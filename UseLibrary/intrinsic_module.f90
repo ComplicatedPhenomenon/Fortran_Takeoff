@@ -1,21 +1,23 @@
 program matrix
-   use ISO_FORTRAN_ENV, only : I8=>INT8, I16=>INT16, I32=>INT32, I64=>INT64
-   implicit none
-   integer(I8)   :: a1
-   integer(I16)  :: a2
-   integer(I32)  :: a3
-   integer(I64)  :: a4
-   real(kind=4), dimension(1:4) :: r1
-   real(kind=4), dimension(4,2) :: r2
-   real, allocatable, dimension( :,:) :: b
-   a1 = 3
-   print *,'**********HUGE returns the largest number of a kind**********'
-   print *, huge(a1), huge(a2), huge(a3), huge(a4)
-   print *,'**********REAL converts a type to real type *****************'
-   print *, real(a1), real(a1,kind = 8)
-   print *,'**************Array manipulation *****************************'
-   ! initialize a 
-   r1 = [2,3,4,5]
-   print *,r1
+!  use ISO_FORTRAN_ENV, only : I8=>INT8, I16=>INT16, I32=>INT32, I64=>INT64
+  use datetime_module, only:datetime
+
+  implicit none
+
+  type(datetime) :: a
+
+  a = a % now()
+  print *,'Returns an array of 3 integers: year, week number, and week day'
+  print *,'datetime%isocalendar() is equivalent to Python’s datetime.datetime.isocalendar()'
+  print *,'This programs is running at:', a % isoformat('')
+
+
+  a = datetime() ! 0001-01-01 00:00:00
+  write(*,*)'a = datetime(), a % isocalendar() :' , a % isocalendar()
+  ! datetime%isocalendar() is equivalent to Python’s datetime.datetime.isocalendar().
+
+  ! Components can be specified by position:
+  a = datetime(1984, 12, 10) ! 1984-12-10 00:00:00
+  write(*,*) 'a = datetime(1984, 12, 10), a % isocalendar():', a % isocalendar()
 
 end program matrix
