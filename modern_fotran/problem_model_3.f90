@@ -6,7 +6,7 @@ module wz
      ! subroutine london(x, y ,z )
          implicit none
          real, intent(in) :: A
-         !real:: A
+    
          real :: x, y, z
          print *, A
          x = A

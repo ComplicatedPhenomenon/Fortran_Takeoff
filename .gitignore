@@ -1,3 +1,9 @@
 a.out
 obj/
 mod/
+*.o
+*.mod
+coarray
+mpi
+omp
+serial

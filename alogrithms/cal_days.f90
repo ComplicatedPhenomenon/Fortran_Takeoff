@@ -1,10 +1,8 @@
-program doy
-!aim
-!	
-!         date            programmer           description
-!        =======	  ==========	       ===========
-!        28/12/16   	     W.M. 	      original code
 !
+!     Modified Date:
+!     Description:
+!
+program doy
 implicit none
 
 integer    :: day
@@ -15,10 +13,10 @@ integer    :: month
 integer    :: year
 write (*,*)'This program caculates the day of year given the '
 write (*,*)'current date .Enter current month(1-12),day(1-31), year in that order'
-read (*,*) month,day,year   
-if(mod(year,400) == 0) then 
+read (*,*) month,day,year
+if(mod(year,400) == 0) then
   leap_day = 1
-  else if(mod(year,100) == 0) then 
+  else if(mod(year,100) == 0) then
   leap_day = 0
   else if (mod(year,4) == 0) then
   leap_day = 1
@@ -41,4 +39,3 @@ write (*,*)'Month        =',month
 write (*,*)'Year         =',year
 write (*,*)'day of year  =',day_of_year
 end program doy
-      

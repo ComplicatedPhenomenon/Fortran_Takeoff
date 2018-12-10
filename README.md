@@ -17,3 +17,11 @@ Even if I heard about it long ago, I haven't done it.
 * Coding with modern Fortran features.
 
 * Spending time on program design instead of getting a head start in coding first.
+
+* Perfect this repository until it become well tested and useful subprograms.
+
+# Learn from curly selected project.
+* 2acos0
+* DiffusionMonteCarlo
+* for-science
+They all can be found on Github.

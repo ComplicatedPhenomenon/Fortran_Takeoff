@@ -41,4 +41,5 @@ Following this standard to find some library.
 ```sh
 $ caf --show
 /usr/local/bin/gfortran -I/usr/local/Cellar/opencoarrays/2.3.1/include/OpenCoarrays-2.3.1_GNU-8.2.0 -fcoarray=lib -Wl,-flat_namespace -Wl,-commons,use_dylibs -L/usr/local/Cellar/libevent/2.1.8/lib -L/usr/local/Cellar/open-mpi/3.1.2/lib ${@} /usr/local/Cellar/opencoarrays/2.3.1/lib/libcaf_mpi.a /usr/local/lib/libmpi_usempif08.dylib /usr/local/lib/libmpi_usempi_ignore_tkr.dylib /usr/local/lib/libmpi_mpifh.dylib /usr/local/lib/libmpi.dylib
+$ cafrun -np 2 ./a.out 
 ```
