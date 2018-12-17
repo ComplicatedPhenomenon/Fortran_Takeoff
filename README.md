@@ -1,7 +1,5 @@
 # Practice repository
-
-This repository will conclude the basic contents Fortran. So far, It's all about
-example usage. Just as tutorial for a beginner.  
+This repository will cover the most features in Fortran. Can be used as tutorial for a beginner.  
 
 > To get good at anything you have to practice every day, and eventually it'll be easier and fun.
 
@@ -19,7 +17,7 @@ gfortran is used in most times, nevertheless, Situation of using multiple compil
 
 * Polish this repository until it become well tested and useful subprograms.
 
-# Learn from curly selected project.
+# Learn from curly selected project
 * OOP. Main newly added feature in Fortan 2003 standard
   - [FOSS](https://github.com/Fortran-FOSS-Programmers)
 * Coarray. Main newly added feature in Fortan 2008 standard
