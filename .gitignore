@@ -1,4 +1,5 @@
 a.out
+a.out*
 obj/
 mod/
 *.o
@@ -7,4 +8,3 @@ coarray
 mpi
 omp
 serial
-fortran2018-examples
