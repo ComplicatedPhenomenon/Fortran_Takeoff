@@ -8,3 +8,5 @@ coarray
 mpi
 omp
 serial
+
+UCY-*

@@ -5,7 +5,7 @@
 ## Allocatable arrays
 In the old days :smile:, the maximum size arrays had to be declared when the code is written. This was a great disadvantages,(**?**), as it result in wasted RAM(are you kidding me, Displaying you the space exactly you need wastes RAM?)(Array size has to be the maximum possible)or in frequent recompilations.
 
-So far, we only learn about static variables, that is they have had a fix memory requirement, which is specified when the variable is declared.
+So far, I only learn about static variables, that is they have had a fix memory requirement, which is specified when the variable is declared.
 [Dynamic Arrays](http://www.pcc.qub.ac.uk/tec/courses/f90/stu-notes/F90_notesMIF_11.html)
 
 During program execution, the allocation status of an allocatable array is one one the following:

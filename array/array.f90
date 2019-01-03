@@ -1,8 +1,8 @@
 program alloc_array
    implicit none
 
-   integer , dimension(:),   allocatable :: x_1d
-   integer , dimension(:,:), allocatable :: x_2d
+   integer, dimension(:),   allocatable :: x_1d
+   integer, dimension(:,:), allocatable :: x_2d
    integer, dimension(:, :), allocatable :: array
    integer :: row, col
 

@@ -6,7 +6,20 @@ Install a Library.
   * [functional-fortran](https://wavebitscientific.github.io/functional-fortran/)
   * BLAS
   * Lapack
-* Build
+* ...
+
+  Take a rather modern library, `functional-fortran` as an example, the installation procedure typically like below
+  ```sh
+  git clone https://github.com/wavebitscientific/functional-fortran
+  cd functional-fortran
+  mkdir build
+  cd build
+  cmake ..
+  make
+  ctest
+  ```
+
+  > Make is a system to generate make files based on the platform (i.e. CMake is cross platform) which you can then make using the generated makefiles.
 
 # Install [FoBiS.py](https://github.com/szaghi/FoBiS.git) first
 Fortran Building System for poor people.
@@ -25,7 +38,6 @@ Fortran Building System for poor people.
    szaghi also kindly remind you that t you need root permissions if you are not using your `virtualenv` or you are trying to install FoBiS.py into your system space.
 
    I use `sudo -H pip3 install FoBiS.py`, It went well.  
-
 ## Use FoBis.py to install Fortran library [forbear](https://github.com/szaghi/forbear.git)
 
 > An awesome package is one that is mature (not recently released), is well
@@ -33,6 +45,32 @@ maintained, has a good amount of users, has good documentation, follows the best
 practices, and which latest release is less than 1 year old.
 
 Following this standard to find some library.
+
+```sh
+$ FoBiS.py build -mode
+usage: FoBiS.py build [-h] [-compiler {gnu,intel,g95,opencoarrays-gnu,custom}]
+                      [-fc FC] [-cflags CFLAGS] [-lflags LFLAGS]
+                      [-modsw MODSW] [-mpi] [-openmp] [-coarray] [-coverage]
+                      [-profile] [-mklib {static,shared}] [-ch] [-tb]
+                      [-s SRC [SRC ...]] [-dbld BUILD_DIR] [-dobj OBJ_DIR]
+                      [-dmod MOD_DIR] [-dlib LIB_DIR [LIB_DIR ...]]
+                      [-i INCLUDE [INCLUDE ...]]
+                      [-ed EXCLUDE_DIRS [EXCLUDE_DIRS ...]] [-drs] [-t TARGET]
+                      [-o OUTPUT] [-e EXCLUDE [EXCLUDE ...]]
+                      [-libs LIBS [LIBS ...]] [-vlibs VLIBS [VLIBS ...]]
+                      [-ext_libs EXT_LIBS [EXT_LIBS ...]]
+                      [-ext_vlibs EXT_VLIBS [EXT_VLIBS ...]]
+                      [-dependon DEPENDON [DEPENDON ...]] [-inc INC [INC ...]]
+                      [-extensions EXTENSIONS [EXTENSIONS ...]] [-build_all]
+                      [-f FOBOS] [-fci] [-mode MODE] [-lmodes]
+                      [--print_fobos_template] [-preprocessor [PREPROCESSOR]]
+                      [-p PREPROC] [-dpp PREPROCESSOR_DIR]
+                      [-epp PREPROCESSOR_EXT [PREPROCESSOR_EXT ...]]
+                      [-force_compile] [-colors] [-l] [-graph] [-q] [-verbose]
+                      [-j JOBS] [-m MAKEFILE_name]
+FoBiS.py build: error: argument -mode: expected one argument
+```
+
 
 # A very basic way using library
 `FoBiS.py build -ext_libs datetime --lib_dir /path/to/datetime-fortran/build/lib --include /path/to/datetime-fortran/build/include`

@@ -30,4 +30,6 @@ To run:
     mpiexec -n 4 ./coarrays 1000
 
 Change `1000` to the number of iterations you want to use to calculate
-pi. 
+pi.
+
+[Wes barnett](https://barnett.science/)

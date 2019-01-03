@@ -1,23 +1,23 @@
 program task_2
-implicit none
+   implicit none
 
-integer :: a
-real :: pi = 3.1415926
-      
-write (*,110) pi
-110 format(E12.5)
-write (*,100) pi
-100 format(E12.3)
-write (*,90) pi
-90 format(E12.3E4)
-write (*,80) pi
-80 format(ES12.3E4)
-write (*,70) pi
-70 format(ES12.4E4)
-write (*,'("please input an integer?")')
-read(*,*),a
-write(*,*),a
-print *,'The output format is wierd'
+   integer :: a
+   real :: pi = 3.1415926
+
+   write (*,110) pi
+   110 format(E12.5)
+   write (*,100) pi
+   100 format(E12.3)
+   write (*,90) pi
+   90 format(E12.3E4)
+   write (*,80) pi
+   80 format(ES12.3E4)
+   write (*,70) pi
+   70 format(ES12.4E4)
+   write (*,'("please input an integer?")')
+   read(*,*),a
+   write(*,*),a
+   print *,'The output format is wierd'
 end program task_2
 
 
