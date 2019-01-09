@@ -2,6 +2,7 @@ a.out
 a.out*
 obj/
 mod/
+*/lib/*
 *.o
 *.mod
 coarray
