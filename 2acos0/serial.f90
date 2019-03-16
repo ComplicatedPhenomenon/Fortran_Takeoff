@@ -21,7 +21,7 @@ contains
             end if
         end do
 
-        pi = 4.0d0 * dble(accept)/dble(n)
+        pi = 4.0d0 * dble(accept)/dble(n) ! dble(a) converts a to double precision real type.  Pi/4 parts of a sphere circle
 
     end function calc_pi
 
@@ -35,8 +35,9 @@ program main
     integer(8) :: n
     real(8), parameter :: pi = 2.0d0*dacos(0.0d0)
     character (len=64) :: arg
-    real(8) :: mypi
-
+    real(8) :: T1, T2, mypi
+    ! 'How many samples you would like to take?'
+    ! Usage of this program should be declare.
     call random_seed()
 
     if (command_argument_count() /= 1) then
@@ -45,10 +46,11 @@ program main
 
     call get_command_argument(1, arg)
     read(arg,*) n
-
+    call cpu_time(T1)
     mypi = calc_pi(n)
-
-    write(*,'(a,f12.6)') "Calculated = ", mypi
-    write(*,'(a,f12.6)') "Actual =     ", pi
+    call cpu_time(T2)
+    write(*,'(a,f12.6)') "Calculated π = ", mypi
+    write(*,'(a,f12.6)') "Actual π =     ", pi
+    print *, 'The time usage is:',  T2-T1
 
 end program main

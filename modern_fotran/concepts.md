@@ -7,11 +7,11 @@ parameter, constant, dimension, allocatable, intent, pointer, target, optional, 
 The extensions .f90, .f95, and .f03 are used for modern, free form source code conforming to the ... standards. Some choose to use .f90 to denote free-form source code, for example, including Fortran 2003 code.
 
 ## Public, Private Subroutine
-Default is *public*: all public content can be **used** from the outside of the mdule. *Private* items are only accessible from within the module.
+Default is *public*: all public content can be **used** from the outside of the module. *Private* items are only accessible from within the module.
 ## Public, Private Variables
 ```fortran
 module mad_science
-real, paraeter :: pi = 3.  &
+real, parameter :: pi = 3.  &
                   c  = 3.e8&
 		  e  = 2.7
 private
@@ -24,7 +24,7 @@ scratch(1:100) = x(1:100)
 x(1:100)       = y(1:100)
 y(1:100)       = scratch(1:100)
 ```
-private arrat scratch not accessible from outside of the module.
+The private array `scratch`  is not accessible from outside of the module.
 
 Keywords private and public can stand alone, or be an attribute
 
@@ -38,4 +38,4 @@ call       s(x,y,z,m,...)
 subroutine and functions serve mainly 3 purposes, while one of them is not familiar with me.
 
 **Hide Local variables**, so that the name can be re-used
-## Modules are another, more flexible too to hide contents
+## Modules are another, more flexible structure to hide contents

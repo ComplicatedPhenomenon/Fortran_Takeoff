@@ -8,14 +8,14 @@ required tags:
 * status: String constant, variable, or expression that reduce to:
    * 'old': For existing files, usually used when reading.
    * 'new': Used when writing to a file that does not existed.
-   * 'replace': Used to overwrite a file that already exists.
+   * 'replace': Used to overwrite a file that already existed.
 * iostat: Integer variables to receive the status of the open operation. If the file is opened successfully, the variable is set to 0. Otherwise, it will contain a non-zero error code that indicates why the file could not be opened.(Does not exist, no permission, etc.)
 
 #  Why should subroutine and function be wrapped into module?
 From my limited experience, I think it reduce reductant.
 
 # PUBLIC attribute in module
-A private entity of a module can only be accessed within that module. On the
+A private member of a module can only be accessed within that module. On the
 other hand, one can explicitly list those entities that can be accessed
 from outside.
 

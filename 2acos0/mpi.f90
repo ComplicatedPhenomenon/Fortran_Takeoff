@@ -40,13 +40,13 @@ program main
     use mpi_subs
 
     implicit none
-    real(8) :: mypi
+    real(8) :: T1, T2, mypi
     real(8), parameter :: pi = 2.0d0*dacos(0.0d0)
     integer(8) :: n
     character (len=64) :: arg
 
     call MPI_Init(ierr)
-        
+
     call MPI_Comm_rank(MPI_COMM_WORLD, proc_id, ierr)
     call MPI_Comm_size(MPI_COMM_WORLD, proc_num, ierr)
 
@@ -60,14 +60,15 @@ program main
     read(arg,*) n
 
     call random_seed()
-
+    call cpu_time(T1)
     mypi = calc_pi(n)
 
     call MPI_Finalize(ierr)
-
+    call cpu_time(T2)
     if (proc_id == 0) then
         write(*,'(a,f12.6)') "Calculated = ", mypi
         write(*,'(a,f12.6)') "Actual =     ", pi
     end if
+    print *, 'The time usage is:',  T2-T1
 
 end program main

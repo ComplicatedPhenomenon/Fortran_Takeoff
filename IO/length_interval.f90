@@ -1,5 +1,4 @@
-MODULE length_interval
-  ! indepENDent of other MODULE
+MODULE length_interval! indepENDent of other MODULE
   IMPLICIT NONE
   PRIVATE
   PUBLIC :: flatten_method

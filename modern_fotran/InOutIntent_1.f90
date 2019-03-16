@@ -1,8 +1,8 @@
-! When the pointer dummy argument has the intent of intent (in out), 
+! When the pointer dummy argument has the intent of intent (in out),
 ! both the value and the association of the dummy argument can be changed.
 module Proc_mod
    implicit none
-   private 
+   private
    public :: Point_arg
 
    integer, target, save :: module_saved_int
@@ -24,7 +24,7 @@ end module Proc_mod
 program Point_intent_in_out
    use Proc_mod, only: Point_arg
    implicit none
-   
+
    integer, target :: int_a, int_b
    integer, pointer :: int_point_a, int_point_b
 

@@ -1,65 +1,66 @@
-module coarray_subs
+MODULE coarray_subs
 
-    implicit none
+  IMPLICIT NONE
 
-contains
+CONTAINS
 
-    function calc_pi(n) result(pi)
+  FUNCTION calc_pi(n) RESULT(pi)
 
-        use opencoarrays, only: co_sum
+    USE opencoarrays, ONLY: co_sum
 
-        implicit none
-        integer(8), save, codimension[*] :: accept
-        real(8) :: r(2), pi
-        integer(8), intent(in) :: n
-        integer(8) :: i
+    IMPLICIT NONE
+    INTEGER(8), SAVE, codimension[*] :: accept
+    REAL(8) :: r(2), pi
+    INTEGER(8), INTENT(in) :: n
+    INTEGER(8) :: i
 
-        accept = 0
+    accept = 0
 
-        do i = this_image(), n, num_images()
-            call random_number(r)
-            if (r(1)**2 + r(2)**2 <= 1) then
-                accept = accept + 1
-            end if
-        end do
+    DO i = this_image(), n, num_images()
+       CALL RANDOM_NUMBER(r)
+       IF (r(1)**2 + r(2)**2 <= 1) THEN
+          accept = accept + 1
+       END IF
+    END DO
 
-        sync all
+    sync all
 
-        call co_sum(accept, 1)
-        pi = 4.0d0 * dble(accept)/dble(n)
+    CALL co_sum(accept, 1)
+    pi = 4.0d0 * DBLE(accept)/DBLE(n)
 
-    end function calc_pi
+  END FUNCTION calc_pi
 
-end module coarray_subs
+END MODULE coarray_subs
 
-program main
+PROGRAM main
 
-    use coarray_subs
+    USE coarray_subs
 
-    implicit none
-    real(8), parameter :: pi = 2.0d0*dacos(0.0d0)
-    integer(8) ::  n
-    character (len=64) :: arg
-    real(8) :: mypi
+    IMPLICIT NONE
+    REAL(8), PARAMETER :: pi = 2.0d0*dacos(0.0d0)
+    INTEGER(8) ::  n
+    CHARACTER (len=64) :: arg
+    REAL(8) :: T1, T2, mypi
 
-    call random_seed()
+    CALL RANDOM_SEED()
 
     critical
 
-    if (command_argument_count() /= 1 .and. this_image() == 1) then
-        error stop "One command line argument should be passed, which is the number of iterations to perform."
-    end if
+    IF (command_argument_count() /= 1 .AND. this_image() == 1) THEN
+        error STOP "One command line argument should be passed, which is the number of iterations to perform."
+    END IF
 
-    call get_command_argument(1, arg)
-    read(arg,*) n
+    CALL get_command_argument(1, arg)
+    call cpu_time(T1)
+    READ(arg,*) n
 
-    end critical
+    END critical
 
     mypi = calc_pi(n)
-
-    if (this_image() == 1) then
-        write(*,'(a,f12.6)') "Calculated = ", mypi
-        write(*,'(a,f12.6)') "Actual =     ", pi
-    end if
-
-end program main
+    call cpu_time(T2)
+    IF (this_image() == 1) THEN
+        WRITE(*,'(a,f12.6)') "Calculated = ", mypi
+        WRITE(*,'(a,f12.6)') "Actual =     ", pi
+    END IF
+    print *, 'The time usage is:',  T2-T1
+END PROGRAM main

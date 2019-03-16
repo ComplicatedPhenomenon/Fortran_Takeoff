@@ -54,3 +54,8 @@ type
 | ASSOCIATE       |                 | Associates a name either with a variable or with the value of an expression for the duration of a block. |          
 | PROTECTED       |   F2003         | Protects a module variable against modification from outside the module in which it was declared.|
 |      ...        |    ...          |          ...  | |
+
+# [Derived types](http://people.ds.cam.ac.uk/nmm1/Fortran/paper_09.pdf)
+* Fully support OOP in Fortran
+* Semantic extension
+* Polymorphism

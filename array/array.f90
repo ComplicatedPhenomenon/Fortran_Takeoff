@@ -7,6 +7,8 @@ program alloc_array
    integer :: row, col
 
    print *,allocated(x_1d)
+   print *,x_1d
+   
    x_1d = [1,2,3,4,5,6,5,4,3,2,1]
    print *,allocated(x_1d)
    print *,x_1d
