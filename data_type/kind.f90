@@ -1,11 +1,11 @@
-program kindCheck
-  implicit none
+PROGRAM kindCheck
+  IMPLICIT NONE
 
-  integer     :: i
-  real        :: r
-  complex     :: cp
-  character   :: c
-  logical     :: lg
+  INTEGER     :: i
+  REAL        :: r
+  COMPLEX     :: cp
+  CHARACTER   :: c
+  LOGICAL     :: lg
   !***********************************************************
   !syntax SELECTED_REAL_KIND(P, R, RADIXI)I
   !A real data type with decimal precision at least P digits
@@ -13,23 +13,23 @@ program kindCheck
   !and with the requested RADIX
   !***********************************************************
 
-  integer, parameter :: p6 = selected_real_kind(6)
-  integer, parameter :: p10r100 = selected_real_kind(10,100)
-  integer, parameter :: r400 = selected_real_kind(r=400)
-  real(kind=p6)      :: x
-  real(kind=p10r100) :: y
-  real(kind=r400)    :: z
+  INTEGER, PARAMETER :: p6 = SELECTED_REAL_KIND(6)
+  INTEGER, PARAMETER :: p10r100 = SELECTED_REAL_KIND(10,100)
+  INTEGER, PARAMETER :: r400 = SELECTED_REAL_KIND(r=400)
+  REAL(kind=p6)      :: x
+  REAL(kind=p10r100) :: y
+  REAL(kind=r400)    :: z
 
-  write(*,*)"________________________________________________"
-  print *,'The default kind of different data type '
-  print *,'Real     ', kind(r)
-  print *,'Complex  ', kind(cp)
-  print *,'Character', kind(c)
-  print *,'Logical  ', kind(lg)
-  write(*,*)"________________________________________________"
-  print *, "precision & range ",precision(x),range(x)
-  print *, "precision & range ",precision(y),range(y)
-  print *, "precision & range ",precision(z),range(z)
-  write(*,*)"________________________________________________"
-  print *,41_p6
-end program kindCheck
+  WRITE(*,*)"________________________________________________"
+  PRINT *,'The default kind of different data type '
+  PRINT *,'Real     ', KIND(r)
+  PRINT *,'Complex  ', KIND(cp)
+  PRINT *,'Character', KIND(c)
+  PRINT *,'Logical  ', KIND(lg)
+  WRITE(*,*)"________________________________________________"
+  PRINT *, "precision & range ",PRECISION(x),RANGE(x)
+  PRINT *, "precision & range ",PRECISION(y),RANGE(y)
+  PRINT *, "precision & range ",PRECISION(z),RANGE(z)
+  WRITE(*,*)"________________________________________________"
+  PRINT *,41_p6
+END PROGRAM kindCheck

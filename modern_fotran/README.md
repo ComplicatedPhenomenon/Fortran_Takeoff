@@ -37,6 +37,8 @@ to optimize your code.
 
 * It helps to hide  implementation details (and makes it close to OOP)
 * Define generic procedures and custom operators.
+###  Why should subroutine and function be wrapped into module?
+From my limited experience, I think it reduce reductant.
 
 ## statement
 Fortran statements supported by the gcc compiler.
@@ -59,3 +61,15 @@ type
 * Fully support OOP in Fortran
 * Semantic extension
 * Polymorphism
+
+# Some points in modern fortran
+* `=>` acts like `alias` in bash
+* Interface
+
+  Another reason to use an interface body is to describe code to which you don't have Fortran source, such as C code that you are calling via the ISO C Binding.
+* `use,intrinsic :: iso_c_binding,only:c_char,c_int`
+  * [Using C/C++ and Fortran together](https://computing.llnl.gov/tutorials/bgq/mixedProgramming2.pdf)
+
+  > All arguments in FORTRAN are passed by reference and not by value.
+
+  Testify statement above!!!

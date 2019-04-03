@@ -47,27 +47,27 @@ PROGRAM doy
 
   IMPLICIT NONE
 
-  INTEGER    :: i, z, days_accumulated
+  INTEGER    :: i, days_accumulated
   INTEGER    :: month_begin, day_begin, year_begin, &
        month_end, day_end, year_end
-  WRITE (*,*)'This program caculates the day of year given the '
-  WRITE (*,*)'Begin date .Enter current month(1-12),day(1-31), year in that order'
+  WRITE (*,*)'This program caculates interval in days of 2 time'
+  WRITE (*,*)'Begin date: month(1-12),day(1-31), year in that order'
   READ (*,*) month_begin, day_begin, year_begin
-  WRITE (*,*)'End date .Enter current month(1-12),day(1-31), year in that order'
+  WRITE (*,*)'End date: month(1-12),day(1-31), year in that order'
   READ (*,*) month_end, day_end, year_end
 
-  days_accumulated = IsThisALeapYear(year_begin) + 365 - days_passed_of_this_year(year_begin, month_begin,day_begin)
-  DO i = year_begin+1, year_end -1
-     z = IsThisALeapYear(i)+365
-     days_accumulated = days_accumulated + z
-  END DO
-  days_accumulated = days_accumulated + days_passed_of_this_year(year_end, month_end, day_end)
+  IF (year_begin == year_end) THEN
+     days_accumulated = days_passed_of_this_year(year_end, month_end, day_end)- &
+                        days_passed_of_this_year(year_begin, month_begin,day_begin)
+  ELSE
+     days_accumulated = IsThisALeapYear(year_begin) + 365 - days_passed_of_this_year(year_begin, month_begin,day_begin)
+     DO i = year_begin+1, year_end -1
+        days_accumulated = days_accumulated + IsThisALeapYear(i)+365
+     END DO
+     days_accumulated = days_accumulated + days_passed_of_this_year(year_end, month_end, day_end)
+  END IF
 
-  WRITE (*,*)'Begin Day          =',day_begin
-  WRITE (*,*)'Begin Month        =',month_begin
-  WRITE (*,*)'Begin Year         =',year_begin
-  WRITE (*,*)'End Day            =',day_end
-  WRITE (*,*)'End Month          =',month_end
-  WRITE (*,*)'End Year           =',year_end
+  WRITE (*,*)day_begin, month_begin, year_begin
+  WRITE (*,*)day_end, month_end, year_end
   WRITE (*,*)'day passed =',days_accumulated
 END PROGRAM doy

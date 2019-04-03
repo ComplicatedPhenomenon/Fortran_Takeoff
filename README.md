@@ -77,3 +77,4 @@ What's new in [gfortran 8](https://gcc.gnu.org/onlinedocs/gcc-8.1.0/gfortran/)?
 ## Recommendation of People
 * [https://milancurcic.com/](https://milancurcic.com/)
 * [https://github.com/szaghi?tab=repositories](https://github.com/szaghi?tab=repositories)
+* [CS561 Syllabus & Progress](http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/syl.html#CURRENT)

@@ -1,24 +1,24 @@
-program task_2
-   implicit none
+PROGRAM task_2
+  IMPLICIT NONE
 
-   integer :: a
-   real :: pi = 3.1415926
+  INTEGER :: a
+  REAL :: pi = 3.1415926
 
-   write (*,110) pi
-   110 format(E12.5)
-   write (*,100) pi
-   100 format(E12.3)
-   write (*,90) pi
-   90 format(E12.3E4)
-   write (*,80) pi
-   80 format(ES12.3E4)
-   write (*,70) pi
-   70 format(ES12.4E4)
-   write (*,'("please input an integer?")')
-   read(*,*),a
-   write(*,*),a
-   print *,'The output format is wierd'
-end program task_2
+  WRITE (*,110) pi
+110 FORMAT(E12.5)
+  WRITE (*,100) pi
+100 FORMAT(E12.3)
+  WRITE (*,90) pi
+90 FORMAT(E12.3E4)
+  WRITE (*,80) pi
+80 FORMAT(ES12.3E4)
+  WRITE (*,70) pi
+70 FORMAT(ES12.4E4)
+  WRITE (*,'("please input an integer?")')
+  READ(*,*),a
+  WRITE(*,*),a
+  PRINT *,'The output format is wierd'
+END PROGRAM task_2
 
 
 !这里把一个用户自定义函数当作参数传递给子程序，所有的这些外部过程

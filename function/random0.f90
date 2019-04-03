@@ -1,57 +1,55 @@
-module ran001
-  implicit none
-  save
+MODULE ran001
+  IMPLICIT NONE
+  SAVE
 
-  integer :: n= 9876
-end module ran001
+  INTEGER :: n= 9876
+END MODULE ran001
 
-!---------------------------------------------------
-subroutine random0(ran)
-  use ran001
-  implicit none
+SUBROUTINE random0(ran)
+  USE ran001
+  IMPLICIT NONE
 
-  real,intent (out) :: ran
-  !--------------------------------------------------
-  n = mod (8121 * n + 28411,134456)
-  ran = real (n) / 134456.
-end subroutine random0
+  REAL,INTENT (out) :: ran
+  n = MOD (8121 * n + 28411,134456)
+  ran = REAL (n) / 134456.
+END SUBROUTINE random0
 
-!===================================================
-subroutine seed (iseed)
-  use ran001
-implicit none
 
-integer, intent (in) :: iseed
-  n = abs (iseed)
-end subroutine
-!===================================================
+SUBROUTINE seed (iseed)
+  USE ran001
+IMPLICIT NONE
 
-program test_random0
-  implicit none
-  real    :: ave
-  integer :: i
-  integer :: iseed
-  integer :: iseq
-  real    :: ran
-  real    :: sum
+INTEGER, INTENT (in) :: iseed
+  n = ABS (iseed)
+END SUBROUTINE
 
-  write (*,*) 'Enter seed: '
-  read (*,*) iseed
 
-  call seed(iseed)
-  write (*,*) '10 random numbers '
-  do i = 1, 10
-    call random0(ran)
-    write (*,'(3X,F16.6)') ran
-  end do
-  write (*,*) 'Average of 5 consecutive 1000-sample sequence'
-  do iseq = 1, 5
+PROGRAM test_random0
+  IMPLICIT NONE
+  REAL    :: ave
+  INTEGER :: i
+  INTEGER :: iseed
+  INTEGER :: iseq
+  REAL    :: ran
+  REAL    :: sum
+
+  WRITE (*,*) 'Enter seed: '
+  READ (*,*) iseed
+
+  CALL seed(iseed)
+  WRITE (*,*) '10 random numbers '
+  DO i = 1, 10
+    CALL random0(ran)
+    WRITE (*,'(3X,F16.6)') ran
+  END DO
+  WRITE (*,*) 'Average of 5 consecutive 1000-sample sequence'
+  DO iseq = 1, 5
     sum = 0.
-    do i = 1, 1000
-      call random0(ran)
+    DO i = 1, 1000
+      CALL random0(ran)
       sum = sum + ran
-    end do
+    END DO
     ave = sum / 1000.
-    write (*,'(3X, F16.6)') ave
-  end do
-end program test_random0
+    WRITE (*,'(3X, F16.6)') ave
+  END DO
+END PROGRAM test_random0

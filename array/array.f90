@@ -1,35 +1,35 @@
-program alloc_array
-   implicit none
+PROGRAM alloc_array
+  IMPLICIT NONE
 
-   integer, dimension(:),   allocatable :: x_1d
-   integer, dimension(:,:), allocatable :: x_2d
-   integer, dimension(:, :), allocatable :: array
-   integer :: row, col
+  INTEGER, DIMENSION(:),   ALLOCATABLE :: x_1d
+  INTEGER, DIMENSION(:,:), ALLOCATABLE :: x_2d
+  INTEGER, DIMENSION(:, :), ALLOCATABLE :: array
+  INTEGER :: row, col
 
-   print *,allocated(x_1d)
-   print *,x_1d
-   
-   x_1d = [1,2,3,4,5,6,5,4,3,2,1]
-   print *,allocated(x_1d)
-   print *,x_1d
-   deallocate(x_1d)
+  PRINT *,ALLOCATED(x_1d)
+  PRINT *,x_1d
 
-   print *,allocated(x_2d)
-   allocate(x_2d(2,3))
-   x_2d =reshape([1,2,3,4,5,6], shape(x_2d))
-   print *,allocated(x_2d)
-   print *,x_2d
-   deallocate(x_2d)
+  x_1d = [1,2,3,4,5,6,5,4,3,2,1]
+  PRINT *,ALLOCATED(x_1d)
+  PRINT *,x_1d
+  DEALLOCATE(x_1d)
 
-   allocate(array(2, 3))
-   print *,allocated(array)
-   do row = 1, 2
-      do col = 1, 3
+  PRINT *,ALLOCATED(x_2d)
+  ALLOCATE(x_2d(2,3))
+  x_2d =RESHAPE([1,2,3,4,5,6], SHAPE(x_2d))
+  PRINT *,ALLOCATED(x_2d)
+  PRINT *,x_2d
+  DEALLOCATE(x_2d)
+
+  ALLOCATE(array(2, 3))
+  PRINT *,ALLOCATED(array)
+  DO row = 1, 2
+     DO col = 1, 3
         array(row, col) = row*col
-      end do
-   end do
-   print *,array
-   deallocate (array)
-   print *,allocated(array)
-   print *,array
-end program alloc_array
+     END DO
+  END DO
+  PRINT *,array
+  DEALLOCATE (array)
+  PRINT *,ALLOCATED(array)
+  PRINT *,array
+END PROGRAM alloc_array
