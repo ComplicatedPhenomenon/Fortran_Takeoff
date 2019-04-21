@@ -5,7 +5,7 @@
 
 The intrinsic `random_number(u)` returns a real number u (or an array of such) from the uniform distribution over the interval [0,1). [That is, it includes 0 but not 1.]
 
-## the defined behaviour of  `do`  
+## the defined behavior of  `do`  
 ```sh
 $ gfortran  -g -fbacktrace -fcheck=all -Wall DoLoop.f90
 DoLoop.f90:5:13:

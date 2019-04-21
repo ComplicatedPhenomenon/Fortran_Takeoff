@@ -7,6 +7,7 @@ parallelization),
 [OpenMP](https://gcc.gnu.org/onlinedocs/gfortran/OpenMP.html), MPI,
 and [coarrays](https://gcc.gnu.org/wiki/CoarrayLib).
 
+
 ## Compilation
 
 To compile run `make`.
@@ -19,6 +20,8 @@ The MPI implementation obviously requires an MPI library like
 
 The coarrays implementation additionally requires
 [OpenCoarrays](http://www.opencoarrays.org/).
+
+
 
 ## Running
 

@@ -30,7 +30,7 @@ They all can be found on Github.
 
 # Right way to begin with Fortran
 ## [Compilers in Fortran](http://fortranwiki.org/fortran/show/Compilers)
-[gfortran](https://en.wikipedia.org/wiki/GNU_Fortran) is used in most times, nevertheless, Situation of using multiple compiler can also happen. As some Fortan features are not implemented in gfortran.
+[gfortran](https://en.wikipedia.org/wiki/GNU_Fortran) is used in most times, nevertheless, Situation of using multiple compiler can also happen. As some Fortran features are not implemented in gfortran.
 
 ```sh
 $ gfortran -v
