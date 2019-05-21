@@ -1,8 +1,8 @@
 PROGRAM alloc_array
   IMPLICIT NONE
 
-  INTEGER, DIMENSION(:),   ALLOCATABLE :: x_1d
-  INTEGER, DIMENSION(:,:), ALLOCATABLE :: x_2d
+  INTEGER, DIMENSION(:),    ALLOCATABLE :: x_1d ! rank is 1
+  INTEGER, DIMENSION(:, :), ALLOCATABLE :: x_2d
   INTEGER, DIMENSION(:, :), ALLOCATABLE :: array
   INTEGER :: row, col
 
@@ -10,7 +10,7 @@ PROGRAM alloc_array
   PRINT *,x_1d
 
   x_1d = [1,2,3,4,5,6,5,4,3,2,1]
-  PRINT *,ALLOCATED(x_1d)
+  PRINT *,ALLOCATED(x_1d) !judge the allocation status of an allocatable array
   PRINT *,x_1d
   DEALLOCATE(x_1d)
 

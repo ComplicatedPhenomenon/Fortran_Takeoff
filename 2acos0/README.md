@@ -36,3 +36,7 @@ Change `1000` to the number of iterations you want to use to calculate
 pi.
 
 [Wes barnett](https://barnett.science/)
+
+
+## Resources
+* [mpi](https://people.sc.fsu.edu/~jburkardt/f_src/mpi/mpi.html)by the department of scientific computation, Florida state university

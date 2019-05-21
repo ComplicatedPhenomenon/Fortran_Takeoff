@@ -1,56 +1,51 @@
-module omp_subs
+MODULE omp_subs
+  IMPLICIT NONE
+CONTAINS
+  FUNCTION calc_pi(n) RESULT(pi)
+    IMPLICIT NONE
+    INTEGER(8) :: accept
+    REAL(8) :: r(2), pi
+    INTEGER(8), INTENT(in) :: n
+    INTEGER(8) :: i
 
-    implicit none
+    accept = 0
 
-contains
+    !$omp parallel do private(r,i) reduction(+:accept)
+    DO i = 1, n
+       CALL RANDOM_NUMBER(r)
+       IF (r(1)**2 + r(2)**2 <= 1) THEN
+          accept = accept + 1
+       END IF
+    END DO
+    !$omp end parallel do
 
-    function calc_pi(n) result(pi)
+    pi = 4.0d0 * DBLE(accept)/DBLE(n)
 
-        implicit none
-        integer(8) :: accept
-        real(8) :: r(2), pi
-        integer(8), intent(in) :: n
-        integer(8) :: i
+  END FUNCTION calc_pi
 
-        accept = 0
+END MODULE omp_subs
 
-        !$omp parallel do private(r,i) reduction(+:accept)
-        do i = 1, n
-            call random_number(r)
-            if (r(1)**2 + r(2)**2 <= 1) then
-                accept = accept + 1
-            end if
-        end do
-        !$omp end parallel do
+PROGRAM main
+    USE omp_subs
+    IMPLICIT NONE
 
-        pi = 4.0d0 * dble(accept)/dble(n)
+    INTEGER(8) :: n
+    REAL(8), PARAMETER :: pi = 2.0d0*dacos(0.0d0)
+    REAL(8) :: mypi
+    CHARACTER (len=64) :: arg
 
-    end function calc_pi
+    CALL RANDOM_SEED()
 
-end module omp_subs
+    IF (command_argument_count() /= 1) THEN
+        error STOP "One command line argument should be passed, which is the number of iterations to perform."
+    END IF
 
-program main
-
-    use omp_subs
-
-    implicit none
-    integer(8) :: n
-    real(8), parameter :: pi = 2.0d0*dacos(0.0d0)
-    real(8) :: mypi
-    character (len=64) :: arg
-
-    call random_seed()
-
-    if (command_argument_count() /= 1) then
-        error stop "One command line argument should be passed, which is the number of iterations to perform."
-    end if
-
-    call get_command_argument(1, arg)
-    read(arg,*) n
+    CALL get_command_argument(1, arg)
+    READ(arg,*) n
 
     mypi = calc_pi(n)
 
-    write(*,'(a,f12.6)') "Calculated = ", mypi
-    write(*,'(a,f12.6)') "Actual =     ", pi
+    WRITE(*,'(a,f12.6)') "Calculated = ", mypi
+    WRITE(*,'(a,f12.6)') "Actual =     ", pi
 
-end program main
+END PROGRAM main

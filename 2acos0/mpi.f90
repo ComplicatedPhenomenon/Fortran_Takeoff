@@ -1,5 +1,4 @@
 module mpi_subs
-
     implicit none
     integer :: ierr, proc_id, proc_num
 

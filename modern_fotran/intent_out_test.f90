@@ -9,7 +9,7 @@ module Equity_mod
       real    :: current_price = 1.0
       integer :: no_of_shares = 0
    end type equity_t
-  
+
    interface Calculate
       module procedure Calc_equity
    end interface Calculate
@@ -46,7 +46,7 @@ module Equity_mod
 end module Equity_mod
 
 module Account_mod
-   use equity_mod, only : Calculate , equity_t, Get_quote 
+   use equity_mod, only : Calculate , equity_t, Get_quote
    implicit none
    private
    public :: Calc_account, Get_quotes
@@ -76,9 +76,9 @@ module Account_mod
          end do
       end subroutine Get_quotes
 end module Account_mod
-   
+
 program intent_out_test
-   use account_mod, only : account_t, Calc_account, Get_quotes 
+   use account_mod, only : account_t, Calc_account, Get_quotes
    use Equity_mod, only: Get_active, Print
 
    type(account_t) :: account
@@ -95,5 +95,3 @@ program intent_out_test
    end do
 
 end program intent_out_test
-     
-
