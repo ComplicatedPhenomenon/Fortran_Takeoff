@@ -2,6 +2,8 @@
 
 > Introduce new features to enhance
 
+http://fortranwiki.org/fortran/show/HomePage
+
 ## INTERFACE
 
 If module are the way to go(and they are), what are interfaces for at all?
@@ -40,22 +42,7 @@ to optimize your code.
 ###  Why should subroutine and function be wrapped into module?
 From my limited experience, I think it reduce reductant.
 
-## statement
-Fortran statements supported by the gcc compiler.
 
-
-associate
-type
-
-|  Statement      |   Origin        |         Description                  |    
-|-----------------|-----------------|--------------------------------------|
-| INTERFACE       |   F90           | Makes an implicit procedure an explicit procedure where the dummy parameters and procedure type are known to the calling module; Also overloads a procedure name.|
-| PROCEDURE       |   F2003         | Makes an implicit procedure an explicit procedure where the dummy parameters and procedure type are known to the calling module; Also overloads a procedure name.|
-| PURE            |   F95           |   Indicates that a function or subroutine has no side effects. |
-| TYPE            |   F90           | Begins a derived type data specification or declares variables of a specified user-defined type.|
-| ASSOCIATE       |                 | Associates a name either with a variable or with the value of an expression for the duration of a block. |          
-| PROTECTED       |   F2003         | Protects a module variable against modification from outside the module in which it was declared.|
-|      ...        |    ...          |          ...  | |
 
 # [Derived types](http://people.ds.cam.ac.uk/nmm1/Fortran/paper_09.pdf)
 * Fully support OOP in Fortran

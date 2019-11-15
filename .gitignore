@@ -1,16 +1,7 @@
 a.out
-a.out*
+
 obj/
 mod/
 */lib/*
 *.o
 *.mod
-coarray
-mpi
-omp
-serial
-
-Path*
-UCY*
-Optim*
-forut*s
