@@ -20,8 +20,6 @@ make: *** [all] Error 1
 
 > Users must make sure that openmpi is correctly installed and configured on their system. After confirming that openmpi is correctly installed and configures, make sure that the shell's PATH environment variable includes the path to your openmpi installation before compiling.
 
-Yet I have installed `OpenCoarrays` under `/Users/wangmiao/Playground/GH/awesome_fortran/SI/OpenCoarrays/prerequisites/installations/`
-
 
 `error stop` was introduced in Fortran 2008 together with coarrays and is useful for stopping all running images (processes) while `stop` just stops execution of the current image.
 

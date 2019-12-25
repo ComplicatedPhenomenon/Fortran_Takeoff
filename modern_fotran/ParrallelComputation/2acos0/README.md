@@ -2,7 +2,7 @@
 
 Calculates π using a [Monte
 Carlo method](https://en.wikipedia.org/wiki/Monte_Carlo_method) using
-different parallelization libraries/protocols: serial (no
+different parallelzation libraries/protocols: serial (no
 parallelization),
 [OpenMP](https://gcc.gnu.org/onlinedocs/gfortran/OpenMP.html), MPI,
 and [coarrays](https://gcc.gnu.org/wiki/CoarrayLib).

@@ -60,3 +60,12 @@ From my limited experience, I think it reduce reductant.
   > All arguments in FORTRAN are passed by reference and not by value.
 
   Testify statement above!!!
+
+
+The PSBLAS library is based on the Single Program Multiple Data (SPMD)
+programming model: each process participating in the computation performs
+the same actions on a chunk of data. Parallelism is thus data-driven.
+
+Coarrays are intended for single program - multiple data (SPMD) type parallel programming
+
+The runtime environment spawns a number of identical copies of the executable, called images. Hence coarray programs follow SPMD model.
