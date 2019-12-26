@@ -4,7 +4,7 @@
 module class_Circle
     implicit none
     private
-    real :: pi = 3.1415926535897931d0 ! Class-wide private constant
+    real :: pi = 3.1415926535897931 ! Class-wide private constant
   
     type, public :: Circle
        real :: radius
@@ -31,8 +31,9 @@ module class_Circle
   program circle_test
     use class_Circle
     implicit none
-  
+    
     type(Circle) :: c     ! Declare a variable of type Circle.
-    c = Circle(1.5)       ! Use the implicit constructor, radius = 1.5.
+    !c = Circle(1.5)       ! Use the implicit constructor, radius = 1.5.
+    c%radius = 1.5
     call c%print          ! Call the type-bound subroutine
   end program circle_test

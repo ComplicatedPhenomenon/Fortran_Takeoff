@@ -20,3 +20,5 @@ program test_derived_data
   write (*,*) anyone
   print  *, anyone%sex ! Access one element.
 end program test_derived_data
+
+! go to modern_fortram/OOP/oop.f90 to find an extensive improvement

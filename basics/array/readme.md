@@ -1,4 +1,37 @@
+
+## Array in Fortran
+
+array is the only built-in data structure in fortran, Language designed around easy-to-use, whole-array operations.
+
+
+Array indices in Fortran by default begin at **1** !!!
+
+### Array initialization
+```f90
+do i = 1, 100
+  a(i) = i
+end do
+```
+With an implied do-loop array constructor, you are not restricted to just the loop counter. You can use it to assign array values from arbitrary functions or expressions:
+```f90
+a = [(sin(2 * pi * i / 1000), i = 0, 1000)]
+```
+
 https://pages.mtu.edu/~shene/COURSES/cs201/NOTES/F90-Array.pdf
+
+### Allocatable arrays
+In the old days :smile:, the maximum size arrays had to be declared when the code is written. This was a great disadvantages, as it result in wasted RAM(Array size has to be the maximum possible)or in frequent recompilations.
+
+[Dynamic Arrays](http://www.pcc.qub.ac.uk/tec/courses/f90/stu-notes/F90_notesMIF_11.html)
+
+During program execution, the allocation status of an allocatable array is one one the following:
+* Not currently allocated.
+
+* Currently allocated.
+  ```f90
+  allocate(A(10))
+  !or A(10) = [(i), i = 1, 10]
+  ```
 
 ## Parallel computing
 * [Threads and processes](http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/91-pthreads/intro-threads.html)
@@ -15,20 +48,6 @@ data on another image. Care has been taken to allow compilers to optimize both e
 * [HPC with Fortran 2008 and 2018 coarrays](https://cgpack.sourceforge.io/201711/cppc_talk2017.pdf)
 * [coarrays.sourceforge.io](https://coarrays.sourceforge.io/doc.html)
 * [Coarry implementation](http://charm.cs.uiuc.edu/kale/teaching/cs320/CAFfromupcsc01CarlsonB.pdf)
-
-## Array in Fortran
-Array indices in Fortran by default begin at **1** !!!
-
-Types of array?
-
-## Allocatable arrays
-In the old days :smile:, the maximum size arrays had to be declared when the code is written. This was a great disadvantages, as it result in wasted RAM(Array size has to be the maximum possible)or in frequent recompilations.
-
-[Dynamic Arrays](http://www.pcc.qub.ac.uk/tec/courses/f90/stu-notes/F90_notesMIF_11.html)
-
-During program execution, the allocation status of an allocatable array is one one the following:
-* Not currently allocated. Such an array must not be referenced or defined.
-* Currently allocated.
 
 
 ## Fortran for symbolic calculation?
