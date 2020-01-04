@@ -1,4 +1,5 @@
-! 2017/9 /10  version :: 1.0
+! 2017/9 /10  version :: 1.0 
+! ??? I didn't know what I was talking about at that moment
 module Equity_mod
    implicit none
    private

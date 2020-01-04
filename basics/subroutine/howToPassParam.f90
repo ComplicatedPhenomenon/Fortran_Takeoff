@@ -26,7 +26,7 @@ CONTAINS
     IMPLICIT NONE
     INTEGER, INTENT(IN) :: x
     INTEGER :: y
-    
+    ! x = 8 
     y = x + 1
   END FUNCTION pure_addOneBR
 

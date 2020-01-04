@@ -8,7 +8,11 @@ PROGRAM alloc_array
 
   symbols = ['AAPL', 'AMZN', 'CRAY', 'CSCO', 'HPQ ',&
   'IBM ', 'INTC', 'MSFT', 'NVDA', 'ORCL']
+  DO n = 3, 3 + size(symbols(3:6))
+   WRITE(*,*) symbols(n)
+  END DO
 
+  WRITE (*,*) symbols(3:6)
   DO n = 1, size(symbols)
    WRITE(*,*) 'Working on ' // symbols(n)
   END DO
