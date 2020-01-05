@@ -5,25 +5,25 @@
 
 module wz
    private
-   public :: print_f_a
-   real, parameter :: const = 3.14
+   public :: print_f_a, const
+   real, protected :: const = 3.14 ! protect attribute allow only procedures within this module to update 
+   !real, parameter :: const = 3.14
    contains
-      function f_a(a) result(expr)
+      function f_a(a) result(res)
          implicit none
-         real,intent(in):: a
-         real :: expr
-
-         expr = const * a
+         real, intent(in):: a
+         real :: res
+         const = 4
+         res = const * a
       end function f_a
 
-      subroutine print_f_a(a,last_val) !subroutine print_f_a(last_val)
+      subroutine print_f_a(a, last_val) 
          implicit none
          real,intent(in):: a
          real, intent(out) :: last_val
-
-         print *, 'a = ', a
+         print *, const
          last_val = const * f_a(a)
-
+         print *, const
          print *, last_val
       end subroutine print_f_a
 end module wz

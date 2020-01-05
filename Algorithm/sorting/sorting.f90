@@ -1,88 +1,120 @@
+! ToDo: mergeSort is not right
 module sorting 
-    use iso_fortran_env, only:i1 => int8, i2 => int16, i4 => int32, i8 => int64
+    use iso_fortran_env, only: i4 => int32, i8 => int64
     implicit none
 contains
-    subroutine bubbleSort(inputArray, size)
+    subroutine bubbleSort(array)
         implicit none
-        integer :: size
-        integer, dimension(size) :: inputArray
+        integer, dimension(:):: array
         integer :: i, j, tem
-        i = size
+        i = size(array)
         do while (i > 1)
             do j = 1, i - 1 
-                if (inputArray(j) > inputArray(j + 1)) then
-                    tem = inputArray(j)
-                    inputArray(j) = inputArray(j + 1)
-                    inputArray(j + 1) = tem
+                if (array(j) > array(j + 1)) then
+                    tem = array(j)
+                    array(j) = array(j + 1)
+                    array(j + 1) = tem
                 end if 
             end do
             i = i - 1
         end do 
     end subroutine bubbleSort
 
-    subroutine selectSort(inputArray, size) 
+    subroutine selectSort(array) 
         implicit none
-        integer :: size
-        integer, dimension(size) :: inputArray
+        integer, dimension(:) :: array
         integer :: i, j, tem
         
 
-        do i = 1, size - 1
-            do j = i + 1, size
-                if (inputArray(i) > inputArray(j)) then
-                    tem = inputArray(i)
-                    inputArray(i) = inputArray(j)
-                    inputArray(j) = tem
+        do i = 1, size(array) - 1
+            do j = i + 1, size(array)
+                if (array(i) > array(j)) then
+                    tem = array(i)
+                    array(i) = array(j)
+                    array(j) = tem
                 end if 
             end do
         end do
     end subroutine selectSort
 
-    subroutine mergeSort(inputArray, size) 
+    pure recursive function mergeSort(array) result(res)
         implicit none
-        integer :: size
-        integer, dimension(size) :: inputArray
-        integer, dimension(size/2) :: left
-        integer, dimension(size - size/2) :: right 
-        integer :: mid 
-        mid = size/2
-        if (size > 1) then 
-            left = inputArray(:mid) 
-            right = inputArray(mid+1:)
+        integer, dimension(:), intent(in) :: array
+        integer, dimension(size(array)) :: res
+        integer, dimension(size(array)/2) :: left
+        integer, dimension(size(array) - size(array)/2) :: right 
+        integer :: mid, l, r, i  
+        
+        if (size(array) > 1) then 
+            mid = size(array) / 2
+            left = array(:mid) 
+            right = array(mid+1:)
+            mergeSort(left)
+            mergeSort(right)
         end if 
-    end subroutine mergeSort
+        
+        l = 1
+        r = 1
+        i = 1
+        do while(l <= size(left) .and. r <= size(right))
+            if (left(l) < right(r)) then 
+                res(i) = left(l)
+                l = l + 1
+            else
+                res(i) = right(r)
+                r = r + 1
+            end if
+            i = i + 1
+        end do
+
+        do while(l <= size(left))
+            res(i) = left(l)
+            l = l + 1
+            i = i + 1
+        end do 
+        do while(r <= size(right))
+            res(i) = right(r)
+            r = r + 1
+            i = i + 1
+        end do 
+    end function mergeSort
 
     pure recursive function quickSort(x) result(res)
-        integer(i1), dimension(:), intent(in) :: x !! Input array
-        integer(i1), dimension(size(x)) :: res
-        integer(i1), dimension(size(x)-1) :: rest
-        integer(i8), dimension(:), allocatable :: split
-        integer(i1) :: pivot
+        integer, dimension(:), intent(in) :: x !! Input array
+        integer, dimension(size(x)) :: res
+        integer, dimension(size(x)- 1) :: tem
+        integer :: pivot
+
         if(size(x) > 1)then
-            pivot = head(split(x, 2))
-            rest = [split(x, 1), tail(split(x, 2))]
-            res = [quickSort(pack(rest, rest < pivot)), pivot, &
-                quickSort(pack(rest, rest >= pivot))]
-        else
+            pivot = x(size(x) / 2 + 1)
+            tem = [x(1 : size(x)/2), x(size(x) / 2 + 2:)]
+            res = [quickSort(pack(tem, tem < pivot)), pivot, &
+                   quickSort(pack(tem, tem >= pivot))]
+          else
             res = x
-        endif
+          endif
     end function quickSort
-
-
 end module sorting 
 
 program test
-    use :: sorting, only : bubbleSort, selectSort, mergeSort
+    use sorting, only : bubbleSort, selectSort, mergeSort, quickSort
     implicit none
-    integer, dimension(5) :: inputArray = [2, 9, 3, 0, -1]
-    call bubbleSort(inputArray, 5)
-    print *, inputArray
+    integer, dimension(5) :: array = [2, 9, 3, 0, -1]
+    integer, dimension(8) :: array_8, res 
+    call bubbleSort(array)
+    print *, array
     
-    inputArray = [2, 9, 3, 0, -1]
-    call selectSort(inputArray, 5)
-    print *, inputArray
+    array = [2, 9, 3, 0, -1]
+    call selectSort(array)
+    print *, array
 
 
-    inputArray = [2, 9, 3, 0, -1]
-    call mergeSort(inputArray, 5)
+    array_8 = [2, 11, 4, 1, 9, 3, 0, -1]
+    res = mergeSort(array_8)
+    print *, res
+    
+    array_8 = [2, 11, 4, 1, 9, 3, 0, -1]
+    print *, "OA: ", array_8
+    res = quickSort(array_8)
+    print *, res
 end program test

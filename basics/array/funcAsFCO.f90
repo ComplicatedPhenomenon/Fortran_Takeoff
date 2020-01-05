@@ -1,5 +1,3 @@
-
-    
 program main
     implicit none
     

@@ -1,8 +1,6 @@
 
 ## Array in Fortran
-
-array is the only built-in data structure in fortran, Language designed around easy-to-use, whole-array operations.
-
+Array is the only built-in data structure in fortran, Language designed around easy-to-use, whole-array operations.
 
 Array indices in Fortran by default begin at **1** !!!
 

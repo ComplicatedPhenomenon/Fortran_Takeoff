@@ -47,10 +47,13 @@ What's new in [gfortran 8](https://gcc.gnu.org/onlinedocs/gcc-8.1.0/gfortran/)?
 * [Debugging tools](http://fortranwiki.org/fortran/show/Debugging+tools)
   * gdb
 * Useful compiling options
+
   gfortran options
-```f90
--g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan
-```
+
+  ```f90
+  -g -Wall -Wextra -Warray-temporaries -Wconversion -fimplicit-none -fbacktrace -ffree-line-length-0 -fcheck=all -ffpe-trap=zero,overflow,underflow -finit-real=nan
+  ```
+
 
 ## Documentation for Fortran Project
 [Ford ](https://github.com/Fortran-FOSS-Programmers/ford), which is written in Python, can be used to automatically generate documentation for Fortran projects.

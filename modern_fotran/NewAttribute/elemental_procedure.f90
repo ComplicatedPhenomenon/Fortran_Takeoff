@@ -1,8 +1,7 @@
 ! 2017 / 09 /10  version  1.1    
 ! -----------------------------------------------------------------------------
 ! The ELEMENTAL attribute allows for declaring procedures that operate element
-! by element and can be applied to arrays of any dimensions. This is another 
-! way for defining more general procedures. 
+! by element(rank insensitive code) and can be applied to arrays of any dimensions(up to 16D so far). 
 ! CAUTION :
 ! In a simplified model, we leave off implicit none, private, public
 ! -----------------------------------------------------------------------------
@@ -53,8 +52,5 @@ program prog1
    !               1
    ! Error: Rank mismatch in argument ‘a’ at (1) (scalar and rank-1)
 
-   ! call elesub2(ia, j, ic)
-   ! write(*,*) ic
-   ! call elesub2(ia, ib, ic)
-   ! write(*,*) ic
+   !write(*,*) ic
 end program prog1
