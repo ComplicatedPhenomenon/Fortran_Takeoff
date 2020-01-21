@@ -1,3 +1,5 @@
+! data race!
+
 MODULE coarray_subs
 
   IMPLICIT NONE

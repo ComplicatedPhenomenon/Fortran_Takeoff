@@ -1,3 +1,6 @@
+! caf coarraytest.f90 
+! cafrun -np 5 ./a.out 
+
 program Hello_World
   implicit none
   character(len=20) :: name[*] ! scalar coarray, one "name" for each image.
@@ -13,6 +16,6 @@ program Hello_World
   call co_broadcast(name,source_image=1)
 
   ! I/O from all images, executing in any order, but each record written is intact.
-  write(*,'(3a,i0)') 'Hello ',trim(name),' from image ', this_image()
+  write(*,'(3a,i0)') 'Hello ', trim(name),' from image ', this_image()
 
 end program Hello_world

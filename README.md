@@ -1,17 +1,15 @@
-# What this repository about?
-This repository will cover the most features in Fortran. Can be used as tutorial for a beginner.  
+# What this repository is about?
+This repository will cover the most features in Fortran.    
 
-> To get good at anything you have to practice every day, and eventually it'll be easier and fun.
+stick to 3 advices:
+1. > To get good at anything you have to practice every day, and eventually it'll be easier and fun.
 
-> If you break the problem down into small exercises and lessons, and do them every day, you can learn to do almost anything. If you focus on slowly improving and enjoying the learning process, then you will benefit no matter how good you are at it.
-
-> People hearing without listening.
+2. > If you break the problem down into small exercises and lessons, and do them every day, you can learn to do almost anything. If you focus on slowly improving and enjoying the learning process, then you will benefit no matter how good you are at it.
+3. People hearing without listening.
 
 # Strive to 3 standards
-* Code with modern Fortran features and fix previous bugs.
-
 * Spend time on program design instead of getting a head start in coding first.
-
+* Code with modern Fortran features and fix previous bugs.
 * Polish this repository until it become well tested and useful subprograms.
 
 # Learn from curly selected project
