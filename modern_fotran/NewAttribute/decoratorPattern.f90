@@ -1,8 +1,7 @@
+! what's the advantages of this deisgn? what basic principles are implied here?
 module decorator_pattern
     implicit none
-    
-    !! Abstract Base Type with a procedure 'do_it' which MUST be implemented by
-    !! derived types
+    !Abstract Base Type with a procedure 'do_it' which MUST be implemented by derived types
     type, abstract :: I
         contains
             procedure(do_it_interface), deferred :: do_it

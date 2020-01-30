@@ -3,19 +3,18 @@ module mod_functional
     implicit none
     private 
     public :: f_i1, f_i2
-interface
-    pure integer(kind = i1) function f_i1(x)
-        import :: i1
-        integer(i1), intent(in) :: x 
-    end function f_i1 
 
-    pure integer(kind = i2) function f_i2(x)
-    import :: i2
-    integer(i2), intent(in) :: x 
-
-    end function f_i2 
-
-end interface
+    interface
+        ! no result?
+        pure integer(kind = i1) function f_i1(x)
+            import :: i1
+            integer(i1), intent(in) :: x 
+        end function f_i1 
+        pure integer(kind = i2) function f_i2(x)
+            import :: i2
+            integer(i2), intent(in) :: x 
+        end function f_i2 
+    end interface
 end module mod_functional
 
 module mod_interfaces
@@ -23,13 +22,14 @@ module mod_interfaces
     use mod_functional
     implicit none
 
-interface map 
-    module procedure :: map_i1, map_i2
-end interface map
+    interface map 
+        module procedure :: map_i1, map_i2
+    end interface map
 
 contains
+    ! map accepts a function and an array as parameters
     pure function map_i1(f, x) result(map)
-        procedure(f_i1) :: f
+        procedure(f_i1) :: f !->?
         integer(i1), dimension(:), intent(in) :: x 
         integer(i1), dimension(size(x)) :: map
         integer(i4) :: i
@@ -59,7 +59,7 @@ program test_map
     res_i2 =  map_i2(xpowx_i2, x_i2)
     print *, res_i2
 
-    contains
+contains
     pure integer(i1) function xpowx_i1(x) result(res)
         integer(i1), intent(in) :: x
         res = x * x + 5_i1
