@@ -8,13 +8,12 @@ module mod_interfaces
   public :: square 
   
   interface square
-      module procedure :: square_i1, square_i2, square_i4, square_i8
-      module procedure :: square_r4, square_r8, square_r16 
-      module procedure :: square_c4, square_c8, square_c16
+    module procedure :: square_i1, square_i2, square_i4, square_i8
+    module procedure :: square_r4, square_r8, square_r16 
+    module procedure :: square_c4, square_c8, square_c16
   end interface square
   
-  contains
-
+contains
   pure function square_i1(x) result(res)
     integer(i1), intent(in) :: x 
     integer(i1) :: res

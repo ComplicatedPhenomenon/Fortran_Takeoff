@@ -7,14 +7,18 @@ module class_Circle
     real :: pi = 3.1415926535897931 ! Class-wide private constant
   
     type, public :: Circle
-       real :: radius
-     contains
-       procedure :: area => circle_area
-       procedure :: print => circle_print
+        real :: radius
+    contains
+        procedure :: area => circle_area
+        procedure :: print => circle_print
     end type Circle
-  contains
+
+contains
     function circle_area(this) result(area)
       class(Circle), intent(in) :: this
+      ! intent(out) is inappropriate for the result
+      ! Intent can be specified for the function arguments only
+      ! real, intent(out) :: area
       real :: area
       area = pi * this%radius**2
     end function circle_area
